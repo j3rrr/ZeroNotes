@@ -9,6 +9,7 @@ ZN.Colors = {
 	["INACTIVE"] = "555F6A",
 	["ACTIVE"] = "F8F8FF",
 	["ROWBG"] = "1F2227",
+	["SBButtonBG"] = "353C44",
 	["dk"]= "c41f3b",
 	["dh"]= "a330c9",
 	["druid"]= "ff7d0a",
@@ -22,4 +23,54 @@ ZN.Colors = {
 	["shaman"]= "0070de",
 	["warlock"]= "9482c9",
 	["warrior"]= "c79c6e",
+}
+
+ZN.DropdownFake = {
+  ["all"] = "|cff"..ZN.Colors.ACTIVE.."All|r",
+  ["dk"]= "|cff"..ZN.Colors.dk.."Death Knight|r",
+  ["dh"]= "|cff"..ZN.Colors.dh.."Demon Hunter|r",
+  ["druid"]= "|cff"..ZN.Colors.druid.."Druide|r",
+  ["hunter"]= "|cff"..ZN.Colors.hunter.."Hunter|r",
+  ["mage"]= "|cff"..ZN.Colors.mage.."Mage|r",
+  ["monk"]= "|cff"..ZN.Colors.monk.."Monk|r",
+  ["paladin"]= "|cff"..ZN.Colors.paladin.."Paladin|r",
+  ["priest"]= "|cff"..ZN.Colors.priest.."Priest|r",
+  ["diszi"]= "|cff"..ZN.Colors.priest.."Priest - Disc|r",
+  ["rogue"]= "|cff"..ZN.Colors.rogue.."Rogue|r",
+  ["shaman"]= "|cff"..ZN.Colors.shaman.."Schamane|r",
+  ["warlock"]= "|cff"..ZN.Colors.warlock.."Warlock|r",
+  ["warrior"]= "|cff"..ZN.Colors.warrior.."Warrior|r",
+}
+
+ZN.DropdownFakeOrder = {
+	"all",
+  "dk",
+  "dh",
+  "druid",
+  "hunter",
+  "mage",
+  "monk",
+  "paladin",
+  "priest",
+  "diszi",
+  "rogue",
+  "shaman",
+  "warlock",
+  "warrior",
+}
+
+ZN.DropdownFake2 = {
+  ["shriek1"] = "Shriekwing Test",
+  ["shriek2"]= "Shriekwing Zwei",
+  ["sludge1"]= "Sludgefist Template",
+  ["denathrius"]= "Denathrius der Penis",
+  ["azshara"]= "Tentakelfrau",
+}
+
+ZN.DropdownFake2Order = {
+  "shriek1",
+  "shriek2",
+  "sludge1",
+  "denathrius",
+  "azshara",
 }

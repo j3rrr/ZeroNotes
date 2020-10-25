@@ -133,3 +133,26 @@ function ZN:ClickCollapse(ZNFrame, ZNHeaderFrame, ZNSidebarFrame)
 
 	end
 end
+
+function ZN:CreateDropdown(parentObj, list, order)
+
+	if not parentObj.dropdownInit then
+		parentObj.dropdownInit = true
+		local parentName = parentObj.name
+		local dropdown = ZN.DropdownList(parentName.."Dropdown", parentObj.parent, "TOPLEFT", parentObj, "BOTTOMLEFT" , 240, 30, ZN.Colors.BG, 1, "CENTER", true, #order)
+		parentObj.dropdown = dropdown
+		
+		for i = 1, #order do
+			local dropdownItem = ZN.CreateGenericButton(nil, dropdown, "TOPLEFT", dropdown, "TOPLEFT", 240, 30, 0, (-30*(i-1)), 10, 0, 12, nil, ZN.Colors.BG, list[order[i]]:upper() )
+			dropdownItem.class = order[i]
+			dropdownItem.coloredClass = list[order[i]]
+			dropdownItem.parentObj = parentObj
+			dropdownItem:SetScript("OnClick", function(self)
+				self.parentObj.ZNText:SetText(dropdownItem.coloredClass:upper())
+				self.parentObj.dropdown:SetShown(not self.parentObj.dropdown:IsShown());
+			end)
+		end
+	end
+	
+	parentObj.dropdown:SetShown(not parentObj.dropdown:IsShown());
+end
