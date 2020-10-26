@@ -1,15 +1,15 @@
 local _, ZN, L = ...
 
--- local ZNLDB = LibStub:GetLibrary("LibDataBroker-1.1"):NewDataObject("ZeroNotes", {
--- 	type = "launcher",
---   icon = "Interface\\Addons\\ZeroNotes\\Media\\Texture\\zero_logo",
--- 	OnClick = function(clickedframe, button)
--- 		ZN:Toggle()
--- 	end,
--- })
+ZN.ZNLDB = LibStub:GetLibrary("LibDataBroker-1.1"):NewDataObject("ZeroNotes", {
+	type = "launcher",
+  icon = "Interface\\Addons\\ZeroNotes\\Media\\Texture\\zero_logo",
+	OnClick = function(clickedframe, button)
+		ZN:Toggle()
+	end,
+})
 
--- local icon = LibStub("LibDBIcon-1.0")
--- icon:Register("ZNLDB", ZNLDB, ZNotes.blab)
+ZN.icon = LibStub("LibDBIcon-1.0")
+
 
 
 -- local addon = LibStub("AceAddon-3.0"):NewAddon("Bunnies", "AceConsole-3.0")

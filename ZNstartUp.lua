@@ -5,10 +5,11 @@ local function onUILoad(text)
     end
   
     if ZNLoaded then
-      ZNotes = ZNotes or {}
-      ZN.initPlayerSpells()
-      ZNEventHandler:Unregister('ADDON_LOADED', 'onUILoad')
-          ZNEventHandler:Unregister('PLAYER_LOGIN', 'onUILoad')
+    ZNotes = ZNotes or {}
+    ZN.initPlayerSpells()
+    ZNEventHandler:Unregister('ADDON_LOADED', 'onUILoad')
+    ZNEventHandler:Unregister('PLAYER_LOGIN', 'onUILoad')
+    ZN.icon:Register("ZNLDB", ZN.ZNLDB, ZNotes)
     end
 end
 ZNEventHandler:Register('ADDON_LOADED', onUILoad, 'onUILoad')
