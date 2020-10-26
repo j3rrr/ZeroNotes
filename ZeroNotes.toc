@@ -2,7 +2,7 @@
 ## Version: 1.0
 ## Author: Serafno#2492, Bambule#21598
 ## Interface: 90001
-## Dependencies: ExRT
+## SavedVariables: ZNotes
 
 ZNInit.lua
 ZNUiFunctions.lua

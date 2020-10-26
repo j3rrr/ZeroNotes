@@ -89,6 +89,7 @@ function ZN.createScrollFrame(name, parent, width, height, color, a, anchor,stra
 	NewFrame.ScrollBar.ScrollDownButton:SetDisabledTexture(nil)
 	NewFrame.ScrollBar.ScrollDownButton:SetHeight(0)
 	NewFrame.ScrollBar:SetWidth(10)
+	--test
 	
 	local scrollButton = _G[name..'ScrollBarThumbTexture']
 	scrollButton:SetHeight(100)
