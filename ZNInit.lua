@@ -25,6 +25,32 @@ ZN.Colors = {
 	["warrior"]= "c79c6e",
 }
 
+ZN.Roles = {
+  ["heal"] = "|cff23e130Heal|r",
+  ["tank"] = "|cffc5af2aTank|r",
+  ["melee"] = "|cffd2728aMelee|r",
+  ["range"] = "|cff6bbceeRange|r",
+}
+
+ZN.RolesOrder = {
+  "heal",
+  "tank",
+  "melee",
+  "range",
+}
+
+ZN.Types = {
+  ["heal"] = "Heal",
+  ["util"] = "Utility",
+  ["imun"] = "Immunity",
+}
+
+ZN.TypesOrder = {
+  "heal",
+  "util",
+  "imun",
+}
+
 ZN.DropdownFake = {
   ["all"] = "|cff"..ZN.Colors.ACTIVE.."All|r",
   ["dk"]= "|cff"..ZN.Colors.dk.."Death Knight|r",

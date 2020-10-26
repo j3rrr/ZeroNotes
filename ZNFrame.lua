@@ -16,9 +16,9 @@ local _, ZN, L = ...
 
 --##############################################################################
 -- Templates
-local function createMainFrame(name, width, height, color, a)
+function ZN.createMainFrame(name, width, height, color, a, strata)
 	local NewFrame = CreateFrame('FRAME', name, UIParent)
-	NewFrame:SetFrameStrata('DIALOG')
+	NewFrame:SetFrameStrata(strata)
 	NewFrame:SetWidth(width)
 	NewFrame:SetHeight(height)
 	NewFrame:SetPoint('RIGHT', UIParent, 'CENTER',width/2)
@@ -48,12 +48,12 @@ local function createMainFrame(name, width, height, color, a)
 	return NewFrame
 end
 
-local function createSubFrame(name, parent, width, height, color, a, anchor, hide)
+function ZN.createSubFrame(name, parent, width, height, color, a, anchor, strata, hide, xOffset, yOffset)
 	local NewFrame = CreateFrame('FRAME', name, parent)
-	NewFrame:SetFrameStrata('DIALOG')
+	NewFrame:SetFrameStrata(strata)
 	NewFrame:SetWidth(width)
 	NewFrame:SetHeight(height)
-	NewFrame:SetPoint(anchor, parent, anchor)
+	NewFrame:SetPoint(anchor, parent, anchor, xOffset, yOffset)
 	--NewFrame:Hide()
 	NewFrame.updateDelay = 0
 	NewFrame.background = NewFrame:CreateTexture(nil, 'BACKGROUND')
@@ -68,10 +68,10 @@ local function createSubFrame(name, parent, width, height, color, a, anchor, hid
 	return NewFrame
 end
 
-local function createScrollFrame(name, parent, width, height, color, a, anchor, hide)
+function ZN.createScrollFrame(name, parent, width, height, color, a, anchor,strata,  hide)
 	local NewFrame = CreateFrame('ScrollFrame', name, parent, "UIPanelScrollFrameTemplate,BackdropTemplate")
 	--NewFrame:SetClipsChildren(true)
-	NewFrame:SetFrameStrata('DIALOG')
+	NewFrame:SetFrameStrata(strata)
 	NewFrame:SetWidth(width)
 	NewFrame:SetHeight(height)
 	NewFrame:SetPoint(anchor, parent, anchor)
@@ -96,6 +96,7 @@ local function createScrollFrame(name, parent, width, height, color, a, anchor, 
 	scrollButton:SetColorTexture(tonumber("0x"..ZN.Colors.HD:sub(1,2))/255, tonumber("0x"..ZN.Colors.HD:sub(3,4))/255, tonumber("0x"..ZN.Colors.HD:sub(5,6))/255, a)
 	NewFrame.scrollChild = CreateFrame("Frame", name.."ScrollChild", NewFrame);
 	NewFrame.scrollChild:SetSize(width, 1000);
+	NewFrame.scrollChild:SetFrameStrata(strata)
 	NewFrame:SetScrollChild(NewFrame.scrollChild);
 
 
@@ -131,27 +132,30 @@ function ZN.CreateIconButton(parent, point, anchorFrame, anchorPoint, width, hei
 	if not btn.active then
 		btn.btnColor = btn.inactiveColor
 	end
-	btn:GetNormalTexture():SetVertexColor(tonumber("0x"..btn.btnColor:sub(1,2))/255, tonumber("0x"..btn.btnColor:sub(3,4))/255, tonumber("0x"..btn.btnColor:sub(5,6))/255, 1)
-	btn:SetScript('OnEnter', function(self)
-		self.btnColor = self.inactiveColor
-		if not self.active then
-			self.btnColor = self.activeColor
-		end
-		self:GetNormalTexture():SetVertexColor(tonumber("0x"..self.btnColor:sub(1,2))/255, tonumber("0x"..self.btnColor:sub(3,4))/255, tonumber("0x"..self.btnColor:sub(5,6))/255, 1)
-	end)
-	btn:SetScript('OnLeave', function(self)
-		self.btnColor = self.activeColor
-		if not self.active then
+	if activeColor and inactiveColor then
+		btn:GetNormalTexture():SetVertexColor(tonumber("0x"..btn.btnColor:sub(1,2))/255, tonumber("0x"..btn.btnColor:sub(3,4))/255, tonumber("0x"..btn.btnColor:sub(5,6))/255, 1)
+		btn:SetScript('OnEnter', function(self)
 			self.btnColor = self.inactiveColor
-		end
-		self:GetNormalTexture():SetVertexColor(tonumber("0x"..self.btnColor:sub(1,2))/255, tonumber("0x"..self.btnColor:sub(3,4))/255, tonumber("0x"..self.btnColor:sub(5,6))/255, 1)
-	end)
+			if not self.active then
+				self.btnColor = self.activeColor
+			end
+			self:GetNormalTexture():SetVertexColor(tonumber("0x"..self.btnColor:sub(1,2))/255, tonumber("0x"..self.btnColor:sub(3,4))/255, tonumber("0x"..self.btnColor:sub(5,6))/255, 1)
+		end)
+		btn:SetScript('OnLeave', function(self)
+			self.btnColor = self.activeColor
+			if not self.active then
+				self.btnColor = self.inactiveColor
+			end
+			self:GetNormalTexture():SetVertexColor(tonumber("0x"..self.btnColor:sub(1,2))/255, tonumber("0x"..self.btnColor:sub(3,4))/255, tonumber("0x"..self.btnColor:sub(5,6))/255, 1)
+		end)
+	end
 
 	return btn
 end
 
-function ZN.CreateGenericButton(name, parent, point, anchorFrame, anchorPoint, width, height, xOffset, yOffset, fontxOffset, fontyOffset ,fontSize, color, bgcolor, label)
+function ZN.CreateGenericButton(name, parent, point, anchorFrame, anchorPoint, width, height, xOffset, yOffset, fontxOffset, fontyOffset ,fontSize, fontcolor, bgcolor, label, buttonText, buttonTextAlign, hover)
 		local btn = CreateFrame("Button", nil, parent);
+		btn:SetFrameStrata(parent:GetFrameStrata())
 		btn.name = name
 		btn.parent = parent
     btn.bg = btn:CreateTexture(nil, "BACKGROUND");
@@ -163,12 +167,30 @@ function ZN.CreateGenericButton(name, parent, point, anchorFrame, anchorPoint, w
     btn.ZNText:SetPoint("LEFT", btn, "LEFT", fontxOffset, fontyOffset)
     btn.ZNText:SetSize(width, height)
     btn.ZNText:SetFont("Interface\\AddOns\\ZeroNotes\\Media\\Font\\ZNReg.ttf", fontSize)
-		if color then
-			btn.ZNText:SetTextColor(tonumber("0x"..color:sub(1,2))/255, tonumber("0x"..color:sub(3,4))/255, tonumber("0x"..color:sub(5,6))/255, 1);
+		if fontcolor then
+			btn.ZNText:SetTextColor(tonumber("0x"..fontcolor:sub(1,2))/255, tonumber("0x"..fontcolor:sub(3,4))/255, tonumber("0x"..fontcolor:sub(5,6))/255, 1);
 		end
-    btn.ZNText:SetJustifyH("LEFT");
+    btn.ZNText:SetJustifyH(buttonTextAlign);
     btn.ZNText:SetJustifyV("CENTER");
-    btn.ZNText:SetText(label:upper());
+		btn.ZNText:SetText(buttonText:upper());
+		
+		if label then 
+			btn.ZNLabel = btn:CreateFontString()
+			btn.ZNLabel:SetPoint("BOTTOMLEFT", btn, "TOPLEFT", 0, 10)
+			btn.ZNLabel:SetSize(width, height/2)
+			btn.ZNLabel:SetFont("Interface\\AddOns\\ZeroNotes\\Media\\Font\\ZNReg.ttf", 12)
+			btn.ZNLabel:SetJustifyH("LEFT");
+			btn.ZNLabel:SetText(label);
+		end
+
+		if hover then 
+			btn:SetScript('OnEnter', function(self)
+				self.bg:SetColorTexture(tonumber("0x"..ZN.Colors.ROWBG:sub(1,2))/255, tonumber("0x"..ZN.Colors.ROWBG:sub(3,4))/255, tonumber("0x"..ZN.Colors.ROWBG:sub(5,6))/255, 1);			
+			end)
+			btn:SetScript('OnLeave', function(self)
+				self.bg:SetColorTexture(tonumber("0x"..bgcolor:sub(1,2))/255, tonumber("0x"..bgcolor:sub(3,4))/255, tonumber("0x"..bgcolor:sub(5,6))/255, 1);
+			end)
+		end
 
     btn:SetPoint(point, anchorFrame, anchorPoint, xOffset, yOffset);
 
@@ -177,7 +199,7 @@ end
 
 function ZN.DropdownList(name, parent, point, anchorFrame, anchorPoint, width, height, color, a, anchor, hide, contents)
 	local Dropdown = CreateFrame('FRAME', name, parent)
-	Dropdown:SetFrameStrata('DIALOG')
+	Dropdown:SetFrameStrata("DIALOG")
 	Dropdown:SetWidth(width)
 	Dropdown:SetHeight(height*contents)
 	Dropdown:SetPoint(point, anchorFrame, anchorPoint)
@@ -192,19 +214,80 @@ function ZN.DropdownList(name, parent, point, anchorFrame, anchorPoint, width, h
 	if color then
 		Dropdown.background:SetColorTexture(tonumber("0x"..color:sub(1,2))/255, tonumber("0x"..color:sub(3,4))/255, tonumber("0x"..color:sub(5,6))/255, a)
 	end
+	Dropdown:EnableMouse(true)
+	-- Dropdown:SetScript('OnEnter', function(self)
+	-- 	print("Test")
+	-- end)
+	Dropdown:SetScript('OnLeave', function(self)
+		self:Hide()
+	end)
 	return Dropdown
 end
 
+function ZN.SingleLineEditBox(name, parent, point, anchorFrame, anchorPoint, width, height, xOffset, yOffset, fontxOffset, fontyOffset ,fontSize, fontcolor, bgcolor, label, setText, setTextTextAlign)
+	local editbox = CreateFrame("EditBox", nil, parent)
+	editbox:SetMultiLine(false)
+	editbox.name = name
+	editbox.parent = parent
+	editbox.bg = editbox:CreateTexture(nil, "BACKGROUND");
+	editbox.bg:SetAllPoints(true);
+	editbox.bg:SetColorTexture(tonumber("0x"..bgcolor:sub(1,2))/255, tonumber("0x"..bgcolor:sub(3,4))/255, tonumber("0x"..bgcolor:sub(5,6))/255, 1);
+	editbox:SetWidth(width)
+	editbox:SetHeight(height)
+	-- editbox.DefaultText = editbox:CreateFontString()
+	-- editbox.DefaultText:SetFont("Interface\\AddOns\\ZeroNotes\\Media\\Font\\ZNReg.ttf", fontSize)
+	-- editbox.DefaultText:SetJustifyH("CENTER");
+	-- editbox.DefaultText:SetJustifyV("CENTER");
+	-- editbox.DefaultText:SetText(setText)
+	editbox:SetText(setText)
+	editbox:SetFont("Interface\\AddOns\\ZeroNotes\\Media\\Font\\ZNReg.ttf", fontSize)
+	editbox:SetTextColor(tonumber("0x"..fontcolor:sub(1,2))/255, tonumber("0x"..fontcolor:sub(3,4))/255, tonumber("0x"..fontcolor:sub(5,6))/255, 1);
+	--editbox:SetTextInsets(fontxOffset, fontxOffset, 0, 0)
+	--editbox:HighlightText()
+	editbox:SetAutoFocus(false)
+	editbox:SetJustifyH(setTextTextAlign)
+	
+	editbox:SetPoint(point, anchorFrame, anchorPoint, xOffset, yOffset);
+
+	--editbox.oldText = setText
+
+	editbox:SetScript("OnEnterPressed", function(self)
+		self.oldText = self:GetText()
+		self:ClearFocus()		
+	end)
+	editbox:SetScript("OnEscapePressed", function(self)
+		self:ClearFocus()
+		self:SetText(self.oldText)
+	end)
+	editbox:SetScript("OnEditFocusGained", function(self)
+		self.oldText = self:GetText()
+		self:SetTextColor(tonumber("0x"..ZN.Colors.ACTIVE:sub(1,2))/255, tonumber("0x"..ZN.Colors.ACTIVE:sub(3,4))/255, tonumber("0x"..ZN.Colors.ACTIVE:sub(5,6))/255, 1);
+	end)
+	editbox:SetScript("OnEditFocusLost", function(self)
+		self:ClearFocus()
+		self:SetText(self.oldText)
+		self:SetTextColor(tonumber("0x"..fontcolor:sub(1,2))/255, tonumber("0x"..fontcolor:sub(3,4))/255, tonumber("0x"..fontcolor:sub(5,6))/255, 1);
+	end)
+	
+
+
+	return editbox
+end
+-- Templates End
+--##############################################################################
+
 --##############################################################################
 -- Frame Stuff
-local ZNFrame = createMainFrame("ZNFrame", 1000, 600, ZN.Colors.BG, 1)
-local ZNHeaderFrame = createSubFrame("ZNHeader", ZNFrame, 1000, 58, ZN.Colors.HD, 1, "TOPRIGHT")
-local ZNSidebarFrame = createSubFrame("ZNSideBar", ZNFrame, 300, 540, ZN.Colors.HD, 1, "BOTTOMLEFT")
+ZNFrame = ZN.createMainFrame("ZNFrame", 1000, 600, ZN.Colors.BG, 1, "HIGH")
+ZNHeaderFrame = ZN.createSubFrame("ZNHeader", ZNFrame, 1000, 58, ZN.Colors.HD, 1, "TOPRIGHT", "HIGH")
+ZNSidebarFrame = ZN.createSubFrame("ZNSideBar", ZNFrame, 300, 540, ZN.Colors.HD, 1, "BOTTOMLEFT", "DIALOG")
 ZNSidebarFrame.collapsed = false
-local ZNBodyFrame = createSubFrame("ZNBody", ZNFrame, 700, 540, ZN.Colors.BG, 1, "BOTTOMRIGHT")
+ZNBodyFrame = ZN.createSubFrame("ZNBody", ZNFrame, 950, 540, ZN.Colors.BG, 1, "BOTTOMRIGHT", "HIGH")
+ZNInfoFrame = ZN.createSubFrame("ZNInfoFrame",ZNFrame, 300, 200, ZN.Colors.ROWBG, 1, 'CENTER', 'TOOLTIP', true)
 --##############################################################################
 -- Header
-ZNHeaderFrame.Title = ZN.CreateText(ZNHeaderFrame, "LEFT", ZNHeaderFrame, "LEFT", 100, 20, 30, 0, "Interface\\AddOns\\ZeroNotes\\Media\\Font\\ZNVers.ttf", 18, ZN.Colors.ACTIVE, ZN.Title)
+ZNHeaderFrame.btnLogo = ZN.CreateIconButton(ZNHeaderFrame, "LEFT", ZNHeaderFrame, "LEFT", 32, 32, 30, 0, "Interface\\AddOns\\ZeroNotes\\Media\\Texture\\zero_logo", ZN.Colors.INACTIVE, ZN.Colors.ACTIVE, false)
+ZNHeaderFrame.Title = ZN.CreateText(ZNHeaderFrame, "LEFT", ZNHeaderFrame.btnLogo, "LEFT", 100, 20, 40, 0, "Interface\\AddOns\\ZeroNotes\\Media\\Font\\ZNVers.ttf", 18, ZN.Colors.ACTIVE, ZN.Title)
 ZNHeaderFrame.Version = ZN.CreateText(ZNHeaderFrame, "BOTTOMLEFT", ZNHeaderFrame.Title, "BOTTOMRIGHT", 30, 20, 0, 0, "Interface\\AddOns\\ZeroNotes\\Media\\Font\\ZNVers.ttf", 12, ZN.Colors.INACTIVE, ZN.Version)
 ZNHeaderFrame.btnClose = ZN.CreateIconButton(ZNHeaderFrame, "RIGHT", ZNHeaderFrame, "RIGHT", 28, 28, -20, 0, "Interface\\AddOns\\ZeroNotes\\Media\\Texture\\x_big_active", ZN.Colors.ACTIVE, ZN.Colors.INACTIVE, false)
 ZNHeaderFrame.btnHome = ZN.CreateIconButton(ZNHeaderFrame, "RIGHT", ZNHeaderFrame.btnClose, "LEFT", 32, 32, -30, 0, "Interface\\AddOns\\ZeroNotes\\Media\\Texture\\home_active", ZN.Colors.ACTIVE, ZN.Colors.INACTIVE, false)
@@ -212,6 +295,7 @@ ZNHeaderFrame.btnImpExp = ZN.CreateIconButton(ZNHeaderFrame, "RIGHT", ZNHeaderFr
 ZNHeaderFrame.btnBoss = ZN.CreateIconButton(ZNHeaderFrame, "RIGHT", ZNHeaderFrame.btnImpExp, "LEFT", 32, 32, -30, 0, "Interface\\AddOns\\ZeroNotes\\Media\\Texture\\boss_active", ZN.Colors.ACTIVE, ZN.Colors.INACTIVE, false)
 ZNHeaderFrame.btnPlayer = ZN.CreateIconButton(ZNHeaderFrame, "RIGHT", ZNHeaderFrame.btnBoss, "LEFT", 32, 32, -30, 0, "Interface\\AddOns\\ZeroNotes\\Media\\Texture\\player_active", ZN.Colors.ACTIVE, ZN.Colors.INACTIVE, false)
 -- Header Functions
+ZNHeaderFrame.btnLogo:SetScript("OnClick", function(self) ZN:ToggleInfo(self) end)
 ZNHeaderFrame.btnClose:SetScript("OnClick", function(self) ZN:Toggle(self) end)
 ZNHeaderFrame.btnHome:SetScript("OnClick", function(self) ZN:ClickHome(ZNHeaderFrame, ZNSidebarFrame, ZNBodyFrame) end)
 ZNHeaderFrame.btnImpExp:SetScript("OnClick", function(self) ZN:ClickImpExp(ZNHeaderFrame, ZNSidebarFrame, ZNBodyFrame) end)
@@ -221,28 +305,19 @@ ZNHeaderFrame.btnPlayer:SetScript("OnClick", function(self) ZN:ClickPlayer(ZNHea
 -- Sidebar 
 ZNSidebarFrame.btnCollapseSidebar = ZN.CreateIconButton(ZNSidebarFrame, "BOTTOMRIGHT", ZNSidebarFrame, "BOTTOMRIGHT", 20, 20, -13, 15, "Interface\\AddOns\\ZeroNotes\\Media\\Texture\\arrow_left", ZN.Colors.ACTIVE, ZN.Colors.INACTIVE, false)
 ZNSidebarFrame.Subframes = {}
-ZNSidebarFrame.Subframes.Home = createSubFrame("ZNSideBarHomeContent", ZNSidebarFrame, 240, 540, nil, 1, "CENTER", true)
-ZNSidebarFrame.Subframes.ImpExp = createSubFrame("ZNSideBarImpExpContent", ZNSidebarFrame, 240, 540, nil, 1, "CENTER", true)
-ZNSidebarFrame.Subframes.Boss = createSubFrame("ZNSideBarBossContent", ZNSidebarFrame, 240, 540, nil, 1, "CENTER", true)
-ZNSidebarFrame.Subframes.Player = createSubFrame("ZNSideBarPlayerContent", ZNSidebarFrame, 240, 540, nil, 1, "CENTER", true)
+ZNSidebarFrame.Subframes.Home = ZN.createSubFrame("ZNSideBarHomeContent", ZNSidebarFrame, 240, 540, nil, 1, "CENTER", "DIALOG",  true)
+ZNSidebarFrame.Subframes.ImpExp = ZN.createSubFrame("ZNSideBarImpExpContent", ZNSidebarFrame, 240, 540, nil, 1, "CENTER", "DIALOG", true)
+ZNSidebarFrame.Subframes.Boss = ZN.createSubFrame("ZNSideBarBossContent", ZNSidebarFrame, 240, 540, nil, 1, "CENTER", "DIALOG", true)
+ZNSidebarFrame.Subframes.Player = ZN.createSubFrame("ZNSideBarPlayerContent", ZNSidebarFrame, 240, 540, nil, 1, "CENTER","DIALOG", true)
 -- Sidebar Functions
 ZNSidebarFrame.btnCollapseSidebar:SetScript("OnClick", function(self) ZN:ClickCollapse(ZNFrame, ZNHeaderFrame, ZNSidebarFrame) end)
--- Home Sidebar
-ZNSidebarFrame.Subframes.Home.ClassSelectLabel = ZN.CreateText(ZNSidebarFrame.Subframes.Home, "TOPLEFT", ZNSidebarFrame.Subframes.Home, "TOPLEFT", 240, 30, 0, -30, "Interface\\AddOns\\ZeroNotes\\Media\\Font\\ZNReg.ttf", 12, ZN.Colors.ACTIVE, "Filter by Class")
-ZNSidebarFrame.Subframes.Home.ClassSelectButton = ZN.CreateGenericButton("ZNClassSelectButton", ZNSidebarFrame.Subframes.Home, "TOPLEFT", ZNSidebarFrame.Subframes.Home.ClassSelectLabel, "BOTTOMLEFT", 240, 30, 0, -5,10,0, 12, ZN.Colors.ACTIVE, ZN.Colors.SBButtonBG, "Select Class..." )
-ZNSidebarFrame.Subframes.Home.TemplateSelectLabel = ZN.CreateText(ZNSidebarFrame.Subframes.Home, "TOPLEFT", ZNSidebarFrame.Subframes.Home.ClassSelectButton, "TOPLEFT", 240, 30, 0, -30, "Interface\\AddOns\\ZeroNotes\\Media\\Font\\ZNReg.ttf", 12, ZN.Colors.ACTIVE, "Select Encounter Template")
-ZNSidebarFrame.Subframes.Home.TemplateSelectButton = ZN.CreateGenericButton("ZNTemplateSelectButton", ZNSidebarFrame.Subframes.Home, "TOPLEFT", ZNSidebarFrame.Subframes.Home.TemplateSelectLabel, "BOTTOMLEFT", 240, 30, 0, -5,10,0, 12, ZN.Colors.ACTIVE, ZN.Colors.SBButtonBG, "Select Template..." )
-
--- Home Sidebar Functions
-ZNSidebarFrame.Subframes.Home.ClassSelectButton:SetScript("OnClick", function(self) ZN:CreateDropdown(self, ZN.DropdownFake, ZN.DropdownFakeOrder) end)
-ZNSidebarFrame.Subframes.Home.TemplateSelectButton:SetScript("OnClick", function(self) ZN:CreateDropdown(self, ZN.DropdownFake2, ZN.DropdownFake2Order) end)
 --##############################################################################
 -- Body
 ZNBodyFrame.Subframes = {}
-ZNBodyFrame.Subframes.Home = createSubFrame("ZNBodyHomeContent", ZNBodyFrame, 680, 540, nil, 1, "CENTER", true)
-ZNBodyFrame.Subframes.ImpExp = createSubFrame("ZNBodyImpExpContent", ZNBodyFrame, 680, 540, nil, 1, "CENTER", true)
-ZNBodyFrame.Subframes.Boss = createScrollFrame("ZNBodyBossContent", ZNBodyFrame, 680, 540, nil, 1, "CENTER", true)
-ZNBodyFrame.Subframes.Player = createScrollFrame("ZNBodyPlayerContent", ZNBodyFrame, 680, 540, nil, 1, "CENTER", true)
+ZNBodyFrame.Subframes.Home = ZN.createSubFrame("ZNBodyHomeContent", ZNBodyFrame, 680, 540, nil, 1, "RIGHT","HIGH", true, -10, 0)
+ZNBodyFrame.Subframes.ImpExp = ZN.createSubFrame("ZNBodyImpExpContent", ZNBodyFrame, 680, 540, nil, 1, "RIGHT","HIGH", true, -10, 0)
+ZNBodyFrame.Subframes.Boss = ZN.createScrollFrame("ZNBodyBossContent", ZNBodyFrame, 930, 540, nil, 1, "CENTER","HIGH", true)
+ZNBodyFrame.Subframes.Player = ZN.createScrollFrame("ZNBodyPlayerContent", ZNBodyFrame, 930, 540, nil, 1, "CENTER","HIGH", true)
 -- Frame Stuff End
 --##############################################################################
 
