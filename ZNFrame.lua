@@ -108,15 +108,16 @@ function ZN.createScrollFrame(name, parent, width, height, color, a, anchor,stra
 	return NewFrame
 end
 
-function ZN.CreateText(parent, point, anchorFrame, anchorPoint, width, height, xOffset, yOffset, font, fontSize, color, text)
+function ZN.CreateText(parent, point, anchorFrame, anchorPoint, width, height, xOffset, yOffset, font, fontSize, color, text, justifyH, justifyV, lineHeight)
 		local newText = parent:CreateFontString()
 		newText:SetPoint(point, anchorFrame, anchorPoint, xOffset, yOffset)
 		newText:SetSize(width, height)
 		newText:SetFont(font, fontSize)
 		newText:SetTextColor(tonumber("0x"..color:sub(1,2))/255, tonumber("0x"..color:sub(3,4))/255, tonumber("0x"..color:sub(5,6))/255, 1)
-		newText:SetJustifyH("LEFT")
-		newText:SetJustifyV("BOTTOM")
+		newText:SetJustifyH(justifyH and justifyH or "LEFT")
+		newText:SetJustifyV(justifyV and justifyV or "BOTTOM")
 		newText:SetText(text)
+		newText:SetLineHeight(lineHeight and lineHeight or fontSize)
 		return newText
 end
 

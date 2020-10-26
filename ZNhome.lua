@@ -11,4 +11,15 @@ ZNSidebarFrame.Subframes.Home.TemplateSelectButton:SetScript("OnClick", function
 ZNSidebarFrame.Subframes.Home.SendToExRTButton:SetScript("OnClick", function(self) ZN:SendToExRT("Send to ExRT Button") end)
 ZNSidebarFrame.Subframes.Home.ShowNoteInEditorButton:SetScript("OnClick", function(self) ZN:ShowNoteInEditor("Show Note Button") end)
 
+-- Home Body Text
+HomeTitle = "Welcome to Zero Notes"
+HomeParagraph = "This addon is designed to automatically create notes, populated with heal / immunity / utility spells, depending on your current raidsetup.\n"
+HomeParagraph = HomeParagraph .. "Blablabal"
+
 -- Home Body
+HomeContent = ZNBodyFrame.Subframes.Home
+HomeContent.Text = ZN.CreateText(HomeContent, "TOP", HomeContent, "TOP", 680, 30, 0, -10, "Interface\\AddOns\\ZeroNotes\\Media\\Font\\ZNVers.ttf", 18, ZN.Colors.ACTIVE, HomeTitle, "LEFT", "TOP")
+HomeContent.Paragraph = ZN.CreateText(HomeContent, "TOP", HomeContent.Text, "BOTTOM", 680, 100, 0, 0, "Interface\\AddOns\\ZeroNotes\\Media\\Font\\ZNReg.ttf", 12, ZN.Colors.ACTIVE, HomeParagraph, "LEFT", "TOP",24)
+HomeContent.UrlButton = ZN.CreateGenericButton("HomeUrlButton", HomeContent, "BOTTOM", HomeContent, "BOTTOM", 680, 30, 0, 0,0,0, 10, ZN.Colors.INACTIVE, ZN.Colors.BG, nil, "www.zero-wow.de", "CENTER",false )
+-- Functions
+HomeContent.UrlButton:SetScript("OnClick", function(self) ZN:ToggleInfo(self) end)
