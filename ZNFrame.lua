@@ -126,15 +126,16 @@ function ZN.createScrollFrame(name, parent, width, height, color, a, anchor,stra
 	return NewFrame
 end
 
-function ZN.CreateText(parent, point, anchorFrame, anchorPoint, width, height, xOffset, yOffset, font, fontSize, color, text)
+function ZN.CreateText(parent, point, anchorFrame, anchorPoint, width, height, xOffset, yOffset, font, fontSize, color, text, justifyH, justifyV, spacing)
 		local newText = parent:CreateFontString()
 		newText:SetPoint(point, anchorFrame, anchorPoint, xOffset, yOffset)
 		newText:SetSize(width, height)
 		newText:SetFont(font, fontSize)
 		newText:SetTextColor(tonumber("0x"..color:sub(1,2))/255, tonumber("0x"..color:sub(3,4))/255, tonumber("0x"..color:sub(5,6))/255, 1)
-		newText:SetJustifyH("LEFT")
-		newText:SetJustifyV("BOTTOM")
+		newText:SetJustifyH(justifyH and justifyH or "LEFT")
+		newText:SetJustifyV(justifyV and justifyV or "BOTTOM")
 		newText:SetText(text)
+		newText:SetSpacing(spacing and spacing or fontSize)
 		return newText
 end
 
@@ -360,7 +361,7 @@ ZNSidebarFrame.btnCollapseSidebar:SetScript("OnClick", function(self) ZN:ClickCo
 --##############################################################################
 -- Body
 ZNBodyFrame.Subframes = {}
-ZNBodyFrame.Subframes.Home = ZN.createSubFrame("ZNBodyHomeContent", ZNBodyFrame, 680, 540, nil, 1, "RIGHT","HIGH", true, -10, 0)
+ZNBodyFrame.Subframes.Home = ZN.createSubFrame("ZNBodyHomeContent", ZNBodyFrame, 640, 540, nil, 1, "RIGHT","HIGH", true, -30, 0)
 ZNBodyFrame.Subframes.ImpExp = ZN.createSubFrame("ZNBodyImpExpContent", ZNBodyFrame, 680, 540, nil, 1, "RIGHT","HIGH", true, -10, 0)
 ZNBodyFrame.Subframes.Boss = ZN.createScrollFrame("ZNBodyBossContent", ZNBodyFrame, 930, 540, nil, 1, "CENTER","HIGH", true)
 ZNBodyFrame.Subframes.Player = ZN.createScrollFrame("ZNBodyPlayerContent", ZNBodyFrame, 930, 540, nil, 1, "CENTER","HIGH", true)

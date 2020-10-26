@@ -6,6 +6,11 @@ ZN.Version="1.0"
 
 ZN.DropDowns = {}
 
+ZNotes.blob = {
+  ["bla"] = "bla",
+  ["bla1"] = "bla1",
+}
+
 ZN.Colors = {
 	["BG"] = "15191C",
 	["HD"] = "292E32",

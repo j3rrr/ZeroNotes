@@ -6,6 +6,8 @@
 
 ZNEventHandler.lua
 ZNInit.lua
+embeds.xml
+ZNminimap.lua
 ZNUiFunctions.lua
 ZNFrame.lua
 ZNboss.lua
