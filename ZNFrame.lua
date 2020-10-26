@@ -48,12 +48,12 @@ function ZN.createMainFrame(name, width, height, color, a, strata)
 	return NewFrame
 end
 
-function ZN.createSubFrame(name, parent, width, height, color, a, anchor, strata, hide, xOffset, yOffset)
+function ZN.createSubFrame(name, parent, width, height, color, a, anchor, strata, hide, xOffset, yOffset, anchorFrame, anchorPoint, noMouseDown)
 	local NewFrame = CreateFrame('FRAME', name, parent)
 	NewFrame:SetFrameStrata(strata)
 	NewFrame:SetWidth(width)
 	NewFrame:SetHeight(height)
-	NewFrame:SetPoint(anchor, parent, anchor, xOffset, yOffset)
+	NewFrame:SetPoint(anchor, anchorFrame and anchorFrame or parent, anchorPoint and anchorPoint or anchor, xOffset, yOffset)
 	--NewFrame:Hide()
 	NewFrame.updateDelay = 0
 	NewFrame.background = NewFrame:CreateTexture(nil, 'BACKGROUND')
@@ -65,10 +65,19 @@ function ZN.createSubFrame(name, parent, width, height, color, a, anchor, strata
 	if color then
 		NewFrame.background:SetColorTexture(tonumber("0x"..color:sub(1,2))/255, tonumber("0x"..color:sub(3,4))/255, tonumber("0x"..color:sub(5,6))/255, a)
 	end
+	if not noMouseDown then
+		NewFrame:SetScript("OnMouseDown", function(self, button)
+			if button == "LeftButton" then
+				for i=1, #ZN.DropDowns do
+					ZN.DropDowns[i]:SetShown(false)
+				end
+			end
+		end)
+	end
 	return NewFrame
 end
 
-function ZN.createScrollFrame(name, parent, width, height, color, a, anchor,strata,  hide)
+function ZN.createScrollFrame(name, parent, width, height, color, a, anchor,strata,  hide, noMOuseDown)
 	local NewFrame = CreateFrame('ScrollFrame', name, parent, "UIPanelScrollFrameTemplate,BackdropTemplate")
 	--NewFrame:SetClipsChildren(true)
 	NewFrame:SetFrameStrata(strata)
@@ -99,7 +108,15 @@ function ZN.createScrollFrame(name, parent, width, height, color, a, anchor,stra
 	NewFrame.scrollChild:SetSize(width, 1000);
 	NewFrame.scrollChild:SetFrameStrata(strata)
 	NewFrame:SetScrollChild(NewFrame.scrollChild);
-
+	if not noMouseDown then
+		NewFrame:SetScript("OnMouseDown", function(self, button)
+			if button == "LeftButton" then
+				for i=1, #ZN.DropDowns do
+					ZN.DropDowns[i]:SetShown(false)
+				end
+			end
+		end)
+	end
 
 
 	if hide then
@@ -130,6 +147,12 @@ function ZN.CreateIconButton(parent, point, anchorFrame, anchorPoint, width, hei
 	btn.inactiveColor = inactiveColor
 	btn.active = active
 	btn.btnColor = btn.activeColor
+	btn.doOnUpdate = false
+	btn.OnUpdate = nil
+	btn.tableType = nil
+	btn.Row = nil
+	btn.Column = nil
+
 	if not btn.active then
 		btn.btnColor = btn.inactiveColor
 	end
@@ -155,43 +178,53 @@ function ZN.CreateIconButton(parent, point, anchorFrame, anchorPoint, width, hei
 end
 
 function ZN.CreateGenericButton(name, parent, point, anchorFrame, anchorPoint, width, height, xOffset, yOffset, fontxOffset, fontyOffset ,fontSize, fontcolor, bgcolor, label, buttonText, buttonTextAlign, hover)
-		local btn = CreateFrame("Button", nil, parent);
-		btn:SetFrameStrata(parent:GetFrameStrata())
-		btn.name = name
-		btn.parent = parent
+	local btn = CreateFrame("Button", nil, parent);
+	btn:SetFrameStrata(parent:GetFrameStrata())
+	btn.name = name
+	btn.parent = parent
     btn.bg = btn:CreateTexture(nil, "BACKGROUND");
     btn.bg:SetAllPoints(true);
     btn.bg:SetColorTexture(tonumber("0x"..bgcolor:sub(1,2))/255, tonumber("0x"..bgcolor:sub(3,4))/255, tonumber("0x"..bgcolor:sub(5,6))/255, 1);
-    btn:SetSize(width, height);
+	btn:SetSize(width, height);
+	btn.doOnUpdate = false
+	btn.OnUpdate = nil
+	btn.tableType = nil
+	btn.Row = nil
+	btn.Column = nil
+	btn.Update = function(newValue)
+		if btn.doOnUpdate then
+			btn.OnUpdate(btn.tableType, btn.Row, btn.Column, newValue)
+		end
+	end
 
     btn.ZNText = btn:CreateFontString()
     btn.ZNText:SetPoint("LEFT", btn, "LEFT", fontxOffset, fontyOffset)
     btn.ZNText:SetSize(width, height)
     btn.ZNText:SetFont("Interface\\AddOns\\ZeroNotes\\Media\\Font\\ZNReg.ttf", fontSize)
-		if fontcolor then
-			btn.ZNText:SetTextColor(tonumber("0x"..fontcolor:sub(1,2))/255, tonumber("0x"..fontcolor:sub(3,4))/255, tonumber("0x"..fontcolor:sub(5,6))/255, 1);
-		end
-    btn.ZNText:SetJustifyH(buttonTextAlign);
-    btn.ZNText:SetJustifyV("CENTER");
-		btn.ZNText:SetText(buttonText:upper());
-		
-		if label then 
-			btn.ZNLabel = btn:CreateFontString()
-			btn.ZNLabel:SetPoint("BOTTOMLEFT", btn, "TOPLEFT", 0, 10)
-			btn.ZNLabel:SetSize(width, height/2)
-			btn.ZNLabel:SetFont("Interface\\AddOns\\ZeroNotes\\Media\\Font\\ZNReg.ttf", 12)
-			btn.ZNLabel:SetJustifyH("LEFT");
-			btn.ZNLabel:SetText(label);
-		end
+	if fontcolor then
+		btn.ZNText:SetTextColor(tonumber("0x"..fontcolor:sub(1,2))/255, tonumber("0x"..fontcolor:sub(3,4))/255, tonumber("0x"..fontcolor:sub(5,6))/255, 1);
+	end
+	btn.ZNText:SetJustifyH(buttonTextAlign);
+	btn.ZNText:SetJustifyV("CENTER");
+	btn.ZNText:SetText(buttonText:upper());
+	
+	if label then 
+		btn.ZNLabel = btn:CreateFontString()
+		btn.ZNLabel:SetPoint("BOTTOMLEFT", btn, "TOPLEFT", 0, 10)
+		btn.ZNLabel:SetSize(width, height/2)
+		btn.ZNLabel:SetFont("Interface\\AddOns\\ZeroNotes\\Media\\Font\\ZNReg.ttf", 12)
+		btn.ZNLabel:SetJustifyH("LEFT");
+		btn.ZNLabel:SetText(label);
+	end
 
-		if hover then 
-			btn:SetScript('OnEnter', function(self)
-				self.bg:SetColorTexture(tonumber("0x"..ZN.Colors.ROWBG:sub(1,2))/255, tonumber("0x"..ZN.Colors.ROWBG:sub(3,4))/255, tonumber("0x"..ZN.Colors.ROWBG:sub(5,6))/255, 1);			
-			end)
-			btn:SetScript('OnLeave', function(self)
-				self.bg:SetColorTexture(tonumber("0x"..bgcolor:sub(1,2))/255, tonumber("0x"..bgcolor:sub(3,4))/255, tonumber("0x"..bgcolor:sub(5,6))/255, 1);
-			end)
-		end
+	if hover then 
+		btn:SetScript('OnEnter', function(self)
+			self.bg:SetColorTexture(tonumber("0x"..ZN.Colors.ROWBG:sub(1,2))/255, tonumber("0x"..ZN.Colors.ROWBG:sub(3,4))/255, tonumber("0x"..ZN.Colors.ROWBG:sub(5,6))/255, 1);			
+		end)
+		btn:SetScript('OnLeave', function(self)
+			self.bg:SetColorTexture(tonumber("0x"..bgcolor:sub(1,2))/255, tonumber("0x"..bgcolor:sub(3,4))/255, tonumber("0x"..bgcolor:sub(5,6))/255, 1);
+		end)
+	end
 
     btn:SetPoint(point, anchorFrame, anchorPoint, xOffset, yOffset);
 
@@ -222,6 +255,8 @@ function ZN.DropdownList(name, parent, point, anchorFrame, anchorPoint, width, h
 	Dropdown:SetScript('OnLeave', function(self)
 		self:Hide()
 	end)
+
+	table.insert(ZN.DropDowns,Dropdown)
 	return Dropdown
 end
 
@@ -235,6 +270,12 @@ function ZN.SingleLineEditBox(name, parent, point, anchorFrame, anchorPoint, wid
 	editbox.bg:SetColorTexture(tonumber("0x"..bgcolor:sub(1,2))/255, tonumber("0x"..bgcolor:sub(3,4))/255, tonumber("0x"..bgcolor:sub(5,6))/255, 1);
 	editbox:SetWidth(width)
 	editbox:SetHeight(height)
+	editbox.doOnUpdate = false
+	editbox.OnUpdate = nil
+	editbox.tableType = nil
+	editbox.Row = nil
+	editbox.Column = nil
+
 	-- editbox.DefaultText = editbox:CreateFontString()
 	-- editbox.DefaultText:SetFont("Interface\\AddOns\\ZeroNotes\\Media\\Font\\ZNReg.ttf", fontSize)
 	-- editbox.DefaultText:SetJustifyH("CENTER");
@@ -254,6 +295,9 @@ function ZN.SingleLineEditBox(name, parent, point, anchorFrame, anchorPoint, wid
 
 	editbox:SetScript("OnEnterPressed", function(self)
 		self.oldText = self:GetText()
+		if self.doOnUpdate then
+			self.OnUpdate(self.tableType,self.Row,self.Column, self:GetText())
+		end
 		self:ClearFocus()		
 	end)
 	editbox:SetScript("OnEscapePressed", function(self)
@@ -280,9 +324,10 @@ end
 --##############################################################################
 -- Frame Stuff
 ZNFrame = ZN.createMainFrame("ZNFrame", 1000, 600, ZN.Colors.BG, 1, "HIGH")
-ZNHeaderFrame = ZN.createSubFrame("ZNHeader", ZNFrame, 1000, 58, ZN.Colors.HD, 1, "TOPRIGHT", "HIGH")
+ZNHeaderFrame = ZN.createSubFrame("ZNHeader", ZNFrame, 1000, 58, ZN.Colors.HD, 1, "TOPRIGHT", "HIGH",nil,nil,nil,nil,nil,true)
 ZNSidebarFrame = ZN.createSubFrame("ZNSideBar", ZNFrame, 300, 540, ZN.Colors.HD, 1, "BOTTOMLEFT", "DIALOG")
 ZNSidebarFrame.collapsed = false
+ZNSidebarFrame:EnableMouse(true)
 ZNBodyFrame = ZN.createSubFrame("ZNBody", ZNFrame, 950, 540, ZN.Colors.BG, 1, "BOTTOMRIGHT", "HIGH")
 ZNInfoFrame = ZN.createSubFrame("ZNInfoFrame",ZNFrame, 300, 200, ZN.Colors.ROWBG, 1, 'CENTER', 'TOOLTIP', true)
 --##############################################################################

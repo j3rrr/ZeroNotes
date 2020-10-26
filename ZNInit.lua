@@ -3,7 +3,8 @@ local _, ZN, L = ...
 ZN.Title="Zero Notes"
 ZN.Version="1.0"
 
-ZNotes = ZNotes or {}
+
+ZN.DropDowns = {}
 
 ZN.Colors = {
 	["BG"] = "15191C",
@@ -103,7 +104,8 @@ ZN.DropdownFake2Order = {
   "azshara",
 }
 
-ZNotes.PlayerSpells = PlayerSpells or {
+function ZN.initPlayerSpells()
+ZNotes.PlayerSpells = ZNotes.PlayerSpells or {
   {
     ["type"] = "heal",
     ["id"] = 81782,
@@ -501,3 +503,5 @@ ZNotes.PlayerSpells = PlayerSpells or {
     ["name"] = "amz",
   }, -- [33]
 }
+end
+

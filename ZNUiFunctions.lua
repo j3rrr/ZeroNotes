@@ -160,12 +160,17 @@ function ZN:CreateDropdown(parentObj, list, order, width, dropDownBgColor, butto
 			dropdownItem.parentObj = parentObj
 			dropdownItem:SetScript("OnClick", function(self)
 				self.parentObj.ZNText:SetText(dropdownItem.coloredClass:upper())
+				self.parentObj.Update(dropdownItem.class)
 				self.parentObj.dropdown:SetShown(not self.parentObj.dropdown:IsShown());
 			end)
 		end
 	end
-	
-	parentObj.dropdown:SetShown(not parentObj.dropdown:IsShown());
+	local wasShown = parentObj.dropdown:IsShown();
+	for i=1, #ZN.DropDowns do
+		ZN.DropDowns[i]:SetShown(false)
+	end
+
+	parentObj.dropdown:SetShown(not wasShown);
 end
 
 function ZN:SendToExRT(template) 

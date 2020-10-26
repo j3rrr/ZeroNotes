@@ -4,6 +4,7 @@
 ## Interface: 90001
 ## SavedVariables: ZNotes
 
+ZNEventHandler.lua
 ZNInit.lua
 ZNUiFunctions.lua
 ZNFrame.lua
@@ -12,3 +13,4 @@ ZNhome.lua
 ZNimpexp.lua
 ZNinfo.lua
 ZNplayer.lua
+ZNstartUp.lua
