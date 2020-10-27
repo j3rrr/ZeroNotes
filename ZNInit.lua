@@ -43,14 +43,18 @@ ZN.Colors = {
 	["rogue"]= "fff569",
 	["shaman"]= "0070de",
 	["warlock"]= "9482c9",
-	["warrior"]= "c79c6e",
+  ["warrior"]= "c79c6e",
+  ["U"] = "ff7d0a",
+  ["H"] = "abd473",
+  ["I"] = "C41f3b"
 }
 
 ZN.ColoredRoles = {
-  ["heal"] = "|cff23e130Heal|r",
+  ["heal"] = "|cffabd473Heal|r",
   ["tank"] = "|cffc5af2aTank|r",
   ["melee"] = "|cffd2728aMelee|r",
   ["range"] = "|cff6bbceeRange|r",
+  --["util"] = "|cffff7d0aAll|r"
 }
 
 ZN.ColoredRolesOrder = {
@@ -58,6 +62,7 @@ ZN.ColoredRolesOrder = {
   "tank",
   "melee",
   "range",
+  --"util",
 }
 
 ZN.Types = {
@@ -106,7 +111,7 @@ ZN.PlayerClassesColoredOrder = {
   "warrior",
 }
 
-ZN.DropdownFake2 = {
+ZN.PlayerClassesColored2 = {
   ["shriek1"] = "Shriekwing Test",
   ["shriek2"]= "Shriekwing Zwei",
   ["sludge1"]= "Sludgefist Template",
@@ -114,7 +119,7 @@ ZN.DropdownFake2 = {
   ["azshara"]= "Tentakelfrau",
 }
 
-ZN.DropdownFake2Order = {
+ZN.PlayerClassesColored2Order = {
   "shriek1",
   "shriek2",
   "sludge1",
@@ -418,30 +423,6 @@ ZNotes.PlayerSpells = ZNotes.PlayerSpells or {
     ["station"] = true,
     ["name"] = "amz",
   }, -- [24]
-  {
-    ["type"] = "util",
-    ["id"] = 5512,
-    ["class"] = "all",
-    ["role"] = "util",
-    ["cd"] = 99999999,
-    ["color"] = "ff00ff",
-    ["aoe"] = false,
-    ["rating"] = 10,
-    ["station"] = false,
-    ["name"] = "gesu",
-  }, -- [25]
-  {
-    ["type"] = "util",
-    ["id"] = 93742,
-    ["class"] = "all",
-    ["role"] = "util",
-    ["cd"] = 300,
-    ["color"] = "ff00ff",
-    ["aoe"] = false,
-    ["rating"] = 20,
-    ["station"] = false,
-    ["name"] = "healpot",
-  }, -- [26]
   {
     ["type"] = "util",
     ["id"] = 15286,
