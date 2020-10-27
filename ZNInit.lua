@@ -81,7 +81,7 @@ ZN.PlayerClassesColored = {
   ["all"] = "|cff"..ZN.Colors.ACTIVE.."All|r",
   ["dk"]= "|cff"..ZN.Colors.dk.."Death Knight|r",
   ["dh"]= "|cff"..ZN.Colors.dh.."Demon Hunter|r",
-  ["druid"]= "|cff"..ZN.Colors.druid.."Druide|r",
+  ["druid"]= "|cff"..ZN.Colors.druid.."Druid|r",
   ["hunter"]= "|cff"..ZN.Colors.hunter.."Hunter|r",
   ["mage"]= "|cff"..ZN.Colors.mage.."Mage|r",
   ["monk"]= "|cff"..ZN.Colors.monk.."Monk|r",
@@ -89,7 +89,7 @@ ZN.PlayerClassesColored = {
   ["priest"]= "|cff"..ZN.Colors.priest.."Priest|r",
   ["diszi"]= "|cff"..ZN.Colors.priest.."Priest - Disc|r",
   ["rogue"]= "|cff"..ZN.Colors.rogue.."Rogue|r",
-  ["shaman"]= "|cff"..ZN.Colors.shaman.."Schamane|r",
+  ["shaman"]= "|cff"..ZN.Colors.shaman.."Shaman|r",
   ["warlock"]= "|cff"..ZN.Colors.warlock.."Warlock|r",
   ["warrior"]= "|cff"..ZN.Colors.warrior.."Warrior|r",
 }
