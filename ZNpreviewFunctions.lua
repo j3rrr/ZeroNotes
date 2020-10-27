@@ -11,7 +11,7 @@ function ZN:createPreviewTemplateTable(arr)
   }
 
   if not template then
-    UIErrorsFrame:AddMessage("You need to choose a Boss / Raid", 0.8, 0.07, 0.2, 5.0)
+    UIErrorsFrame:AddMessage("You need to choose a Template", 0.8, 0.07, 0.2, 5.0)
   else
     for _,spell in ipairs(template) do
       if spell["trenner"] then
