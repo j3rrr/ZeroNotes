@@ -374,7 +374,13 @@ ZNBodyFrame.Subframes.Player = ZN.createScrollFrame("ZNBodyPlayerContent", ZNBod
 ZN:ClickHome(ZNHeaderFrame, ZNSidebarFrame, ZNBodyFrame)
 
 local function handler(msg)
-	ZN:Toggle()
+	if msg == "minimap" then
+	ZNotes.minimap.hide = not ZNotes.minimap.hide
+	DEFAULT_CHAT_FRAME:AddMessage("|cff00ffffZero|rNotes: Minimap button " .. (ZNotes.minimap.hide and "hidden" or "shown"))
+	ZN:UpdateMinimapButton()
+	else
+		ZN:Toggle()
+	end
 end
 
 SLASH_ZERONOTES1 = '/ZN'

@@ -105,6 +105,12 @@ ZN.DropdownFake2Order = {
   "azshara",
 }
 
+function ZN.initMinimapButton()
+ ZNotes.minimap = ZNotes.minimap or {
+        hide = false,
+      }
+end
+
 function ZN.initPlayerSpells()
 ZNotes.PlayerSpells = ZNotes.PlayerSpells or {
   {
@@ -506,3 +512,49 @@ ZNotes.PlayerSpells = ZNotes.PlayerSpells or {
 }
 end
 
+function ZN.initBossTemplates()
+ZNotes.BossTemplates = ZNotes.BossTemplates or {
+  ["SampleBoss"] = {
+    {
+      ["name"]= "Charge",
+      ["id"]= "100",
+      ["time"]= 20,
+      ["prio"]= 1,    
+      ["station"]= false,
+      ["need"]= {{["type"]= "heal"},{["type"]= "imun"},{["type"]= "util"}},
+      ["aoe"]= false,
+      ["repeatX"]= 4,
+      ["repeatAfter"]= 40
+    },
+    {
+      ["name"]= "Execute",
+      ["id"]= "163201",
+      ["time"]= 35,
+      ["prio"]= 2,    
+      ["station"]= true,
+      ["need"]= {{["type"]= "heal"},{["type"]= "util"}},
+      ["aoe"]= true,
+      ["repeatX"]= 2,
+      ["repeatAfter"]= 60
+    },
+    {
+      ["text"]= "Phase 1",
+      ["time"]= 0,
+      ["prio"]= 9000,
+      ["trenner"]= true,
+      ["raidicon"]= "{star}"
+    },
+      {
+      ["text"]= "Phase 2",
+      ["time"]= 180,
+      ["prio"]= 9000,
+      ["trenner"]= true,
+      ["raidicon"]= "{skull}"
+    },
+  }
+}
+end
+
+ZN.BossTemplatesOrder = {
+  "SampleBoss",
+}

@@ -180,3 +180,19 @@ end
 function ZN:ShowNoteInEditor(template) 
 	print(template)
 end
+
+function ZN:getTableOrder(arr) 
+	local tmp = {}
+	for k,v in pairs(arr) do
+		table.insert(tmp, k)
+	end	
+	return tmp
+end
+
+function ZN:getTableKeys(arr) 
+	local tmp = {}
+	for k,v in pairs(arr) do
+		tmp[k] = k
+	end	
+	return tmp
+end
