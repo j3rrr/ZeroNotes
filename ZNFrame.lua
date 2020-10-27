@@ -189,7 +189,7 @@ function ZN.CreateIconButton(parent, point, anchorFrame, anchorPoint, width, hei
 	return btn
 end
 
-function ZN.CreateGenericButton(name, parent, point, anchorFrame, anchorPoint, width, height, xOffset, yOffset, fontxOffset, fontyOffset ,fontSize, fontcolor, bgcolor, label, buttonText, buttonTextAlign, hover)
+function ZN.CreateGenericButton(name, parent, point, anchorFrame, anchorPoint, width, height, xOffset, yOffset, fontxOffset, fontyOffset ,fontSize, fontcolor, bgcolor, label, buttonText, buttonTextAlign, hover, hoverColor)
 	local btn = CreateFrame("Button", nil, parent);
 	btn:SetFrameStrata(parent:GetFrameStrata())
 	btn.name = name
@@ -231,7 +231,7 @@ function ZN.CreateGenericButton(name, parent, point, anchorFrame, anchorPoint, w
 
 	if hover then 
 		btn:SetScript('OnEnter', function(self)
-			self.bg:SetColorTexture(tonumber("0x"..ZN.Colors.ROWBG:sub(1,2))/255, tonumber("0x"..ZN.Colors.ROWBG:sub(3,4))/255, tonumber("0x"..ZN.Colors.ROWBG:sub(5,6))/255, 1);			
+			self.bg:SetColorTexture(tonumber("0x"..(hoverColor and hoverColor or ZN.Colors.ROWBG):sub(1,2))/255, tonumber("0x"..(hoverColor and hoverColor or ZN.Colors.ROWBG):sub(3,4))/255, tonumber("0x"..(hoverColor and hoverColor or ZN.Colors.ROWBG):sub(5,6))/255, 1);			
 		end)
 		btn:SetScript('OnLeave', function(self)
 			self.bg:SetColorTexture(tonumber("0x"..bgcolor:sub(1,2))/255, tonumber("0x"..bgcolor:sub(3,4))/255, tonumber("0x"..bgcolor:sub(5,6))/255, 1);
@@ -374,8 +374,8 @@ ZNSidebarFrame.btnCollapseSidebar:SetScript("OnClick", function(self) ZN:ClickCo
 ZNBodyFrame.Subframes = {}
 ZNBodyFrame.Subframes.Home = ZN.createSubFrame("ZNBodyHomeContent", ZNBodyFrame, 640, 540, nil, 1, "RIGHT","HIGH", true, -30, 0)
 ZNBodyFrame.Subframes.ImpExp = ZN.createSubFrame("ZNBodyImpExpContent", ZNBodyFrame, 680, 540, nil, 1, "RIGHT","HIGH", true, -10, 0)
-ZNBodyFrame.Subframes.Boss = ZN.createScrollFrame("ZNBodyBossContent", ZNBodyFrame, 930, 540, nil, 1, "CENTER","HIGH", true)
-ZNBodyFrame.Subframes.Player = ZN.createScrollFrame("ZNBodyPlayerContent", ZNBodyFrame, 930, 540, nil, 1, "CENTER","HIGH", true)
+ZNBodyFrame.Subframes.Boss = ZN.createScrollFrame("ZNBodyBossContent", ZNBodyFrame, 930, 530, nil, 1, "TOP","HIGH", true)
+ZNBodyFrame.Subframes.Player = ZN.createScrollFrame("ZNBodyPlayerContent", ZNBodyFrame, 930, 530, nil, 1, "TOP","HIGH", true)
 -- Frame Stuff End
 --##############################################################################
 

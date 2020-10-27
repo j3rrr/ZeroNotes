@@ -150,7 +150,7 @@ function ZN:ClickCollapse(ZNFrame, ZNHeaderFrame, ZNSidebarFrame, collapse, expa
 	end
 end
 
-function ZN:CreateDropdown(parentObj, list, order, width, dropDownBgColor, buttonAlign, buttonTextXOffset)
+function ZN:CreateDropdown(parentObj, list, order, width, dropDownBgColor, buttonAlign, buttonTextXOffset, hoverColor)
 
 	if not parentObj.dropdownInit then
 		parentObj.dropdownInit = true
@@ -159,7 +159,7 @@ function ZN:CreateDropdown(parentObj, list, order, width, dropDownBgColor, butto
 		parentObj.dropdown = dropdown
 		
 		for i = 1, #order do
-			local dropdownItem = ZN.CreateGenericButton(nil, dropdown, "TOPLEFT", dropdown, "TOPLEFT", width, 30, 0, (-30*(i-1)), buttonTextXOffset, 0, 12, nil, dropDownBgColor, nil, list[order[i]]:upper() , buttonAlign ,true)
+			local dropdownItem = ZN.CreateGenericButton(nil, dropdown, "TOPLEFT", dropdown, "TOPLEFT", width, 30, 0, (-30*(i-1)), buttonTextXOffset, 0, 12, nil, dropDownBgColor, nil, list[order[i]]:upper() , buttonAlign ,true, hoverColor)
 			dropdownItem.class = order[i]
 			dropdownItem.coloredClass = list[order[i]]
 			dropdownItem.parentObj = parentObj
