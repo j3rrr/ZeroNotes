@@ -1,0 +1,154 @@
+local _, ZN, L = ...
+
+function ZN:showPreview(arr, parent)
+  parent.Text:SetText(ZN:printPreviewNote(arr))
+end
+
+function ZN:createPreviewTemplateTable(arr)
+  local template = ZNotes.BossTemplates[arr]
+  local noteTemplate = {
+    ["spells"] = {}
+  }
+
+  if not template then
+    UIErrorsFrame:AddMessage("You need to choose a Boss / Raid", 0.8, 0.07, 0.2, 5.0)
+  else
+    for _,spell in ipairs(template) do
+      if spell["trenner"] then
+        table.insert(noteTemplate["spells"], spell)
+      else
+        tmp = {}
+        for i = 1, spell["repeatX"] do
+          tmp = table.copy(spell)
+          --tmp["need"] = table.copy(spell["need"])
+          tmp["time"] = spell["time"]+(spell["repeatAfter"]*(i-1))
+          tmp["repeatX"] = nil
+          tmp["repeatAfter"] = nil
+          table.insert(noteTemplate["spells"], tmp)
+        end      
+      end
+    end
+  end
+  prioNote = {
+    ["lines"] = {}
+  }
+
+  table.sort(noteTemplate["spells"], function(a,b) return a.prio > b.prio or (a.prio == b.prio and a.time < b.time) end)
+
+  local sortedPrioTemplate = noteTemplate["spells"] 
+
+  for _,spell in ipairs(sortedPrioTemplate) do
+    if spell["trenner"] then
+      table.insert(prioNote["lines"], spell)
+    else 
+      local needHeal = 0
+      local needUtil = 0
+      local needImun = 0
+      for _,needs in ipairs(spell["need"]) do        
+        if needs["type"] == "heal" then
+          needHeal = needHeal + 1
+        elseif needs["type"] == "util" then
+          needUtil = needUtil + 1
+        elseif needs["type"] == "imun" then
+          needImun = needImun + 1
+        end
+      end
+      local spellSet = false
+      if not spellSet then
+        local tmpLine = {}
+        tmpLine.time = spell.time
+        tmpLine.bossSpellName = spell.name
+        tmpLine.bossSpellId = spell.id
+        tmpLine.needHeal = needHeal
+        tmpLine.needUtil = needUtil
+        tmpLine.needImun = needImun
+        table.insert(prioNote["lines"], tmpLine)
+        spellSet = true
+      end      
+    end
+  end
+
+  table.sort(prioNote["lines"], function(a,b) return a.time < b.time end)
+  return prioNote
+end
+
+
+--CreateTextureMarkup(file, fileWidth, fileHeight, width, height, left, right, top, bottom, xOffset, yOffset)
+
+
+ZN.previewIconsList = {
+	"Interface\\TargetingFrame\\UI-RaidTargetingIcon_1",
+	"Interface\\TargetingFrame\\UI-RaidTargetingIcon_2",
+	"Interface\\TargetingFrame\\UI-RaidTargetingIcon_3",
+	"Interface\\TargetingFrame\\UI-RaidTargetingIcon_4",
+	"Interface\\TargetingFrame\\UI-RaidTargetingIcon_5",
+	"Interface\\TargetingFrame\\UI-RaidTargetingIcon_6",
+	"Interface\\TargetingFrame\\UI-RaidTargetingIcon_7",
+	"Interface\\TargetingFrame\\UI-RaidTargetingIcon_8",
+}
+
+function ZN:printPreviewNote(arr)
+  local rawNoteData = ZN:createPreviewTemplateTable(arr)
+  if rawNoteData == nil then
+    return
+  end
+
+  local notePreview = ""
+
+  for i = 1, table.getn(rawNoteData["lines"]) do
+    if rawNoteData["lines"][i]["trenner"] then
+      local raidicon = ""
+      if rawNoteData["lines"][i]["raidicon"] == "{1}" then
+        raidicon = CreateTextureMarkup(ZN.previewIconsList[1], 0, 0, 0, 0, 0, 0, 0, 0, 0, -12)
+      elseif rawNoteData["lines"][i]["raidicon"] == "{2}" then
+        raidicon = CreateTextureMarkup(ZN.previewIconsList[2], 0, 0, 0, 0, 0, 0, 0, 0, 0, -12)
+      elseif rawNoteData["lines"][i]["raidicon"] == "{3}" then
+        raidicon = CreateTextureMarkup(ZN.previewIconsList[3], 0, 0, 0, 0, 0, 0, 0, 0, 0, -12)
+      elseif rawNoteData["lines"][i]["raidicon"] == "{4}" then
+        raidicon = CreateTextureMarkup(ZN.previewIconsList[4], 0, 0, 0, 0, 0, 0, 0, 0, 0, -12)
+      elseif rawNoteData["lines"][i]["raidicon"] == "{5}" then
+        raidicon = CreateTextureMarkup(ZN.previewIconsList[5], 0, 0, 0, 0, 0, 0, 0, 0, 0, -12)
+      elseif rawNoteData["lines"][i]["raidicon"] == "{6}" then
+        raidicon = CreateTextureMarkup(ZN.previewIconsList[6], 0, 0, 0, 0, 0, 0, 0, 0, 0, -12)
+      elseif rawNoteData["lines"][i]["raidicon"] == "{7}" then
+        raidicon = CreateTextureMarkup(ZN.previewIconsList[7], 0, 0, 0, 0, 0, 0, 0, 0, 0, -12)
+      elseif rawNoteData["lines"][i]["raidicon"] == "{8}" then
+        raidicon = CreateTextureMarkup(ZN.previewIconsList[8], 0, 0, 0, 0, 0, 0, 0, 0, 0, -12)
+      end
+      local convertedTime = ZN:SecondsToClock(rawNoteData["lines"][i]["time"])
+      notePreview = notePreview.."|cfffec1c0"..convertedTime.."|r "..raidicon.." |cffff00ff"..rawNoteData["lines"][i]["text"].."|r "..raidicon.."\n"
+      --goto continue
+    else
+      local convertedTime = ZN:SecondsToClock(rawNoteData["lines"][i]["time"])
+      local iconPath = select(3,GetSpellInfo(rawNoteData["lines"][i]["bossSpellId"]))
+      local spellIcon = CreateTextureMarkup(iconPath, 0, 0, 16, 16, 0, 0, 0, 0, 0, -8)
+      local healIcon  = CreateTextureMarkup("Interface\\Addons\\ZeroNotes\\Media\\Texture\\h", 0, 0, 16, 16, 0, 0, 0, 0, 0, -8)
+      local healNeeds = rawNoteData["lines"][i]["needHeal"]
+      local healString = ""
+      local utilIcon  = CreateTextureMarkup("Interface\\Addons\\ZeroNotes\\Media\\Texture\\u", 0, 0, 16, 16, 0, 0, 0, 0, 0, -8)
+      local utilNeeds = rawNoteData["lines"][i]["needUtil"]
+      local utilString = ""
+      local imunIcon  = CreateTextureMarkup("Interface\\Addons\\ZeroNotes\\Media\\Texture\\i", 0, 0, 16, 16, 0, 0, 0, 0, 0, -8)
+      local imunNeeds = rawNoteData["lines"][i]["needImun"]
+      local imunString = ""
+      for k = 1, healNeeds do
+        healString = healString..healIcon.." "
+      end
+      for l = 1, utilNeeds do
+        utilString = utilString..utilIcon.." "
+      end
+      for m = 1, imunNeeds do
+        imunString = imunString..imunIcon.." "
+      end
+      notePreview = notePreview.."|cfffec1c0"..convertedTime.."|r "..(spellIcon or "|TInterface\\Icons\\INV_MISC_QUESTIONMARK:12|t").." "..rawNoteData["lines"][i]["bossSpellName"].." "..healString..utilString..imunString.."\n"
+    end
+
+  end
+  local doubleNote = notePreview
+  doubleNote = doubleNote .. notePreview
+  return notePreview
+
+end
+
+
+

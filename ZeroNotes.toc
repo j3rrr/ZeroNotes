@@ -12,6 +12,7 @@ ZNUiFunctions.lua
 ZNFrame.lua
 ZNinfo.lua
 ZNstartUp.lua
+ZNpreviewFunctions.lua
 ZNboss.lua
 ZNhome.lua
 ZNimpexp.lua

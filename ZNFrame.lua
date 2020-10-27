@@ -50,6 +50,7 @@ end
 
 function ZN.createSubFrame(name, parent, width, height, color, a, anchor, strata, hide, xOffset, yOffset, anchorFrame, anchorPoint, noMouseDown)
 	local NewFrame = CreateFrame('FRAME', name, parent)
+	NewFrame.name = name
 	NewFrame:SetFrameStrata(strata)
 	NewFrame:SetWidth(width)
 	NewFrame:SetHeight(height)
@@ -77,7 +78,7 @@ function ZN.createSubFrame(name, parent, width, height, color, a, anchor, strata
 	return NewFrame
 end
 
-function ZN.createScrollFrame(name, parent, width, height, color, a, anchor,strata,  hide, noMOuseDown)
+function ZN.createScrollFrame(name, parent, width, height, color, a, anchor,strata,  hide, noMOuseDown, scrollColor)
 	local NewFrame = CreateFrame('ScrollFrame', name, parent, "UIPanelScrollFrameTemplate,BackdropTemplate")
 	--NewFrame:SetClipsChildren(true)
 	NewFrame:SetFrameStrata(strata)
@@ -103,7 +104,11 @@ function ZN.createScrollFrame(name, parent, width, height, color, a, anchor,stra
 	local scrollButton = _G[name..'ScrollBarThumbTexture']
 	scrollButton:SetHeight(100)
 	scrollButton:SetWidth(3)
-	scrollButton:SetColorTexture(tonumber("0x"..ZN.Colors.HD:sub(1,2))/255, tonumber("0x"..ZN.Colors.HD:sub(3,4))/255, tonumber("0x"..ZN.Colors.HD:sub(5,6))/255, a)
+	if not scrollColor then
+		scrollButton:SetColorTexture(tonumber("0x"..ZN.Colors.HD:sub(1,2))/255, tonumber("0x"..ZN.Colors.HD:sub(3,4))/255, tonumber("0x"..ZN.Colors.HD:sub(5,6))/255, a)
+	else
+		scrollButton:SetColorTexture(tonumber("0x"..scrollColor:sub(1,2))/255, tonumber("0x"..scrollColor:sub(3,4))/255, tonumber("0x"..scrollColor:sub(5,6))/255, a)
+	end
 	NewFrame.scrollChild = CreateFrame("Frame", name.."ScrollChild", NewFrame);
 	NewFrame.scrollChild:SetSize(width, 1000);
 	NewFrame.scrollChild:SetFrameStrata(strata)
