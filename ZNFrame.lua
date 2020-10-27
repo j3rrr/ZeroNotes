@@ -77,7 +77,7 @@ function ZN.createSubFrame(name, parent, width, height, color, a, anchor, strata
 	return NewFrame
 end
 
-function ZN.createScrollFrame(name, parent, width, height, color, a, anchor,strata,  hide, noMOuseDown)
+function ZN.createScrollFrame(name, parent, width, height, color, a, anchor,strata,  hide, noMOuseDown, scrollHeight)
 	local NewFrame = CreateFrame('ScrollFrame', name, parent, "UIPanelScrollFrameTemplate,BackdropTemplate")
 	--NewFrame:SetClipsChildren(true)
 	NewFrame:SetFrameStrata(strata)
@@ -105,7 +105,7 @@ function ZN.createScrollFrame(name, parent, width, height, color, a, anchor,stra
 	scrollButton:SetWidth(3)
 	scrollButton:SetColorTexture(tonumber("0x"..ZN.Colors.HD:sub(1,2))/255, tonumber("0x"..ZN.Colors.HD:sub(3,4))/255, tonumber("0x"..ZN.Colors.HD:sub(5,6))/255, a)
 	NewFrame.scrollChild = CreateFrame("Frame", name.."ScrollChild", NewFrame);
-	NewFrame.scrollChild:SetSize(width, 1000);
+	NewFrame.scrollChild:SetSize(width, scrollHeight and scrollHeight or 1000);
 	NewFrame.scrollChild:SetFrameStrata(strata)
 	NewFrame:SetScrollChild(NewFrame.scrollChild);
 	if not noMouseDown then
@@ -139,13 +139,14 @@ function ZN.CreateText(parent, point, anchorFrame, anchorPoint, width, height, x
 		return newText
 end
 
-function ZN.CreateIconButton(parent, point, anchorFrame, anchorPoint, width, height, xOffset, yOffset, texture, activeColor, inactiveColor, active)
+function ZN.CreateIconButton(parent, point, anchorFrame, anchorPoint, width, height, xOffset, yOffset, texture, activeColor, inactiveColor, active, highlightColor)
 	local btn = CreateFrame("Button", nil, parent)
 	btn:SetPoint(point, anchorFrame, anchorPoint, xOffset, yOffset)
 	btn:SetSize(width, height)
 	btn:SetNormalTexture(texture)
 	btn.activeColor = activeColor
 	btn.inactiveColor = inactiveColor
+	btn.highlightColor = highlightColor
 	btn.active = active
 	btn.btnColor = btn.activeColor
 	btn.doOnUpdate = false
@@ -160,9 +161,13 @@ function ZN.CreateIconButton(parent, point, anchorFrame, anchorPoint, width, hei
 	if activeColor and inactiveColor then
 		btn:GetNormalTexture():SetVertexColor(tonumber("0x"..btn.btnColor:sub(1,2))/255, tonumber("0x"..btn.btnColor:sub(3,4))/255, tonumber("0x"..btn.btnColor:sub(5,6))/255, 1)
 		btn:SetScript('OnEnter', function(self)
-			self.btnColor = self.inactiveColor
-			if not self.active then
-				self.btnColor = self.activeColor
+			if self.highlightColor then
+				self.btnColor = self.highlightColor
+			else
+				self.btnColor = self.inactiveColor
+				if not self.active then
+					self.btnColor = self.activeColor
+				end
 			end
 			self:GetNormalTexture():SetVertexColor(tonumber("0x"..self.btnColor:sub(1,2))/255, tonumber("0x"..self.btnColor:sub(3,4))/255, tonumber("0x"..self.btnColor:sub(5,6))/255, 1)
 		end)

@@ -90,6 +90,11 @@ function ZN:ClickPlayer(ZNHeaderFrame, ZNSidebarFrame, ZNBodyFrame)
     ZNHeaderFrame.btnPlayer.active = true
 	ZNHeaderFrame.btnPlayer:GetNormalTexture():SetVertexColor(tonumber("0x"..ZN.Colors.ACTIVE:sub(1,2))/255, tonumber("0x"..ZN.Colors.ACTIVE:sub(3,4))/255, tonumber("0x"..ZN.Colors.ACTIVE:sub(5,6))/255, 1)
 	
+	if not ZN.PlayerInit then
+		ZN.PlayerInit=true
+		ZN:InitPlayer()
+	end
+
 	for k,v in pairs(ZNSidebarFrame.Subframes) do
 			v:SetShown(false)
 			v.visible=false

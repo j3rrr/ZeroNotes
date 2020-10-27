@@ -9,10 +9,10 @@ ZNInit.lua
 embeds.xml
 ZNminimap.lua
 ZNUiFunctions.lua
+ZNplayer.lua
 ZNFrame.lua
 ZNinfo.lua
 ZNstartUp.lua
 ZNboss.lua
 ZNhome.lua
 ZNimpexp.lua
-ZNplayer.lua
