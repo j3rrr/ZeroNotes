@@ -3,6 +3,23 @@ local _, ZN, L = ...
 ZN.Title="Zero Notes"
 ZN.Version="1.0"
 
+function table.copy(t)
+  local u = { }
+  for k, v in pairs(t) do u[k] = v end
+  return setmetatable(u, getmetatable(t))
+end
+
+function ZN:SecondsToClock(seconds)
+  local seconds = tonumber(seconds)
+
+  if seconds <= 0 then
+    return "00:00"
+  else
+    mins = string.format("%02.f", math.floor(seconds/60))
+    secs = string.format("%02.f", math.floor(seconds - mins *60))
+    return mins..":"..secs
+  end
+end
 
 ZN.DropDowns = {}
 
@@ -538,18 +555,29 @@ ZNotes.BossTemplates = ZNotes.BossTemplates or {
       ["repeatAfter"]= 60
     },
     {
+      ["name"]= "Heroic Leap",
+      ["id"]= "6544",
+      ["time"]= 125,
+      ["prio"]= 2,    
+      ["station"]= true,
+      ["need"]= {{["type"]= "imun"},{["type"]= "imun"}},
+      ["aoe"]= true,
+      ["repeatX"]= 2,
+      ["repeatAfter"]= 30
+    },
+    {
       ["text"]= "Phase 1",
       ["time"]= 0,
       ["prio"]= 9000,
       ["trenner"]= true,
-      ["raidicon"]= "{star}"
+      ["raidicon"]= "{1}"
     },
       {
       ["text"]= "Phase 2",
-      ["time"]= 180,
+      ["time"]= 110,
       ["prio"]= 9000,
       ["trenner"]= true,
-      ["raidicon"]= "{skull}"
+      ["raidicon"]= "{8}"
     },
   }
 }
