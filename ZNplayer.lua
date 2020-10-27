@@ -99,8 +99,8 @@ local function CreateGenericButton (name, parent, point, anchor, anchorPoint, ty
   return btn
 end
 
-local function CreateSingleLIneEditBox(name, parent, point, anchor, anchorPoint, type, text)
-  local tb = ZN.SingleLineEditBox(name, parent, point, anchor, anchorPoint, ZN.PlayerTableColumns[type], ZN.PlayerTableRows.row, 0, 0, 0, 0 ,12, ZN.Colors.INACTIVE, ZN.Colors.ROWBG, nil, text, "CENTER")
+local function CreateSingleLIneEditBox(name, parent, point, anchor, anchorPoint, type, text, xOffSet)
+  local tb = ZN.SingleLineEditBox(name, parent, point, anchor, anchorPoint, ZN.PlayerTableColumns[type], ZN.PlayerTableRows.row, xOffSet and xOffSet or 0, 0, 0, 0 ,12, ZN.Colors.INACTIVE, ZN.Colors.ROWBG, nil, text, "CENTER")
   return tb
 end
 
@@ -126,8 +126,15 @@ end
 
 
 local function CreateText(parent, point, anchor, anchorPoint, type, text, xOffset)
-local txt = ZN.CreateText(parent, point, anchor, anchorPoint, ZN.PlayerTableColumns[type], ZN.PlayerTableRows.row, xOffset and xOffset or 0, 0, "Interface\\AddOns\\ZeroNotes\\Media\\Font\\ZNReg.ttf", 12, ZN.Colors.INACTIVE, text, "CENTER", "CENTER")
-return txt
+  local txt = ZN.CreateText(parent, point, anchor, anchorPoint, ZN.PlayerTableColumns[type], ZN.PlayerTableRows.row, xOffset and xOffset or 0, 0, "Interface\\AddOns\\ZeroNotes\\Media\\Font\\ZNReg.ttf", 12, ZN.Colors.INACTIVE, text, "CENTER", "CENTER")
+  return txt
+end
+
+local function CreateIconButton(parent, point, anchor, anchorPoint, type, row)
+  local btn =ZN.CreateIconButton(parent, point, anchor, anchorPoint, 16, 16, 17, 0, "Interface\\AddOns\\ZeroNotes\\Media\\Texture\\delete2", ZN.Colors.ACTIVE, ZN.Colors.INACTIVE, false)
+  btn.Row = row
+  btn.Column = type
+  return btn
 end
 
 local function CreateContentRow(PlayerSpellID, PlayerSpell, AnchorFrame)
@@ -140,8 +147,10 @@ local function CreateContentRow(PlayerSpellID, PlayerSpell, AnchorFrame)
   ContentRow.SpellType = CreateGenericButton ("Type"..PlayerSpellID, ContentRow, "LEFT", ContentRow.SpellName, "RIGHT", "spelltype", ZN.Types[PlayerSpell.type])
   ContentRow.Aoe = CreateCheckBox(ContentRow, "LEFT", ContentRow.SpellType, "RIGHT", "aoe", PlayerSpellID, PlayerSpell.aoe)
   ContentRow.Station = CreateCheckBox(ContentRow, "LEFT", ContentRow.Aoe, "RIGHT", "station", PlayerSpellID, PlayerSpell.station)
-  ContentRow.SpellCd = CreateText(ContentRow, "LEFT", ContentRow.Station, "RIGHT", "spellcd", select(1,GetSpellBaseCooldown(PlayerSpell.id))/1000, 17)
-  
+  --ContentRow.SpellCd = CreateText(ContentRow, "LEFT", ContentRow.Station, "RIGHT", "spellcd", select(1,GetSpellBaseCooldown(PlayerSpell.id))/1000, 17)
+  ContentRow.SpellCd = CreateSingleLIneEditBox("Spellcd"..PlayerSpellID, ContentRow, "LEFT", ContentRow.Station, "RIGHT", "spellcd", PlayerSpell.cd, 17)
+  ContentRow.SpellRating = CreateSingleLIneEditBox("Spellrating"..PlayerSpellID, ContentRow, "LEFT", ContentRow.SpellCd, "RIGHT", "spellrating", PlayerSpell.rating)
+  ContentRow.Delete = CreateIconButton(ContentRow, "LEFT", ContentRow.SpellRating, "RIGHT", "delete", PlayerSpellID)
 
 
   ContentRow.Aoe:SetScript("OnClick",function(self)
@@ -160,31 +169,16 @@ function ZN:InitPlayer()
   local PlayerTable = ZNBodyFrame.Subframes.Player
   -- Title Row
   PlayerTable.TitleRow = CreateTitleRow()
-  -- Row 1
-  --PlayerTable.FirstRow = ZN.createSubFrame("ZNPlayerFirstRow", ZNBodyFrame.Subframes.Player.scrollChild, 930, ZN.PlayerTableRows.row, ZN.Colors.ROWBG, 1, "TOP", "HIGH", false, -5,-32)
-  PlayerTable.FirstRow = CreateContentRow(1, ZNotes.PlayerSpells[1], PlayerTable.TitleRow)
-  
-  --PlayerTable.FirstRow.SpellType = ZN.CreateGenericButton("SpellIdTitle", PlayerTable.FirstRow, "LEFT", PlayerTable.FirstRow.SpellName, "RIGHT", ZN.PlayerTableColumns.spelltype, ZN.PlayerTableRows.row, 0, 0, 0, 0 ,12, ZN.Colors.INACTIVE, ZN.Colors.ROWBG, nil, "Type", "CENTER", false)
-  --PlayerTable.FirstRow.Aoe = ZN.CreateIconButton(PlayerTable.FirstRow, "LEFT", PlayerTable.FirstRow.SpellType, "RIGHT", 12, 12, 19, 0, "Interface\\AddOns\\ZeroNotes\\Media\\Texture\\x_big_active", ZN.Colors.ACTIVE, ZN.Colors.dk, false)
-  --PlayerTable.FirstRow.Station = ZN.CreateIconButton(PlayerTable.FirstRow, "LEFT", PlayerTable.FirstRow.Aoe, "RIGHT", 16, 16, 36, 0, "Interface\\AddOns\\ZeroNotes\\Media\\Texture\\checkmark", ZN.Colors.ACTIVE, ZN.Colors.hunter, false)
-  --PlayerTable.FirstRow.SpellCd = ZN.SingleLineEditBox("SpellCd", PlayerTable.FirstRow, "LEFT", PlayerTable.FirstRow.Station, "RIGHT", ZN.PlayerTableColumns.spellcd, ZN.PlayerTableRows.row, 17, 0, 0, 0 ,12, ZN.Colors.INACTIVE, ZN.Colors.ROWBG, nil, "180", "CENTER")
-  PlayerTable.FirstRow.SpellRating = ZN.SingleLineEditBox("SpellCd", PlayerTable.FirstRow, "LEFT", PlayerTable.FirstRow.SpellCd, "RIGHT", ZN.PlayerTableColumns.spellrating, ZN.PlayerTableRows.row, 0, 0, 0, 0 ,12, ZN.Colors.INACTIVE, ZN.Colors.ROWBG, nil, "500", "CENTER")
-  PlayerTable.FirstRow.Delete = ZN.CreateIconButton(PlayerTable.FirstRow, "LEFT", PlayerTable.FirstRow.SpellRating, "RIGHT", 16, 16, 17, 0, "Interface\\AddOns\\ZeroNotes\\Media\\Texture\\delete2", ZN.Colors.ACTIVE, ZN.Colors.INACTIVE, false)
-  -- Row 2
-  PlayerTable.SecondRow = ZN.createSubFrame("ZNPlayerSecondRow", ZNBodyFrame.Subframes.Player.scrollChild, 930, ZN.PlayerTableRows.row, ZN.Colors.ROWBG, 1, "TOP", "HIGH", false, -5,-74)
-  PlayerTable.SecondRow.Role = ZN.CreateGenericButton("RoleTitle", PlayerTable.SecondRow, "LEFT", PlayerTable.SecondRow, "LEFT", ZN.PlayerTableColumns.role, ZN.PlayerTableRows.row, 0, 0, 0, 0 ,12, ZN.Colors.INACTIVE, ZN.Colors.ROWBG, nil, "Role", "CENTER", false)
-  PlayerTable.SecondRow.Class = ZN.CreateGenericButton("ClassTitle", PlayerTable.SecondRow, "LEFT", PlayerTable.SecondRow.Role, "RIGHT", ZN.PlayerTableColumns.class, ZN.PlayerTableRows.row, 0, 0, 0, 0 ,12, ZN.Colors.INACTIVE, ZN.Colors.ROWBG, nil, "Class", "CENTER", false)
-  PlayerTable.SecondRow.SpellId = ZN.CreateGenericButton("SpellIdTitle", PlayerTable.SecondRow, "LEFT", PlayerTable.SecondRow.Class, "RIGHT", ZN.PlayerTableColumns.spellid, ZN.PlayerTableRows.row, 0, 0, 0, 0 ,12, ZN.Colors.INACTIVE, ZN.Colors.ROWBG, nil, "ID", "CENTER", false)
-  PlayerTable.SecondRow.SpellName = ZN.CreateGenericButton("SpellIdTitle", PlayerTable.SecondRow, "LEFT", PlayerTable.SecondRow.SpellId, "RIGHT", ZN.PlayerTableColumns.spellname, ZN.PlayerTableRows.row, 0, 0, 0, 0 ,12, ZN.Colors.INACTIVE, ZN.Colors.ROWBG, nil, "Spellname", "CENTER", false)
-  PlayerTable.SecondRow.SpellType = ZN.CreateGenericButton("SpellIdTitle", PlayerTable.SecondRow, "LEFT", PlayerTable.SecondRow.SpellName, "RIGHT", ZN.PlayerTableColumns.spelltype, ZN.PlayerTableRows.row, 0, 0, 0, 0 ,12, ZN.Colors.INACTIVE, ZN.Colors.ROWBG, nil, "Type", "CENTER", false)
-  PlayerTable.SecondRow.Aoe = ZN.CreateGenericButton("SpellIdTitle", PlayerTable.SecondRow, "LEFT", PlayerTable.SecondRow.SpellType, "RIGHT", ZN.PlayerTableColumns.aoe, ZN.PlayerTableRows.row, 0, 0, 0, 0 ,12, ZN.Colors.INACTIVE, ZN.Colors.ROWBG, nil, "AoE", "CENTER", false)
-  PlayerTable.SecondRow.Station = ZN.CreateGenericButton("SpellIdTitle", PlayerTable.SecondRow, "LEFT", PlayerTable.SecondRow.Aoe, "RIGHT", ZN.PlayerTableColumns.station, ZN.PlayerTableRows.row, 0, 0, 0, 0 ,12, ZN.Colors.INACTIVE, ZN.Colors.ROWBG, nil, "Station", "CENTER", false)
-  PlayerTable.SecondRow.SpellCd = ZN.CreateGenericButton("SpellIdTitle", PlayerTable.SecondRow, "LEFT", PlayerTable.SecondRow.Station, "RIGHT", ZN.PlayerTableColumns.spellcd, ZN.PlayerTableRows.row, 0, 0, 0, 0 ,12, ZN.Colors.INACTIVE, ZN.Colors.ROWBG, nil, "CD", "CENTER", false)
-  PlayerTable.SecondRow.SpellRating = ZN.CreateGenericButton("SpellIdTitle", PlayerTable.SecondRow, "LEFT", PlayerTable.SecondRow.SpellCd, "RIGHT", ZN.PlayerTableColumns.spellrating, ZN.PlayerTableRows.row, 0, 0, 0, 0 ,12, ZN.Colors.INACTIVE, ZN.Colors.ROWBG, nil, "Rating", "CENTER", false)
-  PlayerTable.SecondRow.Delete = ZN.CreateGenericButton("DeleteTitle", PlayerTable.SecondRow, "LEFT", PlayerTable.SecondRow.SpellRating, "RIGHT", ZN.PlayerTableColumns.delete, ZN.PlayerTableRows.row, 0, 0, 0, 0 ,12, ZN.Colors.INACTIVE, ZN.Colors.ROWBG, nil, "Delete", "CENTER", false)
 
-  -- TEST
+  local scrollHeight = ZN.PlayerTableRows.title + (ZN.PlayerTableRows.row+ZN.PlayerTableRows.rowgap)*#ZNotes.PlayerSpells
+  PlayerTable.scrollChild:SetHeight(scrollHeight)
+
+  local anchor=PlayerTable.TitleRow
+
+  for i=1, #ZNotes.PlayerSpells do
+
+    local newRow = CreateContentRow(i, ZNotes.PlayerSpells[i], anchor)
+    anchor = newRow
+  end
   
-  PlayerTable.FirstRow.Class:SetScript("OnClick", function(self) ZN:CreateDropdown(self, ZN.PlayerClassesColored, ZN.PlayerClassesColoredOrder, ZN.PlayerTableColumns.class, ZN.Colors.SBButtonBG, "CENTER",0) end)
-  PlayerTable.FirstRow.SpellType:SetScript("OnClick", function(self) ZN:CreateDropdown(self, ZN.Types, ZN.TypesOrder, ZN.PlayerTableColumns.spelltype, ZN.Colors.SBButtonBG, "CENTER", 0) end)
 end

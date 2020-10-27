@@ -5,7 +5,7 @@ ZNSidebarFrame.Subframes.Home.ClassSelectButton = ZN.CreateGenericButton("ZNClas
 ZNSidebarFrame.Subframes.Home.ShowNoteInEditorButton = ZN.CreateGenericButton("ShowNoteInEditorButton", ZNSidebarFrame.Subframes.Home, "BOTTOMLEFT", ZNSidebarFrame.Subframes.Home, "BOTTOMLEFT", 240, 30, 0, 70,0,0, 12, ZN.Colors.ACTIVE, ZN.Colors.SBButtonBG, nil, "Show Note", "CENTER",true )
 ZNSidebarFrame.Subframes.Home.SendToExRTButton = ZN.CreateGenericButton("SendToExRTButton", ZNSidebarFrame.Subframes.Home, "TOPLEFT", ZNSidebarFrame.Subframes.Home.ShowNoteInEditorButton, "BOTTOMLEFT", 240, 30, 0, 70,0,0, 12, ZN.Colors.ACTIVE, ZN.Colors.SBButtonBG, nil, "Send Note to ExRT", "CENTER",true )
 -- Home Sidebar Functions
-ZNSidebarFrame.Subframes.Home.ClassSelectButton:SetScript("OnClick", function(self) ZN:CreateDropdown(self, ZN.DropdownFake, ZN.DropdownFakeOrder, 240, ZN.Colors.BG, "LEFT", 10) end)
+ZNSidebarFrame.Subframes.Home.ClassSelectButton:SetScript("OnClick", function(self) ZN:CreateDropdown(self, ZN.PlayerClassesColored, ZN.PlayerClassesColoredOrder, 240, ZN.Colors.BG, "LEFT", 10) end)
 ZNSidebarFrame.Subframes.Home.SendToExRTButton:SetScript("OnClick", function(self) ZN:SendToExRT("Send to ExRT Button") end)
 ZNSidebarFrame.Subframes.Home.ShowNoteInEditorButton:SetScript("OnClick", function(self) ZN:ShowNoteInEditor("Show Note Button") end)
 
