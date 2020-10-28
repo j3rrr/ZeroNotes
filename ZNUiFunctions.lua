@@ -54,6 +54,9 @@ function ZN:ClickImpExp(ZNHeaderFrame, ZNSidebarFrame, ZNBodyFrame)
 	ZNSidebarFrame.Subframes["ImpExp"].visible=true
 	ZNSidebarFrame.btnCollapseSidebar:SetShown(false)
 	ZN:ClickCollapse(nil, ZNHeaderFrame, ZNSidebarFrame, false, true)
+	ImpExpContent.PlayerDbSubframe:Hide()
+	ImpExpContent.BossTemplateSubframe:Hide()
+	ImpExpContent.WeakaurasSubframe:Hide()
 end
 
 function ZN:ClickBoss(ZNHeaderFrame, ZNSidebarFrame, ZNBodyFrame)
@@ -147,6 +150,25 @@ function ZN:ClickCollapse(ZNFrame, ZNHeaderFrame, ZNSidebarFrame, collapse, expa
 			end
 		end
 
+	end
+end
+
+function ZN:ToggleImpExpView(frameToShow)
+	if frameToShow == "ImpExpContent.PlayerDbSubframe" then
+		--ImpExpContent.PlayerDbSubframe:Show()
+		ImpExpContent.PlayerDbSubframe:SetShown(not ImpExpContent.PlayerDbSubframe:IsShown());
+		ImpExpContent.BossTemplateSubframe:Hide()
+		ImpExpContent.WeakaurasSubframe:Hide()
+	elseif frameToShow == "ImpExpContent.BossTemplateSubframe" then
+		ImpExpContent.PlayerDbSubframe:Hide()
+		ImpExpContent.BossTemplateSubframe:SetShown(not ImpExpContent.BossTemplateSubframe:IsShown());
+		--ImpExpContent.BossTemplateSubframe:Show()
+		ImpExpContent.WeakaurasSubframe:Hide()
+	elseif frameToShow == "ImpExpContent.WeakaurasSubframe" then
+		ImpExpContent.PlayerDbSubframe:Hide()
+		ImpExpContent.BossTemplateSubframe:Hide()
+		ImpExpContent.WeakaurasSubframe:SetShown(not ImpExpContent.WeakaurasSubframe:IsShown());
+		--ImpExpContent.WeakaurasSubframe:Show()
 	end
 end
 

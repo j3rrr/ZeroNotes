@@ -1,7 +1,31 @@
 local _, ZN, L = ...
 
 function ZN:showPreview(arr, parent)
-  parent.Text:SetText(ZN:printPreviewNote(arr))
+  local anchor = parent
+  local height = 0
+  local anchorPoint = "TOPLEFT"
+  local yOffset = 0
+  if not parent.Text then
+    parent.Text = {}
+  end
+  if #parent.Text > #arr then
+    for i = #arr+1, #parent.Text do
+      parent.Text[i]:Hide()
+    end    
+  end
+  for i = 1, #arr do
+    if parent.Text[i] then
+      parent.Text[i]:SetText(arr[i])
+    else
+      parent.Text[i] = ZN.CreateText(BossSidebar.TemplatePreviewFrame.Scroll.scrollChild, "TOPLEFT", anchor, anchorPoint, 240, 0, 0, yOffset, "Interface\\AddOns\\ZeroNotes\\Media\\Font\\ZNVers.ttf", 12, ZN.Colors.ACTIVE, arr[i], "LEFT", "TOP")
+    end
+    parent.Text[i]:Show(true)
+    anchor = parent.Text[i]
+    anchorPoint = "BOTTOMLEFT"
+    yOffset = -12
+  end
+  
+  
 end
 
 function ZN:createPreviewTemplateTable(arr)
@@ -93,7 +117,9 @@ function ZN:printPreviewNote(arr)
     return
   end
 
-  local notePreview = ""
+  local notePreview = {}
+  notePreview[1] = ""
+  local y = 1
 
   for i = 1, table.getn(rawNoteData["lines"]) do
     if rawNoteData["lines"][i]["trenner"] then
@@ -116,7 +142,12 @@ function ZN:printPreviewNote(arr)
         raidicon = CreateTextureMarkup(ZN.previewIconsList[8], 0, 0, 0, 0, 0, 0, 0, 0, 0, -12)
       end
       local convertedTime = ZN:SecondsToClock(rawNoteData["lines"][i]["time"])
-      notePreview = notePreview.."|cfffec1c0"..convertedTime.."|r "..raidicon.." |cffff00ff"..rawNoteData["lines"][i]["text"].."|r "..raidicon.."\n"
+      local tmpStrDiv = "|cfffec1c0"..convertedTime.."|r "..raidicon.." |cffff00ff"..rawNoteData["lines"][i]["text"].."|r "..raidicon.."\n"
+      if string.len(notePreview[y])+string.len(tmpStrDiv) > 3500 then 
+        y = y + 1
+        notePreview[y] = ""
+      end
+      notePreview[y] = notePreview[y]..tmpStrDiv
       --goto continue
     else
       local convertedTime = ZN:SecondsToClock(rawNoteData["lines"][i]["time"])
@@ -140,12 +171,17 @@ function ZN:printPreviewNote(arr)
       for m = 1, imunNeeds do
         imunString = imunString..imunIcon.." "
       end
-      notePreview = notePreview.."|cfffec1c0"..convertedTime.."|r "..(spellIcon or "|TInterface\\Icons\\INV_MISC_QUESTIONMARK:12|t").." "..rawNoteData["lines"][i]["bossSpellName"].." "..healString..utilString..imunString.."\n"
+      local tmpStr = "|cfffec1c0"..convertedTime.."|r "..(spellIcon or "|TInterface\\Icons\\INV_MISC_QUESTIONMARK:12|t").." "..rawNoteData["lines"][i]["bossSpellName"].." "..healString..utilString..imunString.."\n"
+      if string.len(notePreview[y])+string.len(tmpStr) > 3500 then 
+        y = y + 1
+        notePreview[y] = ""
+      end
+      notePreview[y] = notePreview[y]..tmpStr
     end
 
   end
-  local doubleNote = notePreview
-  doubleNote = doubleNote .. notePreview
+  
+  -- print(string.len(notePreview..notePreview2))
   return notePreview
 
 end

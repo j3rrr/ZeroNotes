@@ -79,7 +79,7 @@ function ZN.createSubFrame(name, parent, width, height, color, a, anchor, strata
 end
 
 
-function ZN.createScrollFrame(name, parent, width, height, color, a, anchor,strata,  hide, noMOuseDown, scrollColor, scrollHeigth)
+function ZN.createScrollFrame(name, parent, width, height, color, a, anchor,strata,  hide, noMOuseDown, scrollColor)
 	local NewFrame = CreateFrame('ScrollFrame', name, parent, "UIPanelScrollFrameTemplate,BackdropTemplate")
 	--NewFrame:SetClipsChildren(true)
 	NewFrame:SetFrameStrata(strata)
@@ -111,7 +111,8 @@ function ZN.createScrollFrame(name, parent, width, height, color, a, anchor,stra
 		scrollButton:SetColorTexture(tonumber("0x"..scrollColor:sub(1,2))/255, tonumber("0x"..scrollColor:sub(3,4))/255, tonumber("0x"..scrollColor:sub(5,6))/255, a)
 	end
 	NewFrame.scrollChild = CreateFrame("Frame", name.."ScrollChild", NewFrame);
-	NewFrame.scrollChild:SetSize(width, scrollHeight and scrollHeight or 1000);
+	NewFrame.scrollChild:SetSize(width, NewFrame:GetHeight())
+	--NewFrame.scrollChild:SetSize(width, scrollHeight and scrollHeight or 1000);
 	NewFrame.scrollChild:SetFrameStrata(strata)
 	NewFrame:SetScrollChild(NewFrame.scrollChild);
 	if not noMouseDown then
@@ -134,6 +135,7 @@ end
 
 function ZN.CreateText(parent, point, anchorFrame, anchorPoint, width, height, xOffset, yOffset, font, fontSize, color, text, justifyH, justifyV, spacing)
 		local newText = parent:CreateFontString()
+		newText.Text = text
 		newText:SetPoint(point, anchorFrame, anchorPoint, xOffset, yOffset)
 		newText:SetSize(width, height)
 		newText:SetFont(font, fontSize)
@@ -330,6 +332,85 @@ function ZN.SingleLineEditBox(name, parent, point, anchorFrame, anchorPoint, wid
 
 	return editbox
 end
+
+function ZN.MultiLineEditBox(name, parent, point, anchorFrame, anchorPoint, width, height, xOffset, yOffset, fontxOffset, fontyOffset ,fontSize, fontcolor, bgcolor, label, setText, setTextTextAlign)
+	local s = CreateFrame("ScrollFrame", name, parent, "UIPanelScrollFrameTemplate,BackdropTemplate") -- or you actual parent instead
+	s:SetSize(width,height)
+	s:SetPoint(point, anchorFrame, anchorPoint, xOffset, yOffset);
+	--s:SetPoint(anchorPoint, parent, anchorPoint)
+
+	s.background = s:CreateTexture(nil, 'BACKGROUND')
+	s.background:SetAllPoints(s)
+	s.background:SetColorTexture(tonumber("0x"..bgcolor:sub(1,2))/255, tonumber("0x"..bgcolor:sub(3,4))/255, tonumber("0x"..bgcolor:sub(5,6))/255, 1)
+	
+	s:SetBackdrop({bgFile = "Interface/Tooltips/UI-Tooltip-Background", 
+		edgeFile = [[Interface\Buttons\WHITE8x8]],
+    edgeSize = 1,
+		-- tile = true, tileSize = 16, edgeSize = 16, 
+		-- insets = { left = 4, right = 4, top = 4, bottom = 4 	}
+	});
+	s:SetBackdropColor(tonumber("0x"..bgcolor:sub(1,2))/255, tonumber("0x"..bgcolor:sub(3,4))/255, tonumber("0x"..bgcolor:sub(5,6))/255, 1);
+	s:SetBackdropBorderColor(tonumber("0x"..ZN.Colors.INACTIVE:sub(1,2))/255, tonumber("0x"..ZN.Colors.INACTIVE:sub(3,4))/255, tonumber("0x"..ZN.Colors.INACTIVE:sub(5,6))/255, 1);
+	
+	s.ScrollBar:ClearAllPoints();
+	s.ScrollBar:SetPoint("TOPRIGHT", s, "TOPRIGHT", 0, -5);
+	s.ScrollBar:SetPoint("BOTTOMRIGHT", s, "BOTTOMRIGHT", 0, 5);
+	s.ScrollBar.ScrollUpButton:SetNormalTexture(nil)
+	s.ScrollBar.ScrollUpButton:SetDisabledTexture(nil)
+	s.ScrollBar.ScrollUpButton:SetHeight(0)
+	s.ScrollBar.ScrollDownButton:SetNormalTexture(nil)
+	s.ScrollBar.ScrollDownButton:SetDisabledTexture(nil)
+	s.ScrollBar.ScrollDownButton:SetHeight(0)
+	s.ScrollBar:SetWidth(10)
+
+	local scrollButton = _G[name..'ScrollBarThumbTexture']
+	scrollButton:SetHeight(40)
+	scrollButton:SetWidth(3)
+	scrollButton:SetColorTexture(tonumber("0x"..ZN.Colors.INACTIVE:sub(1,2))/255, tonumber("0x"..ZN.Colors.INACTIVE:sub(3,4))/255, tonumber("0x"..ZN.Colors.INACTIVE:sub(5,6))/255, a)
+
+	local e = CreateFrame("EditBox", nil, s)
+	s.editbox = e
+	e:SetMultiLine(true)
+	e:SetFont("Interface\\AddOns\\ZeroNotes\\Media\\Font\\ZNReg.ttf", fontSize)
+	e:SetWidth(width)
+	s:SetScrollChild(e)
+	--- demo multi line text
+	e:SetText(setText)
+	e:SetTextInsets(5, 15, 5, 5)
+	e:HighlightText(false) -- select all (if to be used for copy paste)
+	e:SetAutoFocus(false)
+	e.doOnUpdate = false
+	e.OnUpdate = nil
+	
+	e:SetScript("OnEnterPressed", function(self)
+		self.oldText = self:GetText()
+		if self.doOnUpdate then
+			self.OnUpdate(self.tableType,self.Row,self.Column, self:GetText())
+		end
+		self:ClearFocus()		
+	end)
+	e:SetScript("OnEscapePressed", function(self)
+		self:ClearFocus()
+		self:SetText(self.oldText)
+	end)
+	e:SetScript("OnEditFocusGained", function(self)
+		self.oldText = self:GetText()
+		self:SetTextColor(tonumber("0x"..ZN.Colors.ACTIVE:sub(1,2))/255, tonumber("0x"..ZN.Colors.ACTIVE:sub(3,4))/255, tonumber("0x"..ZN.Colors.ACTIVE:sub(5,6))/255, 1);
+	end)
+	e:SetScript("OnEditFocusLost", function(self)
+		self:ClearFocus()
+		self:SetText(self.oldText)
+		self:SetTextColor(tonumber("0x"..fontcolor:sub(1,2))/255, tonumber("0x"..fontcolor:sub(3,4))/255, tonumber("0x"..fontcolor:sub(5,6))/255, 1);
+	end)
+
+	s:SetScript("OnMouseDown", function(self, button)
+		if button == "LeftButton" then
+			e:SetFocus()
+		end
+	end)
+
+	return s
+end
 -- Templates End
 --##############################################################################
 
@@ -372,8 +453,8 @@ ZNSidebarFrame.btnCollapseSidebar:SetScript("OnClick", function(self) ZN:ClickCo
 --##############################################################################
 -- Body
 ZNBodyFrame.Subframes = {}
-ZNBodyFrame.Subframes.Home = ZN.createSubFrame("ZNBodyHomeContent", ZNBodyFrame, 640, 540, nil, 1, "RIGHT","HIGH", true, -30, 0)
-ZNBodyFrame.Subframes.ImpExp = ZN.createSubFrame("ZNBodyImpExpContent", ZNBodyFrame, 680, 540, nil, 1, "RIGHT","HIGH", true, -10, 0)
+ZNBodyFrame.Subframes.Home = ZN.createSubFrame("ZNBodyHomeContent", ZNBodyFrame, 640, 530, nil, 1, "RIGHT","HIGH", true, -30, 0)
+ZNBodyFrame.Subframes.ImpExp = ZN.createSubFrame("ZNBodyImpExpContent", ZNBodyFrame, 680, 530, nil, 1, "RIGHT","HIGH", true, -10, 0)
 ZNBodyFrame.Subframes.Boss = ZN.createScrollFrame("ZNBodyBossContent", ZNBodyFrame, 930, 530, nil, 1, "TOP","HIGH", true)
 ZNBodyFrame.Subframes.Player = ZN.createScrollFrame("ZNBodyPlayerContent", ZNBodyFrame, 930, 530, nil, 1, "TOP","HIGH", true)
 -- Frame Stuff End
