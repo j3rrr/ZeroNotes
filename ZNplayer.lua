@@ -424,7 +424,7 @@ function ZN:BuildPlayerSortArray ()
 end
 
 function ZN:ReloadPlayerTable()
-  if not (#ZN.PlayerRows > 0) then return end
+  --if not (#ZN.PlayerRows > 0) then return end
   local PlayerTable = ZNBodyFrame.Subframes.Player
   ZN:BuildPlayerFilterArray()
   ZN:BuildPlayerSortArray()
@@ -439,8 +439,11 @@ function ZN:ReloadPlayerTable()
   local anchor=PlayerTable.TitleRow
   
   for i=1, #ZN.PlayerSortArray do
-
-    UpdateContentRow(ZN.PlayerFilterArray[ZN.PlayerSortArray[i]], ZNotes.PlayerSpells[ZN.PlayerFilterArray[ZN.PlayerSortArray[i]]], anchor, ZN.PlayerRows[i])
+    if i >#ZN.PlayerRows then
+      ZN.PlayerRows[i] = CreateContentRow(ZN.PlayerFilterArray[ZN.PlayerSortArray[i]], ZNotes.PlayerSpells[ZN.PlayerFilterArray[ZN.PlayerSortArray[i]]], anchor)
+    else 
+      UpdateContentRow(ZN.PlayerFilterArray[ZN.PlayerSortArray[i]], ZNotes.PlayerSpells[ZN.PlayerFilterArray[ZN.PlayerSortArray[i]]], anchor, ZN.PlayerRows[i])
+    end
     ZN.PlayerRows[i]:SetShown(true)
     anchor = ZN.PlayerRows[i]
   end  
