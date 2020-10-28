@@ -1,5 +1,9 @@
 local _, ZN, L = ...
 
+function ZN:Print(msg)
+	print("|cff00ffffZero|rNotes: |cffff7e40"..msg.."|r")
+end
+
 function ZN:Toggle(self)
 	ZNFrame:SetShown(not ZNFrame:IsShown());
 end
@@ -172,12 +176,12 @@ function ZN:ToggleImpExpView(frameToShow)
 	end
 end
 
-function ZN:CreateDropdown(parentObj, list, order, width, dropDownBgColor, buttonAlign, buttonTextXOffset, hoverColor)
+function ZN:CreateDropdown(parentObj, list, order, width, dropDownBgColor, buttonAlign, buttonTextXOffset, hoverColor, strata)
 
 	if not parentObj.dropdownInit then
 		parentObj.dropdownInit = true
 		local parentName = parentObj.name
-		local dropdown = ZN.DropdownList(parentName.."Dropdown", parentObj.parent, "TOPLEFT", parentObj, "BOTTOMLEFT" , width, 30, dropDownBgColor, 1, "CENTER", true, #order)
+		local dropdown = ZN.DropdownList(parentName.."Dropdown", parentObj.parent, "TOPLEFT", parentObj, "BOTTOMLEFT" , width, 30, dropDownBgColor, 1, "CENTER", true, #order, strata)
 		parentObj.dropdown = dropdown
 		
 		for i = 1, #order do
