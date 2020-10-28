@@ -78,7 +78,6 @@ function ZN.createSubFrame(name, parent, width, height, color, a, anchor, strata
 	return NewFrame
 end
 
-
 function ZN.createScrollFrame(name, parent, width, height, color, a, anchor,strata,  hide, noMOuseDown, scrollColor)
 	local NewFrame = CreateFrame('ScrollFrame', name, parent, "UIPanelScrollFrameTemplate,BackdropTemplate")
 	--NewFrame:SetClipsChildren(true)
@@ -245,9 +244,9 @@ function ZN.CreateGenericButton(name, parent, point, anchorFrame, anchorPoint, w
 	return btn
 end
 
-function ZN.DropdownList(name, parent, point, anchorFrame, anchorPoint, width, height, color, a, anchor, hide, contents)
+function ZN.DropdownList(name, parent, point, anchorFrame, anchorPoint, width, height, color, a, anchor, hide, contents, strata)
 	local Dropdown = CreateFrame('FRAME', name, parent)
-	Dropdown:SetFrameStrata("DIALOG")
+	Dropdown:SetFrameStrata(strata and strata or "DIALOG")
 	Dropdown:SetWidth(width)
 	Dropdown:SetHeight(height*contents)
 	Dropdown:SetPoint(point, anchorFrame, anchorPoint)
@@ -298,7 +297,7 @@ function ZN.SingleLineEditBox(name, parent, point, anchorFrame, anchorPoint, wid
 	editbox:SetText(setText)
 	editbox:SetFont("Interface\\AddOns\\ZeroNotes\\Media\\Font\\ZNReg.ttf", fontSize)
 	editbox:SetTextColor(tonumber("0x"..fontcolor:sub(1,2))/255, tonumber("0x"..fontcolor:sub(3,4))/255, tonumber("0x"..fontcolor:sub(5,6))/255, 1);
-	--editbox:SetTextInsets(fontxOffset, fontxOffset, 0, 0)
+	editbox:SetTextInsets(fontxOffset, fontxOffset, 0, 0)
 	--editbox:HighlightText()
 	editbox:SetAutoFocus(false)
 	editbox:SetJustifyH(setTextTextAlign)
@@ -374,13 +373,16 @@ function ZN.MultiLineEditBox(name, parent, point, anchorFrame, anchorPoint, widt
 	e:SetFont("Interface\\AddOns\\ZeroNotes\\Media\\Font\\ZNReg.ttf", fontSize)
 	e:SetWidth(width)
 	s:SetScrollChild(e)
-	--- demo multi line text
 	e:SetText(setText)
-	e:SetTextInsets(5, 15, 5, 5)
-	e:HighlightText(false) -- select all (if to be used for copy paste)
+	e:SetSpacing(4)
+	e:SetTextInsets(5, 15, 5, 15)
+	e:HighlightText(false) 
 	e:SetAutoFocus(false)
 	e.doOnUpdate = false
 	e.OnUpdate = nil
+	
+	s.child = s:GetScrollChild()
+	s.child:SetHeight(height-10)
 	
 	e:SetScript("OnEnterPressed", function(self)
 		self.oldText = self:GetText()
@@ -399,7 +401,7 @@ function ZN.MultiLineEditBox(name, parent, point, anchorFrame, anchorPoint, widt
 	end)
 	e:SetScript("OnEditFocusLost", function(self)
 		self:ClearFocus()
-		self:SetText(self.oldText)
+		
 		self:SetTextColor(tonumber("0x"..fontcolor:sub(1,2))/255, tonumber("0x"..fontcolor:sub(3,4))/255, tonumber("0x"..fontcolor:sub(5,6))/255, 1);
 	end)
 
