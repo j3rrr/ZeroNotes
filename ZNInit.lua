@@ -158,8 +158,7 @@ function ZN.initMinimapButton()
       }
 end
 
-function ZN.initPlayerSpells()
-ZNotes.PlayerSpells = ZNotes.PlayerSpells or {
+ZN.DefaultPlayerSpells={
   {
     ["type"] = "heal",
     ["id"] = 81782,
@@ -533,6 +532,10 @@ ZNotes.PlayerSpells = ZNotes.PlayerSpells or {
     ["name"] = "amz",
   }, -- [33]
 }
+
+function ZN.initPlayerSpells()
+ZNotes.PlayerSpells = ZNotes.PlayerSpells or ZN.DefaultPlayerSpells
+
 end
 
 function ZN.initBossTemplates()

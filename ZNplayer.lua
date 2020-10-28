@@ -248,7 +248,7 @@ local function CreateSingleLIneEditBox(name, parent, point, anchor, anchorPoint,
   tb.OnUpdate=function(_, row, column, newvalue)
     ZNotes.PlayerSpells[tb.Row][tb.Column]=newvalue
     if tb.Column=="id" then
-      tb.refersTo:SetText((GetSpellInfo(newvalue) and GetSpellInfo(newvalue) or ""):upper())
+      tb.refersTo:SetText((GetSpellInfo(newvalue) and GetSpellInfo(newvalue) or "|cffff3f40Invalid Spell ID|r"):upper())
       ZNotes.PlayerSpells[tb.Row]["name"]=GetSpellInfo(newvalue)
     end
   end
@@ -297,7 +297,7 @@ local function CreateContentRow(PlayerSpellID, PlayerSpell, AnchorFrame)
   ContentRow.Role = CreateGenericButton ("Role"..PlayerSpellID, ContentRow, "LEFT", ContentRow, "LEFT", "role", ZN.ColoredRoles[PlayerSpell.role],PlayerSpellID)
   ContentRow.Class = CreateGenericButton ("Class"..PlayerSpellID, ContentRow, "LEFT", ContentRow.Role, "RIGHT", "class", ZN.PlayerClassesColored[PlayerSpell.class],PlayerSpellID)
   ContentRow.SpellId = CreateSingleLIneEditBox("Spellid"..PlayerSpellID, ContentRow, "LEFT", ContentRow.Class, "RIGHT", "spellid", PlayerSpell.id,0,PlayerSpellID)
-  ContentRow.SpellName = CreateText(ContentRow, "LEFT", ContentRow.SpellId, "RIGHT", "spellname", (GetSpellInfo(PlayerSpell.id) and GetSpellInfo(PlayerSpell.id) or ""):upper())
+  ContentRow.SpellName = CreateText(ContentRow, "LEFT", ContentRow.SpellId, "RIGHT", "spellname", (GetSpellInfo(PlayerSpell.id) and GetSpellInfo(PlayerSpell.id) or "|cffff3f40Invalid Spell ID|r"):upper())
   ContentRow.SpellType = CreateGenericButton ("Type"..PlayerSpellID, ContentRow, "LEFT", ContentRow.SpellName, "RIGHT", "spelltype", ZN.Types[PlayerSpell.type],PlayerSpellID)
   ContentRow.Aoe = CreateCheckBox(ContentRow, "LEFT", ContentRow.SpellType, "RIGHT", "aoe", PlayerSpellID, PlayerSpell.aoe)
   ContentRow.Station = CreateCheckBox(ContentRow, "LEFT", ContentRow.Aoe, "RIGHT", "station", PlayerSpellID, PlayerSpell.station)
@@ -336,7 +336,7 @@ local function UpdateContentRow(PlayerSpellID, PlayerSpell, AnchorFrame,ContentR
   ContentRow.Class.ZNText:SetText(ZN.PlayerClassesColored[PlayerSpell.class]:upper())
   ContentRow.SpellId.Row = PlayerSpellID
   ContentRow.SpellId:SetText(PlayerSpell.id)
-  ContentRow.SpellName:SetText((GetSpellInfo(PlayerSpell.id) and GetSpellInfo(PlayerSpell.id) or ""):upper())
+  ContentRow.SpellName:SetText((GetSpellInfo(PlayerSpell.id) and GetSpellInfo(PlayerSpell.id) or "|cffff3f40Invalid Spell ID|r"):upper())
   ContentRow.SpellType.Row = PlayerSpellID
   ContentRow.SpellType.ZNText:SetText(ZN.Types[PlayerSpell.type]:upper())
   ContentRow.Aoe.Row=PlayerSpellID
