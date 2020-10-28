@@ -9,8 +9,8 @@ ZNInit.lua
 embeds.xml
 ZNminimap.lua
 ZNUiFunctions.lua
-ZNplayer.lua
 ZNFrame.lua
+ZNplayer.lua
 ZNinfo.lua
 ZNstartUp.lua
 ZNpreviewFunctions.lua
