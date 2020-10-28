@@ -1,3 +1,4 @@
+-- Powershell dir -Recurse *.lua | Get-Content | Measure-Object -Line
 local _, ZN, L = ...
 
 ZN.Title="Zero Notes"
