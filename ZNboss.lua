@@ -13,4 +13,9 @@ BossSidebar.TemplatePreviewFrame.Scroll = ZN.createScrollFrame("ZNBossTemplatePr
 BossSidebar.TemplateSelectButton:SetScript("OnClick", function(self) ZN:CreateDropdown(self, ZN:getTableKeys(ZNotes.BossTemplates), ZN:getTableOrder(ZNotes.BossTemplates), 240, ZN.Colors.BG, "LEFT", 10, nil, "TOOLTIP") end)
 BossSidebar.TemplatePreviewButton:SetScript("OnClick", function(self) ZN:showPreview(ZN:printPreviewNote(selectedTemplate), BossSidebar.TemplatePreviewFrame.Scroll.scrollChild) end)
 
+-- Boss Sidebar Buttons
 
+
+BossSidebar.btnAdd = ZN.CreateIconButton(ZNSidebarFrame.btnCollapseSidebar, "BOTTOM", ZNSidebarFrame.btnCollapseSidebar, "TOP", 20, 20, 0, 20, "Interface\\AddOns\\ZeroNotes\\Media\\Texture\\plus_nobg", ZN.Colors.ACTIVE, ZN.Colors.INACTIVE, false)
+BossSidebar.btnUpdate = ZN.CreateIconButton(ZNSidebarFrame.btnCollapseSidebar, "BOTTOM", BossSidebar.btnAdd, "TOP", 20, 20, 0, 20, "Interface\\AddOns\\ZeroNotes\\Media\\Texture\\update", ZN.Colors.ACTIVE, ZN.Colors.INACTIVE, false)
+BossSidebar.btnReset = ZN.CreateIconButton(ZNSidebarFrame.btnCollapseSidebar, "BOTTOM", BossSidebar.btnUpdate, "TOP", 20, 20, 0, 20, "Interface\\AddOns\\ZeroNotes\\Media\\Texture\\reset", ZN.Colors.ACTIVE, ZN.Colors.INACTIVE, false)
