@@ -12,6 +12,12 @@ function ZN:ToggleInfo(self)
 	ZNInfoFrame:SetShown(not ZNInfoFrame:IsShown());
 end
 
+function ZN:ShowToolTip(text, color, parent)
+	GameTooltip:SetOwner(parent,"ANCHOR_TOP" , 0, 5)
+	GameTooltip:AddLine(text, tonumber("0x"..color:sub(1,2))/255, tonumber("0x"..color:sub(3,4))/255, tonumber("0x"..color:sub(5,6))/255, 1)
+	GameTooltip:Show()
+end
+
 function ZN:ClickHome(ZNHeaderFrame, ZNSidebarFrame, ZNBodyFrame)
 	ZNHeaderFrame.btnHome.active = true
 	ZNHeaderFrame.btnHome:GetNormalTexture():SetVertexColor(tonumber("0x"..ZN.Colors.ACTIVE:sub(1,2))/255, tonumber("0x"..ZN.Colors.ACTIVE:sub(3,4))/255, tonumber("0x"..ZN.Colors.ACTIVE:sub(5,6))/255, 1)

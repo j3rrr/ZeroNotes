@@ -146,7 +146,7 @@ function ZN.CreateText(parent, point, anchorFrame, anchorPoint, width, height, x
 		return newText
 end
 
-function ZN.CreateIconButton(parent, point, anchorFrame, anchorPoint, width, height, xOffset, yOffset, texture, activeColor, inactiveColor, active, highlightColor)
+function ZN.CreateIconButton(parent, point, anchorFrame, anchorPoint, width, height, xOffset, yOffset, texture, activeColor, inactiveColor, active, highlightColor, tooltip, tooltipText, tooltipColor)
 	local btn = CreateFrame("Button", nil, parent)
 	btn:SetPoint(point, anchorFrame, anchorPoint, xOffset, yOffset)
 	btn:SetSize(width, height)
@@ -177,6 +177,9 @@ function ZN.CreateIconButton(parent, point, anchorFrame, anchorPoint, width, hei
 				end
 			end
 			self:GetNormalTexture():SetVertexColor(tonumber("0x"..self.btnColor:sub(1,2))/255, tonumber("0x"..self.btnColor:sub(3,4))/255, tonumber("0x"..self.btnColor:sub(5,6))/255, 1)
+			if tooltip then 
+				ZN:ShowToolTip(tooltipText, tooltipColor, self)
+			end
 		end)
 		btn:SetScript('OnLeave', function(self)
 			self.btnColor = self.activeColor
@@ -184,6 +187,9 @@ function ZN.CreateIconButton(parent, point, anchorFrame, anchorPoint, width, hei
 				self.btnColor = self.inactiveColor
 			end
 			self:GetNormalTexture():SetVertexColor(tonumber("0x"..self.btnColor:sub(1,2))/255, tonumber("0x"..self.btnColor:sub(3,4))/255, tonumber("0x"..self.btnColor:sub(5,6))/255, 1)
+			if tooltip then
+				GameTooltip:Hide()
+			end
 		end)
 	end
 
@@ -413,6 +419,38 @@ function ZN.MultiLineEditBox(name, parent, point, anchorFrame, anchorPoint, widt
 
 	return s
 end
+
+-- function ZN.createToolTip(name, )
+-- 	local tt = CreateFrame('FRAME', name, UIParent)
+-- 	tt:SetFrameStrata(strata)
+-- 	tt:SetWidth(width)
+-- 	tt:SetHeight(height)
+-- 	tt:SetPoint('RIGHT', UIParent, 'CENTER',width/2)
+-- 	tt:EnableMouse(true)
+-- 	tt:SetMovable(true)
+-- 	tt:RegisterForDrag('LeftButton')
+-- 	tt:EnableKeyboard(true)
+-- 	tt:SetPropagateKeyboardInput(true)
+-- 	tt:SetClampedToScreen(true)
+-- 	--NewFrame:Hide()
+-- 	tt.updateDelay = 0
+-- 	tt.background = tt:CreateTexture(nil, 'BACKGROUND')
+-- 	tt.background:SetAllPoints(tt)
+-- 	tt.background:SetColorTexture(tonumber("0x"..color:sub(1,2))/255, tonumber("0x"..color:sub(3,4))/255, tonumber("0x"..color:sub(5,6))/255, a)
+-- 	tt:SetScript('OnDragStart', function(self)
+-- 		self:StartMoving()
+-- 		end)
+-- 	tt:SetScript('OnDragStop', function(self)
+-- 		self:StopMovingOrSizing()
+-- 		end)
+-- 	tt:SetScript('OnKeyDown', function(self, key)
+-- 		if key == 'ESCAPE' then
+-- 			self:SetPropagateKeyboardInput(false)
+-- 			self:Hide()
+-- 		end
+-- 	end)
+-- 	return tt
+-- end
 -- Templates End
 --##############################################################################
 
@@ -432,9 +470,9 @@ ZNHeaderFrame.Title = ZN.CreateText(ZNHeaderFrame, "LEFT", ZNHeaderFrame.btnLogo
 ZNHeaderFrame.Version = ZN.CreateText(ZNHeaderFrame, "BOTTOMLEFT", ZNHeaderFrame.Title, "BOTTOMRIGHT", 30, 20, 0, 0, "Interface\\AddOns\\ZeroNotes\\Media\\Font\\ZNVers.ttf", 12, ZN.Colors.INACTIVE, ZN.Version)
 ZNHeaderFrame.btnClose = ZN.CreateIconButton(ZNHeaderFrame, "RIGHT", ZNHeaderFrame, "RIGHT", 28, 28, -20, 0, "Interface\\AddOns\\ZeroNotes\\Media\\Texture\\x_big_active", ZN.Colors.ACTIVE, ZN.Colors.INACTIVE, false)
 ZNHeaderFrame.btnHome = ZN.CreateIconButton(ZNHeaderFrame, "RIGHT", ZNHeaderFrame.btnClose, "LEFT", 32, 32, -30, 0, "Interface\\AddOns\\ZeroNotes\\Media\\Texture\\home_active", ZN.Colors.ACTIVE, ZN.Colors.INACTIVE, false)
-ZNHeaderFrame.btnImpExp = ZN.CreateIconButton(ZNHeaderFrame, "RIGHT", ZNHeaderFrame.btnHome, "LEFT", 32, 32, -30, 0, "Interface\\AddOns\\ZeroNotes\\Media\\Texture\\impexp_active", ZN.Colors.ACTIVE, ZN.Colors.INACTIVE, false)
-ZNHeaderFrame.btnBoss = ZN.CreateIconButton(ZNHeaderFrame, "RIGHT", ZNHeaderFrame.btnImpExp, "LEFT", 32, 32, -30, 0, "Interface\\AddOns\\ZeroNotes\\Media\\Texture\\boss_active", ZN.Colors.ACTIVE, ZN.Colors.INACTIVE, false)
-ZNHeaderFrame.btnPlayer = ZN.CreateIconButton(ZNHeaderFrame, "RIGHT", ZNHeaderFrame.btnBoss, "LEFT", 32, 32, -30, 0, "Interface\\AddOns\\ZeroNotes\\Media\\Texture\\player_active", ZN.Colors.ACTIVE, ZN.Colors.INACTIVE, false)
+ZNHeaderFrame.btnImpExp = ZN.CreateIconButton(ZNHeaderFrame, "RIGHT", ZNHeaderFrame.btnHome, "LEFT", 32, 32, -30, 0, "Interface\\AddOns\\ZeroNotes\\Media\\Texture\\impexp_active", ZN.Colors.ACTIVE, ZN.Colors.INACTIVE, false, nil, true, "Import / Export", ZN.Colors.ACTIVE)
+ZNHeaderFrame.btnBoss = ZN.CreateIconButton(ZNHeaderFrame, "RIGHT", ZNHeaderFrame.btnImpExp, "LEFT", 32, 32, -30, 0, "Interface\\AddOns\\ZeroNotes\\Media\\Texture\\boss_active", ZN.Colors.ACTIVE, ZN.Colors.INACTIVE, false, nil, true, "Boss Template Editor", ZN.Colors.ACTIVE)
+ZNHeaderFrame.btnPlayer = ZN.CreateIconButton(ZNHeaderFrame, "RIGHT", ZNHeaderFrame.btnBoss, "LEFT", 32, 32, -30, 0, "Interface\\AddOns\\ZeroNotes\\Media\\Texture\\player_active", ZN.Colors.ACTIVE, ZN.Colors.INACTIVE, false, nil, true, "Player DB Editor", ZN.Colors.ACTIVE)
 -- Header Functions
 ZNHeaderFrame.btnLogo:SetScript("OnClick", function(self) ZN:ToggleInfo(self) end)
 ZNHeaderFrame.btnClose:SetScript("OnClick", function(self) ZN:Toggle(self) end)
