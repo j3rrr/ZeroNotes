@@ -40,7 +40,8 @@ ZN.Colors = {
 	["monk"]= "00ff96",
 	["paladin"]= "f58cba",
 	["priest"]= "ffffff",
-	["diszi"]= "ffffff",
+  ["diszi"]= "ffffff",
+  ["shadow"]= "ffffff",
 	["rogue"]= "fff569",
 	["shaman"]= "0070de",
 	["warlock"]= "9482c9",
@@ -111,8 +112,9 @@ ZN.PlayerClassesColored = {
   ["mage"]= "|cff"..ZN.Colors.mage.."Mage|r",
   ["monk"]= "|cff"..ZN.Colors.monk.."Monk|r",
   ["paladin"]= "|cff"..ZN.Colors.paladin.."Paladin|r",
-  ["priest"]= "|cff"..ZN.Colors.priest.."Priest|r",
-  ["diszi"]= "|cff"..ZN.Colors.priest.."Priest - Disc|r",
+  ["priest"]= "|cff"..ZN.Colors.priest.."Holy Priest|r",
+  ["diszi"]= "|cff"..ZN.Colors.priest.."Disc Priest|r",
+  ["shadow"]= "|cff"..ZN.Colors.priest.."Shadow Priest|r",
   ["rogue"]= "|cff"..ZN.Colors.rogue.."Rogue|r",
   ["shaman"]= "|cff"..ZN.Colors.shaman.."Shaman|r",
   ["warlock"]= "|cff"..ZN.Colors.warlock.."Warlock|r",
@@ -128,8 +130,9 @@ ZN.PlayerClassesColoredOrder = {
   "mage",
   "monk",
   "paladin",
-  "priest",
   "diszi",
+  "priest",
+  "shadow",
   "rogue",
   "shaman",
   "warlock",
@@ -534,7 +537,13 @@ ZN.DefaultPlayerSpells={
 }
 
 function ZN.initPlayerSpells()
-ZNotes.PlayerSpells = ZNotes.PlayerSpells or ZN.DefaultPlayerSpells
+  ZNotes.PlayerSpells={}
+  for i=1, #ZN.DefaultPlayerSpells do
+    ZNotes.PlayerSpells[i]={}
+    for k,v in pairs(ZN.DefaultPlayerSpells[i]) do
+      ZNotes.PlayerSpells[i][k]=v
+    end
+  end
 
 end
 

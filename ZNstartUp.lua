@@ -7,7 +7,9 @@ local function onUILoad(text)
     if ZNLoaded then
     ZNotes = ZNotes or {}
     ZN.initMinimapButton()
-    ZN.initPlayerSpells()
+    if not ZNotes.PlayerSpells then
+      ZN.initPlayerSpells()
+    end
     ZN.initBossTemplates()
     ZNEventHandler:Unregister('ADDON_LOADED', 'onUILoad')
     ZNEventHandler:Unregister('PLAYER_LOGIN', 'onUILoad')

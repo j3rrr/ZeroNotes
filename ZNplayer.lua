@@ -165,6 +165,7 @@ ZN.TextSortOrder = {
   ["monk"]= 8,
   ["paladin"]= 7,
   ["priest"]= 6,
+  ["shadow"]= 5.5,
   ["diszi"]= 5,
   ["rogue"]= 4,
   ["shaman"]= 3,
@@ -213,14 +214,39 @@ PlayerSidebar.SortSelectButton.doOnUpdate = true
 PlayerSidebar.SortSelectButton.OnUpdate = function(_,_,_,newValue) ZN.PlayerSort = newValue ZN:ReloadPlayerTable() end
 PlayerSidebar.SortSelectButton:SetScript("OnClick", function(self) ZN:CreateDropdown(self, ZN.PlayerSortSelect, ZN.PlayerSortOrder, 240, ZN.Colors.BG, "LEFT", 10) end)
 
-ZNSidebarFrame.btnReloadPlayer = ZN.CreateIconButton(ZNSidebarFrame, "BOTTOM", ZNSidebarFrame.btnCollapseSidebar, "TOP", 20, 20, 0, 20, "Interface\\AddOns\\ZeroNotes\\Media\\Texture\\square", ZN.Colors.ACTIVE, ZN.Colors.INACTIVE, false)
-ZNSidebarFrame.btnAddPlayer = ZN.CreateIconButton(ZNSidebarFrame, "BOTTOM", ZNSidebarFrame.btnReloadPlayer, "TOP", 20, 20, 0, 20, "Interface\\AddOns\\ZeroNotes\\Media\\Texture\\square", ZN.Colors.ACTIVE, ZN.Colors.INACTIVE, false)
+ZNSidebarFrame.btnResetPlayer = ZN.CreateIconButton(ZNSidebarFrame, "BOTTOM", ZNSidebarFrame.btnCollapseSidebar, "TOP", 20, 20, 0, 20, "Interface\\AddOns\\ZeroNotes\\Media\\Texture\\reset", ZN.Colors.ACTIVE, ZN.Colors.INACTIVE, false)
+ZNSidebarFrame.btnReloadPlayer = ZN.CreateIconButton(ZNSidebarFrame, "BOTTOM", ZNSidebarFrame.btnResetPlayer, "TOP", 20, 20, 0, 20, "Interface\\AddOns\\ZeroNotes\\Media\\Texture\\update", ZN.Colors.ACTIVE, ZN.Colors.INACTIVE, false)
+ZNSidebarFrame.btnAddPlayer = ZN.CreateIconButton(ZNSidebarFrame, "BOTTOM", ZNSidebarFrame.btnReloadPlayer, "TOP", 20, 20, 0, 20, "Interface\\AddOns\\ZeroNotes\\Media\\Texture\\plus_nobg", ZN.Colors.ACTIVE, ZN.Colors.INACTIVE, false)
 
 ZNSidebarFrame.btnReloadPlayer:SetShown(false)
+ZNSidebarFrame.btnResetPlayer:SetShown(false)
 ZNSidebarFrame.btnAddPlayer:SetShown(false)
 
 ZNSidebarFrame.btnReloadPlayer:SetScript("OnClick",function(self) ZN:ReloadPlayerTable() end)
 ZNSidebarFrame.btnAddPlayer:SetScript("OnClick",function(self) ZN:addNewPlayerSpell() end)
+
+ZN.PlayerResetConfirmFrame = ZN.createSubFrame("ZNPlayerResetConfirmFrame",ZNFrame, 300, 200, ZN.Colors.ROWBG, 1, 'CENTER', 'TOOLTIP', true)
+ZN.PlayerResetConfirmFrame.btnClose = ZN.CreateIconButton(ZN.PlayerResetConfirmFrame, "TOPRIGHT", ZN.PlayerResetConfirmFrame, "TOPRIGHT", 16, 16, -10, -10, "Interface\\AddOns\\ZeroNotes\\Media\\Texture\\x_big_active", ZN.Colors.ACTIVE, ZN.Colors.INACTIVE, false)
+ZN.PlayerResetConfirmFrame.Title = ZN.CreateText(ZN.PlayerResetConfirmFrame, "TOP", ZN.PlayerResetConfirmFrame, "TOP", 150, 30, 0, 0, "Interface\\AddOns\\ZeroNotes\\Media\\Font\\ZNReg.ttf", 14, ZN.Colors.ACTIVE, "RESET PLAYER DB")
+ZN.PlayerResetConfirmFrame.Message = ZN.CreateText(ZN.PlayerResetConfirmFrame, "TOP", ZN.PlayerResetConfirmFrame, "TOP", 260, 60, 0, -40, "Interface\\AddOns\\ZeroNotes\\Media\\Font\\ZNReg.ttf", 12, ZN.Colors.ACTIVE, "Reset will override your local Database\nAre you sure?", "CENTER")
+ZN.PlayerResetConfirmFrame.ConfirmButton = ZN.CreateGenericButton("ZNResetPlayerConfirmButton", ZN.PlayerResetConfirmFrame, "BOTTOMLEFT", ZN.PlayerResetConfirmFrame, "BOTTOMLEFT", 125, 30, 20, 20,0,0, 12, ZN.Colors.ACTIVE, ZN.Colors.SBButtonBG, nil, "Reset", "CENTER",true, ZN.Colors.HD )
+ZN.PlayerResetConfirmFrame.CancelButton = ZN.CreateGenericButton("ZNResetPlayerCancelButton", ZN.PlayerResetConfirmFrame, "BOTTOMRIGHT", ZN.PlayerResetConfirmFrame, "BOTTOMRIGHT", 125, 30, -20, 20,0,0, 12, ZN.Colors.ACTIVE, ZN.Colors.SBButtonBG, nil, "Cancel", "CENTER",true, ZN.Colors.HD )
+
+
+ZN.PlayerResetConfirmFrame.btnClose:SetScript("OnClick", function(self) ZN.PlayerResetConfirmFrame:Hide() end)
+ZN.PlayerResetConfirmFrame.CancelButton:SetScript("OnClick", function(self) ZN.PlayerResetConfirmFrame:Hide() end)
+
+ZN.PlayerResetConfirmFrame.ConfirmButton:SetScript("OnClick", function(self) 
+  ZN.initPlayerSpells()
+  ZN:ReloadPlayerTable()
+  ZN:Print("Player DB reset")
+  ZN.PlayerResetConfirmFrame:Hide()
+end)
+
+ZNSidebarFrame.btnResetPlayer:SetScript("OnClick", function(self) 
+  ZN.PlayerResetConfirmFrame:SetShown(not ZN.PlayerResetConfirmFrame:IsShown());
+end)
+
 --##############################################################################
 local function CreateTitleRow()
   local TitleRow = ZN.createSubFrame("ZNPlayerTitleRow", ZNBodyFrame.Subframes.PlayerHead, 930, ZN.PlayerTableRows.title, ZN.Colors.BG, 1, "TOP", "HIGH", false, -5,0)

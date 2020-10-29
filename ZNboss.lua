@@ -16,6 +16,6 @@ BossSidebar.TemplatePreviewButton:SetScript("OnClick", function(self) ZN:showPre
 -- Boss Sidebar Buttons
 
 
-BossSidebar.btnAdd = ZN.CreateIconButton(ZNSidebarFrame.btnCollapseSidebar, "BOTTOM", ZNSidebarFrame.btnCollapseSidebar, "TOP", 20, 20, 0, 20, "Interface\\AddOns\\ZeroNotes\\Media\\Texture\\plus_nobg", ZN.Colors.ACTIVE, ZN.Colors.INACTIVE, false)
-BossSidebar.btnUpdate = ZN.CreateIconButton(ZNSidebarFrame.btnCollapseSidebar, "BOTTOM", BossSidebar.btnAdd, "TOP", 20, 20, 0, 20, "Interface\\AddOns\\ZeroNotes\\Media\\Texture\\update", ZN.Colors.ACTIVE, ZN.Colors.INACTIVE, false)
-BossSidebar.btnReset = ZN.CreateIconButton(ZNSidebarFrame.btnCollapseSidebar, "BOTTOM", BossSidebar.btnUpdate, "TOP", 20, 20, 0, 20, "Interface\\AddOns\\ZeroNotes\\Media\\Texture\\reset", ZN.Colors.ACTIVE, ZN.Colors.INACTIVE, false)
+-- BossSidebar.btnAdd = ZN.CreateIconButton(ZNSidebarFrame.btnCollapseSidebar, "BOTTOM", ZNSidebarFrame.btnCollapseSidebar, "TOP", 20, 20, 0, 20, "Interface\\AddOns\\ZeroNotes\\Media\\Texture\\plus_nobg", ZN.Colors.ACTIVE, ZN.Colors.INACTIVE, false)
+-- BossSidebar.btnUpdate = ZN.CreateIconButton(ZNSidebarFrame.btnCollapseSidebar, "BOTTOM", BossSidebar.btnAdd, "TOP", 20, 20, 0, 20, "Interface\\AddOns\\ZeroNotes\\Media\\Texture\\update", ZN.Colors.ACTIVE, ZN.Colors.INACTIVE, false)
+-- BossSidebar.btnReset = ZN.CreateIconButton(ZNSidebarFrame.btnCollapseSidebar, "BOTTOM", BossSidebar.btnUpdate, "TOP", 20, 20, 0, 20, "Interface\\AddOns\\ZeroNotes\\Media\\Texture\\reset", ZN.Colors.ACTIVE, ZN.Colors.INACTIVE, false)
