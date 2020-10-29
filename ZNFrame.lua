@@ -314,10 +314,11 @@ function ZN.SingleLineEditBox(name, parent, point, anchorFrame, anchorPoint, wid
 
 	editbox:SetScript("OnEnterPressed", function(self)
 		self.oldText = self:GetText()
+		self:ClearFocus()
 		if self.doOnUpdate then
 			self.OnUpdate(self.tableType,self.Row,self.Column, self:GetText())
 		end
-		self:ClearFocus()		
+				
 	end)
 	editbox:SetScript("OnEscapePressed", function(self)
 		self:ClearFocus()
@@ -482,12 +483,12 @@ ZNHeaderFrame.btnBoss:SetScript("OnClick", function(self) ZN:ClickBoss(ZNHeaderF
 ZNHeaderFrame.btnPlayer:SetScript("OnClick", function(self) ZN:ClickPlayer(ZNHeaderFrame, ZNSidebarFrame, ZNBodyFrame) end)
 --##############################################################################
 -- Sidebar 
-ZNSidebarFrame.btnCollapseSidebar = ZN.CreateIconButton(ZNSidebarFrame, "BOTTOMRIGHT", ZNSidebarFrame, "BOTTOMRIGHT", 20, 20, -13, 15, "Interface\\AddOns\\ZeroNotes\\Media\\Texture\\arrow_left", ZN.Colors.ACTIVE, ZN.Colors.INACTIVE, false)
+ZNSidebarFrame.btnCollapseSidebar = ZN.CreateIconButton(ZNSidebarFrame, "BOTTOMRIGHT", ZNSidebarFrame, "BOTTOMRIGHT", 20, 20, -14, 14, "Interface\\AddOns\\ZeroNotes\\Media\\Texture\\arrow_left", ZN.Colors.ACTIVE, ZN.Colors.INACTIVE, false)
 ZNSidebarFrame.Subframes = {}
 ZNSidebarFrame.Subframes.Home = ZN.createSubFrame("ZNSideBarHomeContent", ZNSidebarFrame, 240, 540, nil, 1, "CENTER", "DIALOG",  true)
 ZNSidebarFrame.Subframes.ImpExp = ZN.createSubFrame("ZNSideBarImpExpContent", ZNSidebarFrame, 240, 540, nil, 1, "CENTER", "DIALOG", true)
 ZNSidebarFrame.Subframes.Boss = ZN.createSubFrame("ZNSideBarBossContent", ZNSidebarFrame, 240, 540, nil, 1, "CENTER", "DIALOG", true)
-ZNSidebarFrame.Subframes.Player = ZN.createSubFrame("ZNSideBarPlayerContent", ZNSidebarFrame, 240, 540, nil, 1, "CENTER","DIALOG", true)
+ZNSidebarFrame.Subframes.Player = ZN.createSubFrame("ZNSideBarPlayerContent", ZNSidebarFrame, 240, 500, nil, 1, "TOP","DIALOG", true)
 -- Sidebar Functions
 ZNSidebarFrame.btnCollapseSidebar:SetScript("OnClick", function(self) ZN:ClickCollapse(ZNFrame, ZNHeaderFrame, ZNSidebarFrame) end)
 --##############################################################################
@@ -496,7 +497,9 @@ ZNBodyFrame.Subframes = {}
 ZNBodyFrame.Subframes.Home = ZN.createSubFrame("ZNBodyHomeContent", ZNBodyFrame, 640, 530, nil, 1, "RIGHT","HIGH", true, -30, 0)
 ZNBodyFrame.Subframes.ImpExp = ZN.createSubFrame("ZNBodyImpExpContent", ZNBodyFrame, 680, 530, nil, 1, "RIGHT","HIGH", true, -10, 0)
 ZNBodyFrame.Subframes.Boss = ZN.createScrollFrame("ZNBodyBossContent", ZNBodyFrame, 930, 530, nil, 1, "TOP","HIGH", true)
-ZNBodyFrame.Subframes.Player = ZN.createScrollFrame("ZNBodyPlayerContent", ZNBodyFrame, 930, 530, nil, 1, "TOP","HIGH", true)
+ZNBodyFrame.Subframes.PlayerHead = ZN.createSubFrame("ZNBodyPlayerHead", ZNBodyFrame, 930, 30, nil, 1, "TOP","HIGH", true, 0, 0)
+ZNBodyFrame.Subframes.Player = ZN.createScrollFrame("ZNBodyPlayerContent", ZNBodyFrame, 930, 500, nil, 1, "TOP","HIGH", true)
+ZNBodyFrame.Subframes.Player:SetPoint("TOP", ZNBodyFrame.Subframes.PlayerHead,"BOTTOM")
 -- Frame Stuff End
 --##############################################################################
 

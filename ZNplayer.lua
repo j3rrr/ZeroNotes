@@ -165,6 +165,7 @@ ZN.TextSortOrder = {
   ["monk"]= 8,
   ["paladin"]= 7,
   ["priest"]= 6,
+  ["shadow"]= 5.5,
   ["diszi"]= 5,
   ["rogue"]= 4,
   ["shaman"]= 3,
@@ -213,9 +214,42 @@ PlayerSidebar.SortSelectButton.doOnUpdate = true
 PlayerSidebar.SortSelectButton.OnUpdate = function(_,_,_,newValue) ZN.PlayerSort = newValue ZN:ReloadPlayerTable() end
 PlayerSidebar.SortSelectButton:SetScript("OnClick", function(self) ZN:CreateDropdown(self, ZN.PlayerSortSelect, ZN.PlayerSortOrder, 240, ZN.Colors.BG, "LEFT", 10) end)
 
+ZNSidebarFrame.btnResetPlayer = ZN.CreateIconButton(ZNSidebarFrame, "BOTTOM", ZNSidebarFrame.btnCollapseSidebar, "TOP", 20, 20, 0, 20, "Interface\\AddOns\\ZeroNotes\\Media\\Texture\\reset", ZN.Colors.ACTIVE, ZN.Colors.INACTIVE, false)
+ZNSidebarFrame.btnReloadPlayer = ZN.CreateIconButton(ZNSidebarFrame, "BOTTOM", ZNSidebarFrame.btnResetPlayer, "TOP", 20, 20, 0, 20, "Interface\\AddOns\\ZeroNotes\\Media\\Texture\\update", ZN.Colors.ACTIVE, ZN.Colors.INACTIVE, false)
+ZNSidebarFrame.btnAddPlayer = ZN.CreateIconButton(ZNSidebarFrame, "BOTTOM", ZNSidebarFrame.btnReloadPlayer, "TOP", 20, 20, 0, 20, "Interface\\AddOns\\ZeroNotes\\Media\\Texture\\plus_nobg", ZN.Colors.ACTIVE, ZN.Colors.INACTIVE, false)
+
+ZNSidebarFrame.btnReloadPlayer:SetShown(false)
+ZNSidebarFrame.btnResetPlayer:SetShown(false)
+ZNSidebarFrame.btnAddPlayer:SetShown(false)
+
+ZNSidebarFrame.btnReloadPlayer:SetScript("OnClick",function(self) ZN:ReloadPlayerTable() end)
+ZNSidebarFrame.btnAddPlayer:SetScript("OnClick",function(self) ZN:addNewPlayerSpell() end)
+
+ZN.PlayerResetConfirmFrame = ZN.createSubFrame("ZNPlayerResetConfirmFrame",ZNFrame, 300, 200, ZN.Colors.ROWBG, 1, 'CENTER', 'TOOLTIP', true)
+ZN.PlayerResetConfirmFrame.btnClose = ZN.CreateIconButton(ZN.PlayerResetConfirmFrame, "TOPRIGHT", ZN.PlayerResetConfirmFrame, "TOPRIGHT", 16, 16, -10, -10, "Interface\\AddOns\\ZeroNotes\\Media\\Texture\\x_big_active", ZN.Colors.ACTIVE, ZN.Colors.INACTIVE, false)
+ZN.PlayerResetConfirmFrame.Title = ZN.CreateText(ZN.PlayerResetConfirmFrame, "TOP", ZN.PlayerResetConfirmFrame, "TOP", 150, 30, 0, 0, "Interface\\AddOns\\ZeroNotes\\Media\\Font\\ZNReg.ttf", 14, ZN.Colors.ACTIVE, "RESET PLAYER DB")
+ZN.PlayerResetConfirmFrame.Message = ZN.CreateText(ZN.PlayerResetConfirmFrame, "TOP", ZN.PlayerResetConfirmFrame, "TOP", 260, 60, 0, -40, "Interface\\AddOns\\ZeroNotes\\Media\\Font\\ZNReg.ttf", 12, ZN.Colors.ACTIVE, "Reset will override your local Database\nAre you sure?", "CENTER")
+ZN.PlayerResetConfirmFrame.ConfirmButton = ZN.CreateGenericButton("ZNResetPlayerConfirmButton", ZN.PlayerResetConfirmFrame, "BOTTOMLEFT", ZN.PlayerResetConfirmFrame, "BOTTOMLEFT", 125, 30, 20, 20,0,0, 12, ZN.Colors.ACTIVE, ZN.Colors.SBButtonBG, nil, "Reset", "CENTER",true, ZN.Colors.HD )
+ZN.PlayerResetConfirmFrame.CancelButton = ZN.CreateGenericButton("ZNResetPlayerCancelButton", ZN.PlayerResetConfirmFrame, "BOTTOMRIGHT", ZN.PlayerResetConfirmFrame, "BOTTOMRIGHT", 125, 30, -20, 20,0,0, 12, ZN.Colors.ACTIVE, ZN.Colors.SBButtonBG, nil, "Cancel", "CENTER",true, ZN.Colors.HD )
+
+
+ZN.PlayerResetConfirmFrame.btnClose:SetScript("OnClick", function(self) ZN.PlayerResetConfirmFrame:Hide() end)
+ZN.PlayerResetConfirmFrame.CancelButton:SetScript("OnClick", function(self) ZN.PlayerResetConfirmFrame:Hide() end)
+
+ZN.PlayerResetConfirmFrame.ConfirmButton:SetScript("OnClick", function(self) 
+  ZN.initPlayerSpells()
+  ZN:ReloadPlayerTable()
+  ZN:Print("Player DB reset")
+  ZN.PlayerResetConfirmFrame:Hide()
+end)
+
+ZNSidebarFrame.btnResetPlayer:SetScript("OnClick", function(self) 
+  ZN.PlayerResetConfirmFrame:SetShown(not ZN.PlayerResetConfirmFrame:IsShown());
+end)
+
 --##############################################################################
 local function CreateTitleRow()
-  local TitleRow = ZN.createSubFrame("ZNPlayerTitleRow", ZNBodyFrame.Subframes.Player.scrollChild, 930, ZN.PlayerTableRows.title, ZN.Colors.BG, 1, "TOP", "HIGH", false, -5,0)
+  local TitleRow = ZN.createSubFrame("ZNPlayerTitleRow", ZNBodyFrame.Subframes.PlayerHead, 930, ZN.PlayerTableRows.title, ZN.Colors.BG, 1, "TOP", "HIGH", false, -5,0)
   local anchor = TitleRow
   for i=1, #ZN.PlayerTableColumnHeaders do
     local header = ZN.PlayerTableColumnHeaders[i]
@@ -246,7 +280,13 @@ local function CreateSingleLIneEditBox(name, parent, point, anchor, anchorPoint,
   tb.Column = ZN.PlayerAttributeMapping[type]
   tb.refersTo=nil
   tb.OnUpdate=function(_, row, column, newvalue)
-    ZNotes.PlayerSpells[tb.Row][tb.Column]=newvalue
+    newvalue = tonumber(newvalue)
+    if newvalue == nil then
+      UIErrorsFrame:AddMessage("You need to enter a numeric value", 0.8, 0.07, 0.2, 5.0)
+      tb:SetText(ZNotes.PlayerSpells[tb.Row][tb.Column])
+    else
+      ZNotes.PlayerSpells[tb.Row][tb.Column]=newvalue
+    end
     if tb.Column=="id" then
       tb.refersTo:SetText((GetSpellInfo(newvalue) and GetSpellInfo(newvalue) or "|cffff3f40Invalid Spell ID|r"):upper())
       ZNotes.PlayerSpells[tb.Row]["name"]=GetSpellInfo(newvalue)
@@ -370,6 +410,9 @@ function ZN:InitPlayer()
   for i=1, #ZN.PlayerSortArray do
 
     local newRow = CreateContentRow(ZN.PlayerFilterArray[ZN.PlayerSortArray[i]], ZNotes.PlayerSpells[ZN.PlayerFilterArray[ZN.PlayerSortArray[i]]], anchor)
+    if i==1 then
+      newRow:SetPoint("TOP", ZNBodyFrame.Subframes.Player.scrollChild,"TOP")
+    end
     ZN.PlayerRows[i] = newRow
     anchor = newRow
   end  
@@ -413,7 +456,7 @@ function ZN:BuildPlayerSortArray ()
       local pivot = ZNotes.PlayerSpells[ZN.PlayerFilterArray[ZN.PlayerSortArray[i]]][ZN.PlayerSort]
       for j=i+1,#ZN.PlayerFilterArray do
         local comp = ZNotes.PlayerSpells[ZN.PlayerFilterArray[ZN.PlayerSortArray[j]]][ZN.PlayerSort]
-        if  type(comp)=="number" and comp>pivot or type(comp)~="number" and ZN.TextSortOrder[comp]>ZN.TextSortOrder[pivot] then
+        if  type(comp)=="number"  and comp>pivot or type(comp)~="number" and ZN.TextSortOrder[comp]>ZN.TextSortOrder[pivot] then
           local saveUnit = ZN.PlayerSortArray[i]
 					ZN.PlayerSortArray[i] = ZN.PlayerSortArray[j]
 					ZN.PlayerSortArray[j] = saveUnit
@@ -444,10 +487,29 @@ function ZN:ReloadPlayerTable()
     else 
       UpdateContentRow(ZN.PlayerFilterArray[ZN.PlayerSortArray[i]], ZNotes.PlayerSpells[ZN.PlayerFilterArray[ZN.PlayerSortArray[i]]], anchor, ZN.PlayerRows[i])
     end
+    if i==1 then
+      ZN.PlayerRows[i]:SetPoint("TOP", ZNBodyFrame.Subframes.Player.scrollChild,"TOP")
+    end
     ZN.PlayerRows[i]:SetShown(true)
     anchor = ZN.PlayerRows[i]
   end  
 
+end
+
+function ZN:addNewPlayerSpell()
+  table.insert(ZNotes.PlayerSpells,
+  {
+    ["type"] = "heal",
+    ["id"] = 0,
+    ["class"] = "all",
+    ["role"] = "heal",
+    ["cd"] = 0,
+    ["aoe"] = true,
+    ["rating"] = 0,
+    ["station"] = true,
+    ["name"] = "",
+  })
+  ZN:ReloadPlayerTable()
 end
 
 -- ZN.PlayerSortOrder = {

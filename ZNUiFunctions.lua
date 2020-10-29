@@ -39,6 +39,11 @@ function ZN:ClickHome(ZNHeaderFrame, ZNSidebarFrame, ZNBodyFrame)
 	ZNSidebarFrame.Subframes["Home"]:SetShown(true)
 	ZNSidebarFrame.Subframes["Home"].visible=true
 	ZNSidebarFrame.btnCollapseSidebar:SetShown(false)
+	if ZNSidebarFrame.btnReloadPlayer then
+		ZNSidebarFrame.btnReloadPlayer:SetShown(false)
+		ZNSidebarFrame.btnAddPlayer:SetShown(false)
+		ZNSidebarFrame.btnResetPlayer:SetShown(false)
+	end
 	ZN:ClickCollapse(nil, ZNHeaderFrame, ZNSidebarFrame, false, true)
 end
 
@@ -63,6 +68,9 @@ function ZN:ClickImpExp(ZNHeaderFrame, ZNSidebarFrame, ZNBodyFrame)
 	ZNSidebarFrame.Subframes["ImpExp"]:SetShown(true)
 	ZNSidebarFrame.Subframes["ImpExp"].visible=true
 	ZNSidebarFrame.btnCollapseSidebar:SetShown(false)
+	ZNSidebarFrame.btnReloadPlayer:SetShown(false)
+	ZNSidebarFrame.btnResetPlayer:SetShown(false)
+	ZNSidebarFrame.btnAddPlayer:SetShown(false)
 	ZN:ClickCollapse(nil, ZNHeaderFrame, ZNSidebarFrame, false, true)
 	ImpExpContent.PlayerDbSubframe:Hide()
 	ImpExpContent.BossTemplateSubframe:Hide()
@@ -90,6 +98,9 @@ function ZN:ClickBoss(ZNHeaderFrame, ZNSidebarFrame, ZNBodyFrame)
 	ZNSidebarFrame.Subframes["Boss"]:SetShown(true)
 	ZNSidebarFrame.Subframes["Boss"].visible=true
 	ZNSidebarFrame.btnCollapseSidebar:SetShown(true)
+	ZNSidebarFrame.btnReloadPlayer:SetShown(false)
+	ZNSidebarFrame.btnResetPlayer:SetShown(false)
+	ZNSidebarFrame.btnAddPlayer:SetShown(false)
 	ZN:ClickCollapse(nil, ZNHeaderFrame, ZNSidebarFrame, true, false)
 end
 
@@ -116,8 +127,13 @@ function ZN:ClickPlayer(ZNHeaderFrame, ZNSidebarFrame, ZNBodyFrame)
 			v:SetShown(false)
 	end
 	ZNBodyFrame.Subframes["Player"]:SetShown(true)
+	ZNBodyFrame.Subframes["PlayerHead"]:SetShown(true)
 	ZNSidebarFrame.Subframes["Player"]:SetShown(true)
 	ZNSidebarFrame.Subframes["Player"].visible=true
+	ZNSidebarFrame.btnReloadPlayer:SetShown(true)
+	ZNSidebarFrame.btnResetPlayer:SetShown(true)
+	ZNSidebarFrame.btnAddPlayer:SetShown(true)
+
 	ZNSidebarFrame.btnCollapseSidebar:SetShown(true)
 	ZN:ClickCollapse(nil, ZNHeaderFrame, ZNSidebarFrame, true, false)
 end
@@ -127,37 +143,41 @@ function ZN:ClickCollapse(ZNFrame, ZNHeaderFrame, ZNSidebarFrame, collapse, expa
 		ZNSidebarFrame.collapsed = true
 		ZNSidebarFrame.btnCollapseSidebar:SetNormalTexture("Interface\\AddOns\\ZeroNotes\\Media\\Texture\\arrow_right")
 		ZNSidebarFrame.btnCollapseSidebar:GetNormalTexture():SetVertexColor(tonumber("0x"..ZN.Colors.INACTIVE:sub(1,2))/255, tonumber("0x"..ZN.Colors.INACTIVE:sub(3,4))/255, tonumber("0x"..ZN.Colors.INACTIVE:sub(5,6))/255, 1)
-		-- local left, bottom, width = ZNFrame:GetRect()
-		--ZNFrame:ClearAllPoints()
-		--ZNFrame:SetPoint('BOTTOMLEFT', UIParent, 'BOTTOMLEFT', left + 250, bottom)
-		ZNSidebarFrame:SetWidth(50)
-		-- ZNFrame:SetWidth(750)
-		-- ZNHeaderFrame:SetWidth(750)
+		ZNSidebarFrame:SetWidth(48)
+
 		
 		for k,v in pairs(ZNSidebarFrame.Subframes) do
 			if v.visible then
 				v:SetShown(false)
 			end
 		end
-		--for i=1, #ZN.SidebarElements do
-		-- if ZN.SidebarElements[i].visible=true
-		-- then classfilter.shown= not classfilter.shown
-		--end
-
+		if ZNSidebarFrame.btnReloadPlayer then
+			ZNSidebarFrame.btnReloadPlayer:ClearAllPoints()
+			ZNSidebarFrame.btnAddPlayer:ClearAllPoints()
+			ZNSidebarFrame.btnResetPlayer:ClearAllPoints()
+			ZNSidebarFrame.btnResetPlayer:SetPoint("BOTTOM", ZNSidebarFrame.btnCollapseSidebar, "TOP", 0, 20)
+			ZNSidebarFrame.btnReloadPlayer:SetPoint("BOTTOM", ZNSidebarFrame.btnResetPlayer, "TOP", 0, 20)
+			ZNSidebarFrame.btnAddPlayer:SetPoint("BOTTOM", ZNSidebarFrame.btnReloadPlayer, "TOP", 0, 20)
+		end
 	elseif (ZNSidebarFrame.collapsed and not collapse and not expand) or expand then 
 		ZNSidebarFrame.collapsed = false
 		ZNSidebarFrame.btnCollapseSidebar:SetNormalTexture("Interface\\AddOns\\ZeroNotes\\Media\\Texture\\arrow_left")
 		ZNSidebarFrame.btnCollapseSidebar:GetNormalTexture():SetVertexColor(tonumber("0x"..ZN.Colors.INACTIVE:sub(1,2))/255, tonumber("0x"..ZN.Colors.INACTIVE:sub(3,4))/255, tonumber("0x"..ZN.Colors.INACTIVE:sub(5,6))/255, 1)
-		--local left, bottom, width = ZNFrame:GetRect()
-		--ZNFrame:ClearAllPoints()
-		--ZNFrame:SetPoint('BOTTOMLEFT', UIParent, 'BOTTOMLEFT', left - 250, bottom)
+
 		ZNSidebarFrame:SetWidth(300)
-		-- ZNFrame:SetWidth(1000)
-		-- ZNHeaderFrame:SetWidth(1000)
+
 		for k,v in pairs(ZNSidebarFrame.Subframes) do
 			if v.visible then
 				v:SetShown(true)
 			end
+		end
+		if ZNSidebarFrame.btnReloadPlayer then
+			ZNSidebarFrame.btnReloadPlayer:ClearAllPoints()
+			ZNSidebarFrame.btnAddPlayer:ClearAllPoints()
+			ZNSidebarFrame.btnResetPlayer:ClearAllPoints()
+			ZNSidebarFrame.btnAddPlayer:SetPoint("RIGHT", ZNSidebarFrame.btnCollapseSidebar, "LEFT", -12, 0)
+			ZNSidebarFrame.btnReloadPlayer:SetPoint("RIGHT", ZNSidebarFrame.btnAddPlayer, "LEFT", -20, 0)
+			ZNSidebarFrame.btnResetPlayer:SetPoint("RIGHT", ZNSidebarFrame.btnReloadPlayer, "LEFT", -20, 0)
 		end
 
 	end
