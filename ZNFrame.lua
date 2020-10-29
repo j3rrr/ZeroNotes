@@ -499,7 +499,7 @@ ZNBodyFrame.Subframes.ImpExp = ZN.createSubFrame("ZNBodyImpExpContent", ZNBodyFr
 ZNBodyFrame.Subframes.Boss = ZN.createScrollFrame("ZNBodyBossContent", ZNBodyFrame, 930, 530, nil, 1, "TOP","HIGH", true)
 ZNBodyFrame.Subframes.PlayerHead = ZN.createSubFrame("ZNBodyPlayerHead", ZNBodyFrame, 930, 30, nil, 1, "TOP","HIGH", true, 0, 0)
 ZNBodyFrame.Subframes.Player = ZN.createScrollFrame("ZNBodyPlayerContent", ZNBodyFrame, 930, 500, nil, 1, "TOP","HIGH", true)
-ZNBodyFrame.Subframes.Player:SetPoint("TOP", ZNBodyFrame.Subframes.PlayerHead,"BOTTOM")
+ZNBodyFrame.Subframes.Player:SetPoint("TOP", ZNBodyFrame.Subframes.PlayerHead,"BOTTOM", -5, 0)
 -- Frame Stuff End
 --##############################################################################
 
