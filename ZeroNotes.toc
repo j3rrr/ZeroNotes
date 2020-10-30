@@ -12,9 +12,9 @@ ZNminimap.lua
 ZNUiFunctions.lua
 ZNFrame.lua
 ZNplayer.lua
+ZNboss.lua
 ZNinfo.lua
 ZNstartUp.lua
 ZNpreviewFunctions.lua
-ZNboss.lua
 ZNhome.lua
 ZNimpexp.lua

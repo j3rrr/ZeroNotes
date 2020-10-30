@@ -87,6 +87,11 @@ function ZN:ClickBoss(ZNHeaderFrame, ZNSidebarFrame, ZNBodyFrame)
     ZNHeaderFrame.btnPlayer.active = false
 	ZNHeaderFrame.btnPlayer:GetNormalTexture():SetVertexColor(tonumber("0x"..ZN.Colors.INACTIVE:sub(1,2))/255, tonumber("0x"..ZN.Colors.INACTIVE:sub(3,4))/255, tonumber("0x"..ZN.Colors.INACTIVE:sub(5,6))/255, 1)
 	
+	if not ZN.BossInit then
+		ZN.BossInit=true
+		ZN:InitBoss()
+	end
+
 	for k,v in pairs(ZNSidebarFrame.Subframes) do
 			v:SetShown(false)
 			v.visible=false
@@ -94,7 +99,11 @@ function ZN:ClickBoss(ZNHeaderFrame, ZNSidebarFrame, ZNBodyFrame)
 	for k,v in pairs(ZNBodyFrame.Subframes) do
 			v:SetShown(false)
 	end
-	ZNBodyFrame.Subframes["Boss"]:SetShown(true)
+	ZNBodyFrame.Subframes["BossSpellHead"]:SetShown(true)
+	ZNBodyFrame.Subframes["BossSpells"]:SetShown(true)
+	ZNBodyFrame.Subframes["BossTrennerHead"]:SetShown(true)
+	ZNBodyFrame.Subframes["BossTrenner"]:SetShown(true)
+	ZNBodyFrame.Subframes["BossNote"]:SetShown(true)
 	ZNSidebarFrame.Subframes["Boss"]:SetShown(true)
 	ZNSidebarFrame.Subframes["Boss"].visible=true
 	ZNSidebarFrame.btnCollapseSidebar:SetShown(true)

@@ -88,6 +88,9 @@ function ZN.createScrollFrame(name, parent, width, height, color, a, anchor,stra
 
 	NewFrame.background = NewFrame:CreateTexture(nil, 'BACKGROUND')
 	NewFrame.background:SetAllPoints(NewFrame)
+	if color then
+		NewFrame.background:SetColorTexture(tonumber("0x"..color:sub(1,2))/255, tonumber("0x"..color:sub(3,4))/255, tonumber("0x"..color:sub(5,6))/255, a)
+	end
 	
 	NewFrame.ScrollBar:ClearAllPoints();
 	NewFrame.ScrollBar:SetPoint("TOPRIGHT", parent, "TOPRIGHT", 0, 0);
@@ -496,10 +499,24 @@ ZNSidebarFrame.btnCollapseSidebar:SetScript("OnClick", function(self) ZN:ClickCo
 ZNBodyFrame.Subframes = {}
 ZNBodyFrame.Subframes.Home = ZN.createSubFrame("ZNBodyHomeContent", ZNBodyFrame, 640, 530, nil, 1, "RIGHT","HIGH", true, -30, 0)
 ZNBodyFrame.Subframes.ImpExp = ZN.createSubFrame("ZNBodyImpExpContent", ZNBodyFrame, 680, 530, nil, 1, "RIGHT","HIGH", true, -10, 0)
-ZNBodyFrame.Subframes.Boss = ZN.createScrollFrame("ZNBodyBossContent", ZNBodyFrame, 930, 530, nil, 1, "TOP","HIGH", true)
+ZNBodyFrame.Subframes.BossSpellHead = ZN.createSubFrame("ZNBodyBossSpellHead", ZNBodyFrame, 930, 30, nil, 1, "TOP","HIGH", true, 0, 0)
+ZNBodyFrame.Subframes.BossSpells = ZN.createScrollFrame("ZNBodyBossSpellContent", ZNBodyFrame, 930, 300, ZN.Colors.dk, 1, "TOP","HIGH", true)
+ZNBodyFrame.Subframes.BossTrennerHead = ZN.createSubFrame("ZNBodyBossTrennerHead", ZNBodyFrame, 460, 30, nil, 1, "TOP","HIGH", true, 0, 0)
+ZNBodyFrame.Subframes.BossTrenner = ZN.createScrollFrame("ZNBodyBossTrennerContent", ZNBodyFrame, 460, 160, ZN.Colors.hunter, 1, "TOP","HIGH", true)
+ZNBodyFrame.Subframes.BossNote = ZN.createSubFrame("ZNBodyBossNote", ZNBodyFrame, 460, 190, ZN.Colors.shaman, 1, "TOP","HIGH", true, 0, 0)
 ZNBodyFrame.Subframes.PlayerHead = ZN.createSubFrame("ZNBodyPlayerHead", ZNBodyFrame, 930, 30, nil, 1, "TOP","HIGH", true, 0, 0)
 ZNBodyFrame.Subframes.Player = ZN.createScrollFrame("ZNBodyPlayerContent", ZNBodyFrame, 930, 500, nil, 1, "TOP","HIGH", true)
+
 ZNBodyFrame.Subframes.Player:SetPoint("TOP", ZNBodyFrame.Subframes.PlayerHead,"BOTTOM", -5, 0)
+ZNBodyFrame.Subframes.BossSpells:SetPoint("TOP", ZNBodyFrame.Subframes.BossSpellHead,"BOTTOM", -5, 0)
+ZNBodyFrame.Subframes.BossTrennerHead:SetPoint("TOPLEFT", ZNBodyFrame.Subframes.BossSpells,"BOTTOMLEFT", 5, 0)
+ZNBodyFrame.Subframes.BossTrenner:SetPoint("TOP", ZNBodyFrame.Subframes.BossTrennerHead,"BOTTOM", -5, 0)
+ZNBodyFrame.Subframes.BossSpells.ScrollBar:SetPoint("TOPRIGHT", ZNBodyFrame.Subframes.BossSpells, "TOPRIGHT", 0, 0);
+ZNBodyFrame.Subframes.BossNote:ClearAllPoints()
+ZNBodyFrame.Subframes.BossNote:SetPoint("BOTTOMLEFT", ZNBodyFrame.Subframes.BossTrenner,"BOTTOMRIGHT", 10, 0)
+ZNBodyFrame.Subframes.BossSpells.ScrollBar:SetPoint("BOTTOMRIGHT", ZNBodyFrame.Subframes.BossSpells, "BOTTOMRIGHT", 0, 0);
+ZNBodyFrame.Subframes.BossTrenner.ScrollBar:SetPoint("TOPRIGHT", ZNBodyFrame.Subframes.BossTrenner, "TOPRIGHT", 0, 0);
+ZNBodyFrame.Subframes.BossTrenner.ScrollBar:SetPoint("BOTTOMRIGHT", ZNBodyFrame.Subframes.BossTrenner, "BOTTOMRIGHT", 0, 0);
 -- Frame Stuff End
 --##############################################################################
 
