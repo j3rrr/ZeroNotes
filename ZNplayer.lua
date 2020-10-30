@@ -2,177 +2,6 @@ local _, ZN, L = ...
 --930
 ZN.PlayerInit=false
 
-ZN.PlayerTableColumns = {
-  ["role"] = 100,
-  ["class"] = 200,
-  ["spellid"] = 80,
-  ["spellname"] = 200,
-  ["spelltype"] = 100,
-  ["aoe"] = 50,
-  ["station"] = 50,
-  ["spellcd"] = 50,
-  ["spellrating"] = 50,
-  ["delete"] = 50,
-}
-
-ZN.PlayerTableColumnHeaders = {
-  "role",
-  "class",
-  "spellid",
-  "spellname",
-  "spelltype",
-  "aoe",
-  "station",
-  "spellcd",
-  "spellrating",
-  "delete",
-}
-
-ZN.PlayerTableColumnHeaderNames = {
-  ["role"] = "Role",
-  ["class"] = "Class",
-  ["spellid"] = "ID",
-  ["spellname"] = "Spellname",
-  ["spelltype"] = "Type",
-  ["aoe"] = "AOE",
-  ["station"] = "Station",
-  ["spellcd"] = "CD",
-  ["spellrating"] = "Rating",
-  ["delete"] = "Delete",
-}
-
-ZN.PlayerAttributeMapping = {
-  ["role"] = "role",
-  ["class"] = "class",
-  ["spellid"] = "id",
-  ["spellname"] = "name",
-  ["spelltype"] = "type",
-  ["aoe"] = "aoe",
-  ["station"] = "station",
-  ["spellcd"] = "cd",
-  ["spellrating"] = "rating",
-}
-
-ZN.PlayerTableColumnButtonTypes = {
-  ["role"] = "GenericButton",
-  ["class"] = "GenericButton",
-  ["spellid"] = "SingleLineEditBox",
-  ["spellname"] = "SingleLineEditBox",
-  ["spelltype"] = "GenericButton",
-  ["aoe"] = "IconButton",
-  ["station"] = "IconButton",
-  ["spellcd"] = "SingleLineEditBox",
-  ["spellrating"] = "SingleLineEditBox",
-  ["delete"] = "IconButton",
-}
-ZN.PlayerTableIconButton = {
-  ["aoe"]= {["size"]= 16, ["xOffset"]=17, ["type"]="checkBox"},
-  ["station"]= {["size"]= 16, ["xOffset"]=34, ["type"]="checkBox"},
-  ["delete"]= {["size"]= 16, ["xOffset"]=17, ["type"]="delete", ["texture"]="Interface\\AddOns\\ZeroNotes\\Media\\Texture\\delete2"}
-}
-
-ZN.PlayerTableCheckBoxTextures = {
-  ["checked"] = "Interface\\AddOns\\ZeroNotes\\Media\\Texture\\checkmark",
-  ["checkedColor"] = ZN.Colors.hunter,
-  ["unchecked"] = "Interface\\AddOns\\ZeroNotes\\Media\\Texture\\x_big_active",
-  ["uncheckedColor"] = ZN.Colors.dk,
-}
-
-ZN.PlayerTableRows = {
-  ["title"] = 30,
-  ["row"] = 40,
-  ["rowgap"] = 2,
-}
-
-ZN.PlayerDropdowns = {
-  ["role"] = {["content"]=ZN.ColoredRoles, ["order"]=ZN.ColoredRolesOrder},
-  ["class"] = {["content"]=ZN.PlayerClassesColored, ["order"]=ZN.PlayerClassesColoredOrder},
-  ["spelltype"] = {["content"]=ZN.Types, ["order"]=ZN.TypesOrder}
-}
-ZN.RoleSelectionColor = {
-  ["heal"] = "|cffabd473Heal|r",
-  ["tank"] = "|cffc5af2aTank|r",
-  ["melee"] = "|cffd2728aMelee|r",
-  ["range"] = "|cff6bbceeRange|r",
-  ["all"] = "|cfff8f8ffAll|r"
-}
-
-ZN.RoleSelectionOrder = {
-  "all",
-  "heal",
-  "tank",
-  "melee",
-  "range",
-
-}
-
-ZN.TypeSelection = {
-  ["heal"] = "Heal",
-  ["util"] = "Utility",
-  ["imun"] = "Immunity",
-  ["all"] = "ALL",
-}
-
-ZN.TypeSelectionOrder = {
-  "all",
-  "heal",
-  "util",
-  "imun",
-}
-
-ZN.CheckBoxSelectionColor ={
-  ["all"] = "|cfff8f8ffAll|r",
-  ["checked"] = "|cff"..ZN.Colors.hunter.."Yes|r",
-  ["unchecked"] = "|cff"..ZN.Colors.dk.."No|r",
-}
-
-ZN.CheckBoxSelectionOrder = {
-  "all",
-  "checked",
-  "unchecked",
-}
-
-ZN.PlayerSortSelect = {
-  ["rating"] = "Rating",
-  ["role"] = "Role",
-  ["class"] = "Class",
-  ["type"] = "Type",
-  ["cd"]= "CD",
-}
-
-ZN.PlayerSortOrder = {
-  "rating",
-  "role",
-  "class",
-  "type",
-  "cd",
-}
-
-
-ZN.TextSortOrder = {
-  ["heal"]=30,
-  ["util"]=20,
-  ["imun"]=10,
-  ["tank"]=25,
-  ["melee"]=20,
-  ["range"]=10,
-  ["all"] = 0,
-  ["dk"]= 13,
-  ["dh"]= 12,
-  ["druid"]= 11,
-  ["hunter"]= 10,
-  ["mage"]= 9,
-  ["monk"]= 8,
-  ["paladin"]= 7,
-  ["priest"]= 6,
-  ["shadow"]= 5.5,
-  ["diszi"]= 5,
-  ["rogue"]= 4,
-  ["shaman"]= 3,
-  ["warlock"]= 2,
-  ["warrior"]= 1,
-}
-
 ZN.RoleFilter="all"
 ZN.ClassFilter="all"
 ZN.TypeFilter="all"
@@ -299,21 +128,21 @@ local function CreateSingleLineEditBox(name, parent, point, anchor, anchorPoint,
 end
 
 local function CreateCheckBox(parent, point, anchor, anchorPoint, type, row, checked)
-  local cb = ZN.CreateIconButton(parent, point, anchor, anchorPoint, ZN.PlayerTableIconButton[type].size, ZN.PlayerTableIconButton[type].size, ZN.PlayerTableIconButton[type].xOffset, 0, ZN.PlayerTableCheckBoxTextures.checked, ZN.PlayerTableCheckBoxTextures.checkedColor, ZN.PlayerTableCheckBoxTextures.uncheckedColor, true, ZN.Colors.ACTIVE)
+  local cb = ZN.CreateIconButton(parent, point, anchor, anchorPoint, ZN.PlayerTableIconButton[type].size, ZN.PlayerTableIconButton[type].size, ZN.PlayerTableIconButton[type].xOffset, 0, ZN.CheckBoxTextures.checked, ZN.CheckBoxTextures.checkedColor, ZN.CheckBoxTextures.uncheckedColor, true, ZN.Colors.ACTIVE)
   cb.toggleChecked = function()
     if cb.active then
       cb.active=false
-      cb:SetNormalTexture(ZN.PlayerTableCheckBoxTextures.unchecked)
-      cb:GetNormalTexture():SetVertexColor(tonumber("0x"..ZN.PlayerTableCheckBoxTextures.uncheckedColor:sub(1,2))/255, tonumber("0x"..ZN.PlayerTableCheckBoxTextures.uncheckedColor:sub(3,4))/255, tonumber("0x"..ZN.PlayerTableCheckBoxTextures.uncheckedColor:sub(5,6))/255, 1)
+      cb:SetNormalTexture(ZN.CheckBoxTextures.unchecked)
+      cb:GetNormalTexture():SetVertexColor(tonumber("0x"..ZN.CheckBoxTextures.uncheckedColor:sub(1,2))/255, tonumber("0x"..ZN.CheckBoxTextures.uncheckedColor:sub(3,4))/255, tonumber("0x"..ZN.CheckBoxTextures.uncheckedColor:sub(5,6))/255, 1)
     else
       cb.active=true
-      cb:SetNormalTexture(ZN.PlayerTableCheckBoxTextures.checked)
-      cb:GetNormalTexture():SetVertexColor(tonumber("0x"..ZN.PlayerTableCheckBoxTextures.checkedColor:sub(1,2))/255, tonumber("0x"..ZN.PlayerTableCheckBoxTextures.checkedColor:sub(3,4))/255, tonumber("0x"..ZN.PlayerTableCheckBoxTextures.checkedColor:sub(5,6))/255, 1)
+      cb:SetNormalTexture(ZN.CheckBoxTextures.checked)
+      cb:GetNormalTexture():SetVertexColor(tonumber("0x"..ZN.CheckBoxTextures.checkedColor:sub(1,2))/255, tonumber("0x"..ZN.CheckBoxTextures.checkedColor:sub(3,4))/255, tonumber("0x"..ZN.CheckBoxTextures.checkedColor:sub(5,6))/255, 1)
     end
   end
   if not checked then
     cb.toggleChecked()
-    cb:GetNormalTexture():SetVertexColor(tonumber("0x"..ZN.PlayerTableCheckBoxTextures.uncheckedColor:sub(1,2))/255, tonumber("0x"..ZN.PlayerTableCheckBoxTextures.uncheckedColor:sub(3,4))/255, tonumber("0x"..ZN.PlayerTableCheckBoxTextures.uncheckedColor:sub(5,6))/255, 1)
+    cb:GetNormalTexture():SetVertexColor(tonumber("0x"..ZN.CheckBoxTextures.uncheckedColor:sub(1,2))/255, tonumber("0x"..ZN.CheckBoxTextures.uncheckedColor:sub(3,4))/255, tonumber("0x"..ZN.CheckBoxTextures.uncheckedColor:sub(5,6))/255, 1)
   end
   cb.Row = row
   cb.Column = type

@@ -617,6 +617,7 @@ end
 function ZN.initBossTemplates()
 ZNotes.BossTemplates = ZNotes.BossTemplates or {
   ["SampleBoss"] = {
+    ["bossid"] = "1234",
     {
       ["name"]= "Charge",
       ["id"]= "100",
@@ -864,4 +865,186 @@ ZN.ClassTable = {
   [71] = 'warrior',
   [72] = 'warrior',
   [73] = 'warrior'
+}
+
+ZN.PlayerTableColumns = {
+  ["role"] = 100,
+  ["class"] = 200,
+  ["spellid"] = 80,
+  ["spellname"] = 200,
+  ["spelltype"] = 100,
+  ["aoe"] = 50,
+  ["station"] = 50,
+  ["spellcd"] = 50,
+  ["spellrating"] = 50,
+  ["delete"] = 50,
+}
+
+ZN.PlayerTableColumnHeaders = {
+  "role",
+  "class",
+  "spellid",
+  "spellname",
+  "spelltype",
+  "aoe",
+  "station",
+  "spellcd",
+  "spellrating",
+  "delete",
+}
+
+ZN.PlayerTableColumnHeaderNames = {
+  ["role"] = "Role",
+  ["class"] = "Class",
+  ["spellid"] = "ID",
+  ["spellname"] = "Spellname",
+  ["spelltype"] = "Type",
+  ["aoe"] = "AOE",
+  ["station"] = "Station",
+  ["spellcd"] = "CD",
+  ["spellrating"] = "Rating",
+  ["delete"] = "Delete",
+}
+
+ZN.PlayerAttributeMapping = {
+  ["role"] = "role",
+  ["class"] = "class",
+  ["spellid"] = "id",
+  ["spellname"] = "name",
+  ["spelltype"] = "type",
+  ["aoe"] = "aoe",
+  ["station"] = "station",
+  ["spellcd"] = "cd",
+  ["spellrating"] = "rating",
+}
+
+ZN.PlayerTableColumnButtonTypes = {
+  ["role"] = "GenericButton",
+  ["class"] = "GenericButton",
+  ["spellid"] = "SingleLineEditBox",
+  ["spellname"] = "SingleLineEditBox",
+  ["spelltype"] = "GenericButton",
+  ["aoe"] = "IconButton",
+  ["station"] = "IconButton",
+  ["spellcd"] = "SingleLineEditBox",
+  ["spellrating"] = "SingleLineEditBox",
+  ["delete"] = "IconButton",
+}
+ZN.PlayerTableIconButton = {
+  ["aoe"]= {["size"]= 16, ["xOffset"]=17, ["type"]="checkBox"},
+  ["station"]= {["size"]= 16, ["xOffset"]=34, ["type"]="checkBox"},
+  ["delete"]= {["size"]= 16, ["xOffset"]=17, ["type"]="delete", ["texture"]="Interface\\AddOns\\ZeroNotes\\Media\\Texture\\delete2"}
+}
+
+ZN.CheckBoxTextures = {
+  ["checked"] = "Interface\\AddOns\\ZeroNotes\\Media\\Texture\\checkmark",
+  ["checkedColor"] = ZN.Colors.hunter,
+  ["unchecked"] = "Interface\\AddOns\\ZeroNotes\\Media\\Texture\\x_big_active",
+  ["uncheckedColor"] = ZN.Colors.dk,
+}
+
+ZN.PlayerTableRows = {
+  ["title"] = 30,
+  ["row"] = 40,
+  ["rowgap"] = 2,
+}
+
+ZN.PlayerDropdowns = {
+  ["role"] = {["content"]=ZN.ColoredRoles, ["order"]=ZN.ColoredRolesOrder},
+  ["class"] = {["content"]=ZN.PlayerClassesColored, ["order"]=ZN.PlayerClassesColoredOrder},
+  ["spelltype"] = {["content"]=ZN.Types, ["order"]=ZN.TypesOrder}
+}
+ZN.RoleSelectionColor = {
+  ["heal"] = "|cffabd473Heal|r",
+  ["tank"] = "|cffc5af2aTank|r",
+  ["melee"] = "|cffd2728aMelee|r",
+  ["range"] = "|cff6bbceeRange|r",
+  ["all"] = "|cfff8f8ffAll|r"
+}
+
+ZN.RoleSelectionOrder = {
+  "all",
+  "heal",
+  "tank",
+  "melee",
+  "range",
+
+}
+
+ZN.TypeSelection = {
+  ["heal"] = "Heal",
+  ["util"] = "Utility",
+  ["imun"] = "Immunity",
+  ["all"] = "ALL",
+}
+
+ZN.TypeSelectionOrder = {
+  "all",
+  "heal",
+  "util",
+  "imun",
+}
+
+ZN.CheckBoxSelectionColor ={
+  ["all"] = "|cfff8f8ffAll|r",
+  ["checked"] = "|cff"..ZN.Colors.hunter.."Yes|r",
+  ["unchecked"] = "|cff"..ZN.Colors.dk.."No|r",
+}
+
+ZN.CheckBoxSelectionOrder = {
+  "all",
+  "checked",
+  "unchecked",
+}
+
+ZN.PlayerSortSelect = {
+  ["rating"] = "Rating",
+  ["role"] = "Role",
+  ["class"] = "Class",
+  ["type"] = "Type",
+  ["cd"]= "CD",
+}
+
+ZN.PlayerSortOrder = {
+  "rating",
+  "role",
+  "class",
+  "type",
+  "cd",
+}
+
+
+ZN.TextSortOrder = {
+  ["heal"]=30,
+  ["util"]=20,
+  ["imun"]=10,
+  ["tank"]=25,
+  ["melee"]=20,
+  ["range"]=10,
+  ["all"] = 0,
+  ["dk"]= 13,
+  ["dh"]= 12,
+  ["druid"]= 11,
+  ["hunter"]= 10,
+  ["mage"]= 9,
+  ["monk"]= 8,
+  ["paladin"]= 7,
+  ["priest"]= 6,
+  ["shadow"]= 5.5,
+  ["diszi"]= 5,
+  ["rogue"]= 4,
+  ["shaman"]= 3,
+  ["warlock"]= 2,
+  ["warrior"]= 1,
+}
+
+ZN.RaidIconsList = {
+	"Interface\\TargetingFrame\\UI-RaidTargetingIcon_1",
+	"Interface\\TargetingFrame\\UI-RaidTargetingIcon_2",
+	"Interface\\TargetingFrame\\UI-RaidTargetingIcon_3",
+	"Interface\\TargetingFrame\\UI-RaidTargetingIcon_4",
+	"Interface\\TargetingFrame\\UI-RaidTargetingIcon_5",
+	"Interface\\TargetingFrame\\UI-RaidTargetingIcon_6",
+	"Interface\\TargetingFrame\\UI-RaidTargetingIcon_7",
+	"Interface\\TargetingFrame\\UI-RaidTargetingIcon_8",
 }

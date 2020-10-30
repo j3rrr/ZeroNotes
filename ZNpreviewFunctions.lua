@@ -100,17 +100,6 @@ end
 --CreateTextureMarkup(file, fileWidth, fileHeight, width, height, left, right, top, bottom, xOffset, yOffset)
 
 
-ZN.previewIconsList = {
-	"Interface\\TargetingFrame\\UI-RaidTargetingIcon_1",
-	"Interface\\TargetingFrame\\UI-RaidTargetingIcon_2",
-	"Interface\\TargetingFrame\\UI-RaidTargetingIcon_3",
-	"Interface\\TargetingFrame\\UI-RaidTargetingIcon_4",
-	"Interface\\TargetingFrame\\UI-RaidTargetingIcon_5",
-	"Interface\\TargetingFrame\\UI-RaidTargetingIcon_6",
-	"Interface\\TargetingFrame\\UI-RaidTargetingIcon_7",
-	"Interface\\TargetingFrame\\UI-RaidTargetingIcon_8",
-}
-
 function ZN:printPreviewNote(arr)
   local rawNoteData = ZN:createPreviewTemplateTable(arr)
   if rawNoteData == nil then
@@ -125,21 +114,21 @@ function ZN:printPreviewNote(arr)
     if rawNoteData["lines"][i]["trenner"] then
       local raidicon = ""
       if rawNoteData["lines"][i]["raidicon"] == "{rt1}" then
-        raidicon = CreateTextureMarkup(ZN.previewIconsList[1], 0, 0, 0, 0, 0, 0, 0, 0, 0, -12)
+        raidicon = CreateTextureMarkup(ZN.RaidIconsList[1], 0, 0, 0, 0, 0, 0, 0, 0, 0, -12)
       elseif rawNoteData["lines"][i]["raidicon"] == "{rt2}" then
-        raidicon = CreateTextureMarkup(ZN.previewIconsList[2], 0, 0, 0, 0, 0, 0, 0, 0, 0, -12)
+        raidicon = CreateTextureMarkup(ZN.RaidIconsList[2], 0, 0, 0, 0, 0, 0, 0, 0, 0, -12)
       elseif rawNoteData["lines"][i]["raidicon"] == "{rt3}" then
-        raidicon = CreateTextureMarkup(ZN.previewIconsList[3], 0, 0, 0, 0, 0, 0, 0, 0, 0, -12)
+        raidicon = CreateTextureMarkup(ZN.RaidIconsList[3], 0, 0, 0, 0, 0, 0, 0, 0, 0, -12)
       elseif rawNoteData["lines"][i]["raidicon"] == "{rt4}" then
-        raidicon = CreateTextureMarkup(ZN.previewIconsList[4], 0, 0, 0, 0, 0, 0, 0, 0, 0, -12)
+        raidicon = CreateTextureMarkup(ZN.RaidIconsList[4], 0, 0, 0, 0, 0, 0, 0, 0, 0, -12)
       elseif rawNoteData["lines"][i]["raidicon"] == "{rt5}" then
-        raidicon = CreateTextureMarkup(ZN.previewIconsList[5], 0, 0, 0, 0, 0, 0, 0, 0, 0, -12)
+        raidicon = CreateTextureMarkup(ZN.RaidIconsList[5], 0, 0, 0, 0, 0, 0, 0, 0, 0, -12)
       elseif rawNoteData["lines"][i]["raidicon"] == "{rt6}" then
-        raidicon = CreateTextureMarkup(ZN.previewIconsList[6], 0, 0, 0, 0, 0, 0, 0, 0, 0, -12)
+        raidicon = CreateTextureMarkup(ZN.RaidIconsList[6], 0, 0, 0, 0, 0, 0, 0, 0, 0, -12)
       elseif rawNoteData["lines"][i]["raidicon"] == "{rt7}" then
-        raidicon = CreateTextureMarkup(ZN.previewIconsList[7], 0, 0, 0, 0, 0, 0, 0, 0, 0, -12)
+        raidicon = CreateTextureMarkup(ZN.RaidIconsList[7], 0, 0, 0, 0, 0, 0, 0, 0, 0, -12)
       elseif rawNoteData["lines"][i]["raidicon"] == "{rt8}" then
-        raidicon = CreateTextureMarkup(ZN.previewIconsList[8], 0, 0, 0, 0, 0, 0, 0, 0, 0, -12)
+        raidicon = CreateTextureMarkup(ZN.RaidIconsList[8], 0, 0, 0, 0, 0, 0, 0, 0, 0, -12)
       end
       local convertedTime = ZN:SecondsToClock(rawNoteData["lines"][i]["time"])
       local tmpStrDiv = "|cfffec1c0"..convertedTime.."|r "..raidicon.." |cffff00ff"..rawNoteData["lines"][i]["text"].."|r "..raidicon.."\n"

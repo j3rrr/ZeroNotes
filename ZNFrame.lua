@@ -51,7 +51,7 @@ end
 function ZN.createSubFrame(name, parent, width, height, color, a, anchor, strata, hide, xOffset, yOffset, anchorFrame, anchorPoint, noMouseDown)
 	local NewFrame = CreateFrame('FRAME', name, parent)
 	NewFrame.name = name
-	NewFrame:SetFrameStrata(strata)
+	NewFrame:SetFrameStrata(strata and strata or "DIALOG")
 	NewFrame:SetWidth(width)
 	NewFrame:SetHeight(height)
 	NewFrame:SetPoint(anchor, anchorFrame and anchorFrame or parent, anchorPoint and anchorPoint or anchor, xOffset, yOffset)

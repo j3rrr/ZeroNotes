@@ -187,6 +187,7 @@ end
 function ZN:createNoteTemplate(boss)
   local template = ZNotes.BossTemplates[boss]
   local noteTemplate = {
+    ["bossid"] = template.bossid,
     ["spells"] = {}
   }
 
@@ -250,6 +251,7 @@ function ZN:createRawNote(boss)
   noteTemplate = ZN:createNoteTemplate(boss)
 
   prioNote = {
+    ["bossid"] = noteTemplate.bossid,
     ["lines"] = {}
   }
 
@@ -323,7 +325,7 @@ function ZN:PrintNote(boss, inclMissing)
     return
   end
 
-  local rtNote = "{id: !!! BOSSID !!!}"
+  local rtNote = "{id:"..rawNoteData.bossid.."}"
   local missingNote = ""
 
   for k = 1, table.getn(rawNoteData["lines"]) do
