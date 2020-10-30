@@ -44,6 +44,13 @@ function ZN:ClickHome(ZNHeaderFrame, ZNSidebarFrame, ZNBodyFrame)
 		ZNSidebarFrame.btnAddPlayer:SetShown(false)
 		ZNSidebarFrame.btnResetPlayer:SetShown(false)
 	end
+
+	if ZNSidebarFrame.btnAddBossSpell then
+		ZNSidebarFrame.btnAddBossSpell:SetShown(false)
+		ZNSidebarFrame.btnReloadBossSpell:SetShown(false)
+		ZNSidebarFrame.btnAddBossTrenner:SetShown(false)
+		ZNSidebarFrame.btnReloadBossTrenner:SetShown(false)
+	end
 	ZN:ClickCollapse(nil, ZNHeaderFrame, ZNSidebarFrame, false, true)
 end
 
@@ -71,6 +78,10 @@ function ZN:ClickImpExp(ZNHeaderFrame, ZNSidebarFrame, ZNBodyFrame)
 	ZNSidebarFrame.btnReloadPlayer:SetShown(false)
 	ZNSidebarFrame.btnResetPlayer:SetShown(false)
 	ZNSidebarFrame.btnAddPlayer:SetShown(false)
+	ZNSidebarFrame.btnAddBossSpell:SetShown(false)
+	ZNSidebarFrame.btnReloadBossSpell:SetShown(false)
+	ZNSidebarFrame.btnAddBossTrenner:SetShown(false)
+	ZNSidebarFrame.btnReloadBossTrenner:SetShown(false)
 	ZN:ClickCollapse(nil, ZNHeaderFrame, ZNSidebarFrame, false, true)
 	ImpExpContent.PlayerDbSubframe:Hide()
 	ImpExpContent.BossTemplateSubframe:Hide()
@@ -110,6 +121,10 @@ function ZN:ClickBoss(ZNHeaderFrame, ZNSidebarFrame, ZNBodyFrame)
 	ZNSidebarFrame.btnReloadPlayer:SetShown(false)
 	ZNSidebarFrame.btnResetPlayer:SetShown(false)
 	ZNSidebarFrame.btnAddPlayer:SetShown(false)
+	ZNSidebarFrame.btnAddBossSpell:SetShown(true)
+	ZNSidebarFrame.btnReloadBossSpell:SetShown(true)
+	ZNSidebarFrame.btnAddBossTrenner:SetShown(true)
+	ZNSidebarFrame.btnReloadBossTrenner:SetShown(true)
 	ZN:ClickCollapse(nil, ZNHeaderFrame, ZNSidebarFrame, true, false)
 end
 
@@ -142,7 +157,10 @@ function ZN:ClickPlayer(ZNHeaderFrame, ZNSidebarFrame, ZNBodyFrame)
 	ZNSidebarFrame.btnReloadPlayer:SetShown(true)
 	ZNSidebarFrame.btnResetPlayer:SetShown(true)
 	ZNSidebarFrame.btnAddPlayer:SetShown(true)
-
+	ZNSidebarFrame.btnAddBossSpell:SetShown(false)
+	ZNSidebarFrame.btnReloadBossSpell:SetShown(false)
+	ZNSidebarFrame.btnAddBossTrenner:SetShown(false)
+	ZNSidebarFrame.btnReloadBossTrenner:SetShown(false)
 	ZNSidebarFrame.btnCollapseSidebar:SetShown(true)
 	ZN:ClickCollapse(nil, ZNHeaderFrame, ZNSidebarFrame, true, false)
 end

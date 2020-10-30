@@ -171,7 +171,7 @@ function ZN:printPreviewNote(arr)
       for m = 1, imunNeeds do
         imunString = imunString..imunIcon.." "
       end
-      local tmpStr = "|cfffec1c0"..convertedTime.."|r "..(spellIcon or "|TInterface\\Icons\\INV_MISC_QUESTIONMARK:12|t").." "..rawNoteData["lines"][i]["bossSpellName"].." "..healString..utilString..imunString.."\n"
+      local tmpStr = "|cfffec1c0"..convertedTime.."|r "..(spellIcon or "|TInterface\\Icons\\INV_MISC_QUESTIONMARK:12|t").." "..rawNoteData["lines"][i]["bossSpellName"].."\n             "..healString..utilString..imunString.."\n"
       if string.len(notePreview[y])+string.len(tmpStr) > 3500 then 
         y = y + 1
         notePreview[y] = ""
