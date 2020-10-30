@@ -1,5 +1,7 @@
 local _, ZN, L = ...
 
+local selectedTemplate = nil
+
 -- Boss Sidebar
 BossSidebar = ZNSidebarFrame.Subframes.Boss 
 BossSidebar.TemplateSelectButton = ZN.CreateGenericButton("ZNBossTemplateSelectButton", BossSidebar, "TOPLEFT", BossSidebar, "TOPLEFT", 240, 30, 0, -40,10,0, 12, ZN.Colors.ACTIVE, ZN.Colors.SBButtonBG, "Select Template", "Select Template..", "LEFT",true )
@@ -14,7 +16,13 @@ BossSidebar.TemplatePreviewFrame.Scroll = ZN.createScrollFrame("ZNBossTemplatePr
 
 -- Boss Sidebar Functions
 BossSidebar.TemplateSelectButton:SetScript("OnClick", function(self) ZN:CreateDropdown(self, ZN:getTableKeys(ZNotes.BossTemplates), ZN:getTableOrder(ZNotes.BossTemplates), 240, ZN.Colors.BG, "LEFT", 10, nil, "TOOLTIP") end)
-BossSidebar.TemplatePreviewButton:SetScript("OnClick", function(self) ZN:showPreview(ZN:printPreviewNote(selectedTemplate), BossSidebar.TemplatePreviewFrame.Scroll.scrollChild) end)
+BossSidebar.TemplatePreviewButton:SetScript("OnClick", function(self) 
+  if selectedTemplate == nil or selectedTemplate == "Select Template.." then
+    ZN:Print("You need to select a Boss Template")
+    return
+  end
+  ZN:showPreview(ZN:printPreviewNote(selectedTemplate), BossSidebar.TemplatePreviewFrame.Scroll.scrollChild)
+ end)
 
 -- Boss Sidebar Buttons
 

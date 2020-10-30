@@ -51,7 +51,7 @@ end
 function ZN.createSubFrame(name, parent, width, height, color, a, anchor, strata, hide, xOffset, yOffset, anchorFrame, anchorPoint, noMouseDown)
 	local NewFrame = CreateFrame('FRAME', name, parent)
 	NewFrame.name = name
-	NewFrame:SetFrameStrata(strata)
+	NewFrame:SetFrameStrata(strata and strata or "DIALOG")
 	NewFrame:SetWidth(width)
 	NewFrame:SetHeight(height)
 	NewFrame:SetPoint(anchor, anchorFrame and anchorFrame or parent, anchorPoint and anchorPoint or anchor, xOffset, yOffset)
@@ -477,6 +477,7 @@ ZNHeaderFrame.btnHome = ZN.CreateIconButton(ZNHeaderFrame, "RIGHT", ZNHeaderFram
 ZNHeaderFrame.btnImpExp = ZN.CreateIconButton(ZNHeaderFrame, "RIGHT", ZNHeaderFrame.btnHome, "LEFT", 32, 32, -30, 0, "Interface\\AddOns\\ZeroNotes\\Media\\Texture\\impexp_active", ZN.Colors.ACTIVE, ZN.Colors.INACTIVE, false, nil, true, "Import / Export", ZN.Colors.ACTIVE)
 ZNHeaderFrame.btnBoss = ZN.CreateIconButton(ZNHeaderFrame, "RIGHT", ZNHeaderFrame.btnImpExp, "LEFT", 32, 32, -30, 0, "Interface\\AddOns\\ZeroNotes\\Media\\Texture\\boss_active", ZN.Colors.ACTIVE, ZN.Colors.INACTIVE, false, nil, true, "Boss Template Editor", ZN.Colors.ACTIVE)
 ZNHeaderFrame.btnPlayer = ZN.CreateIconButton(ZNHeaderFrame, "RIGHT", ZNHeaderFrame.btnBoss, "LEFT", 32, 32, -30, 0, "Interface\\AddOns\\ZeroNotes\\Media\\Texture\\player_active", ZN.Colors.ACTIVE, ZN.Colors.INACTIVE, false, nil, true, "Player DB Editor", ZN.Colors.ACTIVE)
+ZNHeaderFrame.btnGroup = ZN.CreateIconButton(ZNHeaderFrame, "RIGHT", ZNHeaderFrame.btnPlayer, "LEFT", 32, 32, -30, 0, "Interface\\AddOns\\ZeroNotes\\Media\\Texture\\group", ZN.Colors.ACTIVE, ZN.Colors.INACTIVE, false, nil, true, "Group Template Editor", ZN.Colors.ACTIVE)
 -- Header Functions
 ZNHeaderFrame.btnLogo:SetScript("OnClick", function(self) ZN:ToggleInfo(self) end)
 ZNHeaderFrame.btnClose:SetScript("OnClick", function(self) ZN:Toggle(self) end)

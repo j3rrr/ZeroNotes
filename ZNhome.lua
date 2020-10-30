@@ -1,6 +1,6 @@
 local _, ZN, L = ...
 
-local selectedTemplate = ""
+local selectedTemplate = nil
 
 HomeContent = ZNBodyFrame.Subframes.Home
 
@@ -25,30 +25,62 @@ HomeContent.Paragraph = ZN.CreateText(HomeContent, "TOP", HomeContent.HowToTitle
 --Raw Note Editbox
 HomeContent.ShowNoteEditBox = ZN.createSubFrame("ShowNoteEditBox", HomeContent, 680, 530, ZN.Colors.BG, 1, "TOP","DIALOG", true, 0, 0)
 HomeContent.ShowNoteEditBox.btnClose = ZN.CreateIconButton(HomeContent.ShowNoteEditBox, "TOPRIGHT", HomeContent.ShowNoteEditBox, "TOPRIGHT", 16, 16, -10, -10, "Interface\\AddOns\\ZeroNotes\\Media\\Texture\\x_big_active", ZN.Colors.ACTIVE, ZN.Colors.INACTIVE, false)
-HomeContent.ShowNoteEditBox.EditBox = ZN.MultiLineEditBox("ZBMImportEditBox", HomeContent.ShowNoteEditBox, "TOP", HomeContent.ShowNoteEditBox, "TOP", 660, 450, 0, -65, 0, 0 ,12, ZN.Colors.ACTIVE, ZN.Colors.HD, nil, "--> "..selectedTemplate.." <--", "LEFT")
+HomeContent.ShowNoteEditBox.EditBox = ZN.MultiLineEditBox("ZBMImportEditBox", HomeContent.ShowNoteEditBox, "TOP", HomeContent.ShowNoteEditBox, "TOP", 660, 450, 0, -65, 0, 0 ,12, ZN.Colors.ACTIVE, ZN.Colors.HD, nil, "", "LEFT")
 
 HomeContent.ShowNoteEditBox.btnClose:SetScript("OnClick", function(self) HomeContent.ShowNoteEditBox:Hide() end)
 
 -- Home Sidebar
 HomeSidebar = ZNSidebarFrame.Subframes.Home
-HomeSidebar.TemplateSelectButton = ZN.CreateGenericButton("ZNBossTemplateSelectButton", HomeSidebar, "TOPLEFT", HomeSidebar, "TOPLEFT", 240, 30, 0, -60,10,0, 12, ZN.Colors.ACTIVE, ZN.Colors.SBButtonBG, "Select Template", "Select Template..", "LEFT",true )
+HomeSidebar.TemplateSelectButton = ZN.CreateGenericButton("ZNBossTemplateSelectButton", HomeSidebar, "TOPLEFT", HomeSidebar, "TOPLEFT", 240, 30, 0, -60,10,0, 12, ZN.Colors.ACTIVE, ZN.Colors.SBButtonBG, "Select Boss Template", "Select Template..", "LEFT",true )
 HomeSidebar.TemplateSelectButton.doOnUpdate = true
 HomeSidebar.TemplateSelectButton.OnUpdate = function(_,_,_,newValue) selectedTemplate = newValue end
+
+HomeSidebar.GroupTemplateSelectButton = ZN.CreateGenericButton("ZNGroupTemplateSelectButton", HomeSidebar, "TOPLEFT", HomeSidebar.TemplateSelectButton, "BOTTOMLEFT", 240, 30, 0, -40,10,0, 12, ZN.Colors.ACTIVE, ZN.Colors.SBButtonBG, "Select Group Template", "Use current group", "LEFT",true )
+HomeSidebar.GroupTemplateSelectButton.doOnUpdate = true
+HomeSidebar.GroupTemplateSelectButton.OnUpdate = function(_,_,_,newValue) selectedTemplate = newValue end
+
 if IsAddOnLoaded("ExRT") then
   HomeSidebar.SendToExRTButton = ZN.CreateGenericButton("SendToExRTButton", HomeSidebar, "BOTTOMLEFT", HomeSidebar, "BOTTOMLEFT", 240, 30, 0, 80,0,0, 12, ZN.Colors.ACTIVE, ZN.Colors.SBButtonBG, nil, "Send Note to ExRT", "CENTER",true )
 else
   HomeSidebar.SendToExRTButton = ZN.CreateGenericButton("SendToExRTButton", HomeSidebar, "BOTTOMLEFT", HomeSidebar, "BOTTOMLEFT", 240, 30, 0, 80,0,0, 12, ZN.Colors.chatYell, ZN.Colors.SBButtonBG, nil, "ExRT not found", "CENTER",false )
 end
+
 HomeSidebar.ShowNoteInEditorButton = ZN.CreateGenericButton("ShowNoteInEditorButton", HomeSidebar, "TOPLEFT", HomeSidebar.SendToExRTButton, "BOTTOMLEFT", 240, 30, 0, -10,0,0, 12, ZN.Colors.ACTIVE, ZN.Colors.SBButtonBG, nil, "Show Note", "CENTER",true )
 
 -- Home Sidebar Functions
 HomeSidebar.TemplateSelectButton:SetScript("OnClick", function(self) ZN:CreateDropdown(self, ZN:getTableKeys(ZNotes.BossTemplates), ZN:getTableOrder(ZNotes.BossTemplates), 240, ZN.Colors.BG, "LEFT", 10, nil, "TOOLTIP") end)
 
 if IsAddOnLoaded("ExRT") then
-  HomeSidebar.SendToExRTButton:SetScript("OnClick", function(self) ZN:SendToExRT("Send to ExRT Button") end)
+  HomeSidebar.SendToExRTButton:SetScript("OnClick", function(self) 
+    VExRT.Note.Text1 = ZN:PrintNote(selectedTemplate, HomeSidebar.IncludeMissingCheckBox.active)
+    _G["GExRT"].A["Note"].frame:Save()
+  end)
 end
 
 HomeSidebar.ShowNoteInEditorButton:SetScript("OnClick", function(self) 
-  HomeContent.ShowNoteEditBox:SetShown(not HomeContent.ShowNoteEditBox:IsShown()); 
-  HomeContent.ShowNoteEditBox.EditBox.editbox:SetText("-->"..selectedTemplate.."<--")    
+  if not IsInGroup() then
+    ZN:Print("You need to be in a party or raid.")
+    return
+  end
+  if selectedTemplate == nil or selectedTemplate == "Select Template.." then
+    ZN:Print("You need to select a Boss Template")
+    return
+  end
+  if not HomeContent.ShowNoteEditBox:IsShown() then
+    HomeContent.ShowNoteEditBox:Show()
+    HomeContent.ShowNoteEditBox.EditBox.editbox:SetText(ZN:PrintNote(selectedTemplate, HomeSidebar.IncludeMissingCheckBox.active))    
+  else
+    HomeContent.ShowNoteEditBox.EditBox.editbox:SetText(ZN:PrintNote(selectedTemplate, HomeSidebar.IncludeMissingCheckBox.active))    
+  end
+end)
+
+HomeSidebar.IncludeMissingCheckBox = ZN:createCheckBox(HomeSidebar, "TOPLEFT", HomeSidebar.GroupTemplateSelectButton, "BOTTOMLEFT", 0, -20, "Include Missing Spells", 14, ZN.Colors.ACTIVE, 200, true)
+
+-- Checkbox onclick
+HomeSidebar.IncludeMissingCheckBox:SetScript("OnClick",function(self)
+  self.toggleChecked()
+end)
+
+HomeSidebar.IncludeMissingCheckBox.button:SetScript("OnMouseDown",function()
+  HomeSidebar.IncludeMissingCheckBox.toggleChecked()
 end)
