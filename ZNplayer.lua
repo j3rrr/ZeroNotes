@@ -225,6 +225,7 @@ ZNSidebarFrame.btnAddPlayer:SetShown(false)
 
 ZNSidebarFrame.btnReloadPlayer:SetScript("OnClick",function(self) ZN:ReloadPlayerTable() end)
 ZNSidebarFrame.btnAddPlayer:SetScript("OnClick",function(self) ZN:addNewPlayerSpell() end)
+ZNSidebarFrame.btnResetFilter:SetScript("OnClick", function(self) ZN:ResetPlayerFilter() end)
 
 ZN.PlayerResetConfirmFrame = ZN.createSubFrame("ZNPlayerResetConfirmFrame",ZNFrame, 300, 200, ZN.Colors.ROWBG, 1, 'CENTER', 'TOOLTIP', true)
 ZN.PlayerResetConfirmFrame.btnClose = ZN.CreateIconButton(ZN.PlayerResetConfirmFrame, "TOPRIGHT", ZN.PlayerResetConfirmFrame, "TOPRIGHT", 16, 16, -10, -10, "Interface\\AddOns\\ZeroNotes\\Media\\Texture\\x_big_active", ZN.Colors.ACTIVE, ZN.Colors.INACTIVE, false)
@@ -275,7 +276,7 @@ local function CreateGenericButton (name, parent, point, anchor, anchorPoint, ty
   return btn
 end
 
-local function CreateSingleLIneEditBox(name, parent, point, anchor, anchorPoint, type, text, xOffSet, row)
+local function CreateSingleLineEditBox(name, parent, point, anchor, anchorPoint, type, text, xOffSet, row)
   local tb = ZN.SingleLineEditBox(name, parent, point, anchor, anchorPoint, ZN.PlayerTableColumns[type], ZN.PlayerTableRows.row, xOffSet and xOffSet or 0, 0, 0, 0 ,12, ZN.Colors.INACTIVE, ZN.Colors.ROWBG, nil, text, "CENTER")
   tb.Row = row
   tb.Column = ZN.PlayerAttributeMapping[type]
@@ -337,14 +338,14 @@ local function CreateContentRow(PlayerSpellID, PlayerSpell, AnchorFrame)
   --iconbutton on click setzen für onupdate
   ContentRow.Role = CreateGenericButton ("Role"..PlayerSpellID, ContentRow, "LEFT", ContentRow, "LEFT", "role", ZN.ColoredRoles[PlayerSpell.role],PlayerSpellID)
   ContentRow.Class = CreateGenericButton ("Class"..PlayerSpellID, ContentRow, "LEFT", ContentRow.Role, "RIGHT", "class", ZN.PlayerClassesColored[PlayerSpell.class],PlayerSpellID)
-  ContentRow.SpellId = CreateSingleLIneEditBox("Spellid"..PlayerSpellID, ContentRow, "LEFT", ContentRow.Class, "RIGHT", "spellid", PlayerSpell.id,0,PlayerSpellID)
+  ContentRow.SpellId = CreateSingleLineEditBox("Spellid"..PlayerSpellID, ContentRow, "LEFT", ContentRow.Class, "RIGHT", "spellid", PlayerSpell.id,0,PlayerSpellID)
   ContentRow.SpellName = CreateText(ContentRow, "LEFT", ContentRow.SpellId, "RIGHT", "spellname", (GetSpellInfo(PlayerSpell.id) and GetSpellInfo(PlayerSpell.id) or "|cffff3f40Invalid Spell ID|r"):upper())
   ContentRow.SpellType = CreateGenericButton ("Type"..PlayerSpellID, ContentRow, "LEFT", ContentRow.SpellName, "RIGHT", "spelltype", ZN.Types[PlayerSpell.type],PlayerSpellID)
   ContentRow.Aoe = CreateCheckBox(ContentRow, "LEFT", ContentRow.SpellType, "RIGHT", "aoe", PlayerSpellID, PlayerSpell.aoe)
   ContentRow.Station = CreateCheckBox(ContentRow, "LEFT", ContentRow.Aoe, "RIGHT", "station", PlayerSpellID, PlayerSpell.station)
   --ContentRow.SpellCd = CreateText(ContentRow, "LEFT", ContentRow.Station, "RIGHT", "spellcd", select(1,GetSpellBaseCooldown(PlayerSpell.id))/1000, 17)
-  ContentRow.SpellCd = CreateSingleLIneEditBox("Spellcd"..PlayerSpellID, ContentRow, "LEFT", ContentRow.Station, "RIGHT", "spellcd", PlayerSpell.cd, 17, PlayerSpellID)
-  ContentRow.SpellRating = CreateSingleLIneEditBox("Spellrating"..PlayerSpellID, ContentRow, "LEFT", ContentRow.SpellCd, "RIGHT", "spellrating", PlayerSpell.rating,0, PlayerSpellID)
+  ContentRow.SpellCd = CreateSingleLineEditBox("Spellcd"..PlayerSpellID, ContentRow, "LEFT", ContentRow.Station, "RIGHT", "spellcd", PlayerSpell.cd, 17, PlayerSpellID)
+  ContentRow.SpellRating = CreateSingleLineEditBox("Spellrating"..PlayerSpellID, ContentRow, "LEFT", ContentRow.SpellCd, "RIGHT", "spellrating", PlayerSpell.rating,0, PlayerSpellID)
   ContentRow.Delete = CreateIconButton(ContentRow, "LEFT", ContentRow.SpellRating, "RIGHT", "delete", PlayerSpellID)
 
 
@@ -513,10 +514,17 @@ function ZN:addNewPlayerSpell()
   ZN:ReloadPlayerTable()
 end
 
--- ZN.PlayerSortOrder = {
---   "rating",
---   "role",
---   "class",
---   "type",
---   "cd",
--- }
+function ZN:ResetPlayerFilter()
+  ZN.RoleFilter="all"
+  ZN.ClassFilter="all"
+  ZN.TypeFilter="all"
+  ZN.AoeFilter="all"
+  ZN.StationFilter="all"
+
+  PlayerSidebar.StationSelectButton.ZNText:SetText(ZN.CheckBoxSelectionColor["all"])
+  PlayerSidebar.AoeSelectButton.ZNText:SetText(ZN.CheckBoxSelectionColor["all"])
+  PlayerSidebar.TypeSelectButton.ZNText:SetText(ZN.TypeSelection["all"])
+  PlayerSidebar.RoleSelectButton.ZNText:SetText(ZN.RoleSelectionColor["all"])
+  PlayerSidebar.ClassSelectButton.ZNText:SetText(ZN.PlayerClassesColored["all"])
+  ZN:ReloadPlayerTable()
+end
