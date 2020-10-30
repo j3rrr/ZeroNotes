@@ -93,8 +93,8 @@ local function CreateTitleRow()
   return TitleRow
 end
 
-local function CreateGenericButton (name, parent, point, anchor, anchorPoint, type, text,row)
-  local btn = ZN.CreateGenericButton(name, parent, point, anchor, anchorPoint, ZN.PlayerTableColumns[type], ZN.PlayerTableRows.row, 0, 0, 0, 0 ,12, ZN.Colors.INACTIVE, ZN.Colors.ROWBG, nil, text, "CENTER", false)
+local function CreateGenericButton (name, parent, point, anchor, anchorPoint, type, text,row,xoffset)
+  local btn = ZN.CreateGenericButton(name, parent, point, anchor, anchorPoint, ZN.PlayerTableColumns[type], ZN.PlayerTableRows.row, 0, 0,xoffset and xoffset or 0, 0 ,12, ZN.Colors.INACTIVE, ZN.Colors.ROWBG, nil, text, "CENTER", false)
   btn:SetScript("OnClick", function(self) ZN:CreateDropdown(self, ZN.PlayerDropdowns[type].content, ZN.PlayerDropdowns[type].order, ZN.PlayerTableColumns[type], ZN.Colors.SBButtonBG, "CENTER",0, ZN.Colors.HD) end)
   btn.Row = row
   btn.Column = ZN.PlayerAttributeMapping[type]
@@ -156,7 +156,7 @@ local function CreateText(parent, point, anchor, anchorPoint, type, text, xOffse
 end
 
 local function CreateIconButton(parent, point, anchor, anchorPoint, type, row)
-  local btn =ZN.CreateIconButton(parent, point, anchor, anchorPoint, 16, 16, 17, 0, "Interface\\AddOns\\ZeroNotes\\Media\\Texture\\delete2", ZN.Colors.ACTIVE, ZN.Colors.INACTIVE, false)
+  local btn =ZN.CreateIconButton(parent, point, anchor, anchorPoint, ZN.PlayerTableIconButton[type].size, ZN.PlayerTableIconButton[type].size, ZN.PlayerTableIconButton[type].xOffset, 0, ZN.PlayerTableIconButton[type].texture, ZN.Colors.ACTIVE, ZN.Colors.INACTIVE, false)
   btn.Row = row
   btn.Column = type
   return btn
@@ -166,6 +166,7 @@ local function CreateContentRow(PlayerSpellID, PlayerSpell, AnchorFrame)
   local ContentRow = ZN.createSubFrame("ZNPlayerRow"..PlayerSpellID, ZNBodyFrame.Subframes.Player.scrollChild, 930, ZN.PlayerTableRows.row, ZN.Colors.ROWBG, 1, "TOP", "HIGH", false, 0,-ZN.PlayerTableRows.rowgap, AnchorFrame, "BOTTOM")
   --iconbutton on click setzen für onupdate
   ContentRow.Role = CreateGenericButton ("Role"..PlayerSpellID, ContentRow, "LEFT", ContentRow, "LEFT", "role", ZN.ColoredRoles[PlayerSpell.role],PlayerSpellID)
+  -- ContentRow.Classi = CreateIconButton(ContentRow, "LEFT", ContentRow.Role, "RIGHT", "square", PlayerSpellID)
   ContentRow.Class = CreateGenericButton ("Class"..PlayerSpellID, ContentRow, "LEFT", ContentRow.Role, "RIGHT", "class", ZN.PlayerClassesColored[PlayerSpell.class],PlayerSpellID)
   ContentRow.SpellId = CreateSingleLineEditBox("Spellid"..PlayerSpellID, ContentRow, "LEFT", ContentRow.Class, "RIGHT", "spellid", PlayerSpell.id,0,PlayerSpellID)
   ContentRow.SpellName = CreateText(ContentRow, "LEFT", ContentRow.SpellId, "RIGHT", "spellname", (GetSpellInfo(PlayerSpell.id) and GetSpellInfo(PlayerSpell.id) or "|cffff3f40Invalid Spell ID|r"):upper())
@@ -176,7 +177,8 @@ local function CreateContentRow(PlayerSpellID, PlayerSpell, AnchorFrame)
   ContentRow.SpellCd = CreateSingleLineEditBox("Spellcd"..PlayerSpellID, ContentRow, "LEFT", ContentRow.Station, "RIGHT", "spellcd", PlayerSpell.cd, 17, PlayerSpellID)
   ContentRow.SpellRating = CreateSingleLineEditBox("Spellrating"..PlayerSpellID, ContentRow, "LEFT", ContentRow.SpellCd, "RIGHT", "spellrating", PlayerSpell.rating,0, PlayerSpellID)
   ContentRow.Delete = CreateIconButton(ContentRow, "LEFT", ContentRow.SpellRating, "RIGHT", "delete", PlayerSpellID)
-
+  -- ContentRow.Class.ZNText:SetJustifyH("LEFT")
+  -- ContentRow.Class:SetWidth(ContentRow.Class:GetWidth()-40)
 
   ContentRow.SpellId.refersTo=ContentRow.SpellName
 

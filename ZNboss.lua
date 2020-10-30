@@ -87,12 +87,6 @@ ZN.BossTableRows = {
     "raidicon",
   }
 
-  ZN.BossTableCheckBoxTextures = {
-    ["checked"] = "Interface\\AddOns\\ZeroNotes\\Media\\Texture\\checkmark",
-    ["checkedColor"] = ZN.Colors.hunter,
-    ["unchecked"] = "Interface\\AddOns\\ZeroNotes\\Media\\Texture\\x_big_active",
-    ["uncheckedColor"] = ZN.Colors.dk,
-  }
 
   ZN.BossTrennerTableColumns = {
     ["text"] = 340,
@@ -179,21 +173,21 @@ ZN.BossTableRows = {
   end
   
   local function CreateCheckBox(parent, point, anchor, anchorPoint, type, row, checked, boss)
-    local cb = ZN.CreateIconButton(parent, point, anchor, anchorPoint, ZN.BossTableIconButton[type].size, ZN.BossTableIconButton[type].size, ZN.BossTableIconButton[type].xOffset, 0, ZN.BossTableCheckBoxTextures.checked, ZN.BossTableCheckBoxTextures.checkedColor, ZN.BossTableCheckBoxTextures.uncheckedColor, true, ZN.Colors.ACTIVE)
+    local cb = ZN.CreateIconButton(parent, point, anchor, anchorPoint, ZN.BossTableIconButton[type].size, ZN.BossTableIconButton[type].size, ZN.BossTableIconButton[type].xOffset, 0, ZN.CheckBoxTextures.checked, ZN.CheckBoxTextures.checkedColor, ZN.CheckBoxTextures.uncheckedColor, true, ZN.Colors.ACTIVE)
     cb.toggleChecked = function()
       if cb.active then
         cb.active=false
-        cb:SetNormalTexture(ZN.BossTableCheckBoxTextures.unchecked)
-        cb:GetNormalTexture():SetVertexColor(tonumber("0x"..ZN.BossTableCheckBoxTextures.uncheckedColor:sub(1,2))/255, tonumber("0x"..ZN.BossTableCheckBoxTextures.uncheckedColor:sub(3,4))/255, tonumber("0x"..ZN.BossTableCheckBoxTextures.uncheckedColor:sub(5,6))/255, 1)
+        cb:SetNormalTexture(ZN.CheckBoxTextures.unchecked)
+        cb:GetNormalTexture():SetVertexColor(tonumber("0x"..ZN.CheckBoxTextures.uncheckedColor:sub(1,2))/255, tonumber("0x"..ZN.CheckBoxTextures.uncheckedColor:sub(3,4))/255, tonumber("0x"..ZN.CheckBoxTextures.uncheckedColor:sub(5,6))/255, 1)
       else
         cb.active=true
-        cb:SetNormalTexture(ZN.BossTableCheckBoxTextures.checked)
-        cb:GetNormalTexture():SetVertexColor(tonumber("0x"..ZN.BossTableCheckBoxTextures.checkedColor:sub(1,2))/255, tonumber("0x"..ZN.BossTableCheckBoxTextures.checkedColor:sub(3,4))/255, tonumber("0x"..ZN.BossTableCheckBoxTextures.checkedColor:sub(5,6))/255, 1)
+        cb:SetNormalTexture(ZN.CheckBoxTextures.checked)
+        cb:GetNormalTexture():SetVertexColor(tonumber("0x"..ZN.CheckBoxTextures.checkedColor:sub(1,2))/255, tonumber("0x"..ZN.CheckBoxTextures.checkedColor:sub(3,4))/255, tonumber("0x"..ZN.CheckBoxTextures.checkedColor:sub(5,6))/255, 1)
       end
     end
     if not checked then
       cb.toggleChecked()
-      cb:GetNormalTexture():SetVertexColor(tonumber("0x"..ZN.BossTableCheckBoxTextures.uncheckedColor:sub(1,2))/255, tonumber("0x"..ZN.BossTableCheckBoxTextures.uncheckedColor:sub(3,4))/255, tonumber("0x"..ZN.BossTableCheckBoxTextures.uncheckedColor:sub(5,6))/255, 1)
+      cb:GetNormalTexture():SetVertexColor(tonumber("0x"..ZN.CheckBoxTextures.uncheckedColor:sub(1,2))/255, tonumber("0x"..ZN.CheckBoxTextures.uncheckedColor:sub(3,4))/255, tonumber("0x"..ZN.CheckBoxTextures.uncheckedColor:sub(5,6))/255, 1)
     end
     cb.Row = row
     cb.boss=boss

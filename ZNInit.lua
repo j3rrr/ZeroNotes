@@ -933,7 +933,8 @@ ZN.PlayerTableColumnButtonTypes = {
 ZN.PlayerTableIconButton = {
   ["aoe"]= {["size"]= 16, ["xOffset"]=17, ["type"]="checkBox"},
   ["station"]= {["size"]= 16, ["xOffset"]=34, ["type"]="checkBox"},
-  ["delete"]= {["size"]= 16, ["xOffset"]=17, ["type"]="delete", ["texture"]="Interface\\AddOns\\ZeroNotes\\Media\\Texture\\delete2"}
+  ["delete"]= {["size"]= 16, ["xOffset"]=17, ["type"]="delete", ["texture"]="Interface\\AddOns\\ZeroNotes\\Media\\Texture\\delete2"},
+  ["square"]= {["size"]= 40, ["xOffset"]=0, ["type"]="square", ["texture"]="Interface\\AddOns\\ZeroNotes\\Media\\Texture\\square"}
 }
 
 ZN.CheckBoxTextures = {
