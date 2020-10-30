@@ -556,7 +556,26 @@ ZNotes.BossTemplates = ZNotes.BossTemplates or {
       ["time"]= 20,
       ["prio"]= 1,    
       ["station"]= false,
-      ["need"]= {{["type"]= "heal"},{["type"]= "imun"},{["type"]= "util"}},
+      ["need"]= {
+        {
+          ["type"]= "heal",
+          ["ratingOverwrite"] = {
+            ["monk"] = 9000
+          }
+        },
+        {
+          ["type"]= "imun",
+          ["ratingOverwrite"] = {
+            ["tankpaladin"] = 9000
+          }
+        },
+        {
+          ["type"]= "util",
+          ["ratingOverwrite"] = {
+            ["range"] = 9000
+          }
+        }
+      },
       ["aoe"]= false,
       ["repeatX"]= 4,
       ["repeatAfter"]= 40
@@ -567,7 +586,14 @@ ZNotes.BossTemplates = ZNotes.BossTemplates or {
       ["time"]= 35,
       ["prio"]= 2,    
       ["station"]= true,
-      ["need"]= {{["type"]= "heal"},{["type"]= "util"}},
+      ["need"]= {
+        {
+          ["type"]= "heal"
+        },
+        {
+          ["type"]= "util"
+        }
+      },
       ["aoe"]= true,
       ["repeatX"]= 2,
       ["repeatAfter"]= 60
@@ -578,7 +604,14 @@ ZNotes.BossTemplates = ZNotes.BossTemplates or {
       ["time"]= 125,
       ["prio"]= 2,    
       ["station"]= true,
-      ["need"]= {{["type"]= "imun"},{["type"]= "imun"}},
+      ["need"]= {
+        {
+          ["type"]= "imun"
+        },
+        {
+          ["type"]= "imun"
+        }
+      },
       ["aoe"]= true,
       ["repeatX"]= 2,
       ["repeatAfter"]= 30
