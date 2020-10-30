@@ -185,14 +185,17 @@ end
 
 function ZN:ToggleImpExpView(frameToShow)
 	if frameToShow == "ImpExpContent.PlayerDbSubframe" then
-		--ImpExpContent.PlayerDbSubframe:Show()
+		-- if not ImpExpContent.ImpExpInfoSubframe:IsShown() then
+		-- 	ImpExpContent.ImpExpInfoSubframe:Show()
+		-- else
+		-- 	ImpExpContent.ImpExpInfoSubframe:Hide()
+		-- end
 		ImpExpContent.PlayerDbSubframe:SetShown(not ImpExpContent.PlayerDbSubframe:IsShown());
 		ImpExpContent.BossTemplateSubframe:Hide()
 		ImpExpContent.WeakaurasSubframe:Hide()
 	elseif frameToShow == "ImpExpContent.BossTemplateSubframe" then
 		ImpExpContent.PlayerDbSubframe:Hide()
 		ImpExpContent.BossTemplateSubframe:SetShown(not ImpExpContent.BossTemplateSubframe:IsShown());
-		--ImpExpContent.BossTemplateSubframe:Show()
 		ImpExpContent.WeakaurasSubframe:Hide()
 	elseif frameToShow == "ImpExpContent.WeakaurasSubframe" then
 		ImpExpContent.PlayerDbSubframe:Hide()
