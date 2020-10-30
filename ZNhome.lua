@@ -1,6 +1,6 @@
 local _, ZN, L = ...
 
-local selectedTemplate = ""
+local selectedTemplate = nil
 
 HomeContent = ZNBodyFrame.Subframes.Home
 
@@ -25,7 +25,7 @@ HomeContent.Paragraph = ZN.CreateText(HomeContent, "TOP", HomeContent.HowToTitle
 --Raw Note Editbox
 HomeContent.ShowNoteEditBox = ZN.createSubFrame("ShowNoteEditBox", HomeContent, 680, 530, ZN.Colors.BG, 1, "TOP","DIALOG", true, 0, 0)
 HomeContent.ShowNoteEditBox.btnClose = ZN.CreateIconButton(HomeContent.ShowNoteEditBox, "TOPRIGHT", HomeContent.ShowNoteEditBox, "TOPRIGHT", 16, 16, -10, -10, "Interface\\AddOns\\ZeroNotes\\Media\\Texture\\x_big_active", ZN.Colors.ACTIVE, ZN.Colors.INACTIVE, false)
-HomeContent.ShowNoteEditBox.EditBox = ZN.MultiLineEditBox("ZBMImportEditBox", HomeContent.ShowNoteEditBox, "TOP", HomeContent.ShowNoteEditBox, "TOP", 660, 450, 0, -65, 0, 0 ,12, ZN.Colors.ACTIVE, ZN.Colors.HD, nil, "--> "..selectedTemplate.." <--", "LEFT")
+HomeContent.ShowNoteEditBox.EditBox = ZN.MultiLineEditBox("ZBMImportEditBox", HomeContent.ShowNoteEditBox, "TOP", HomeContent.ShowNoteEditBox, "TOP", 660, 450, 0, -65, 0, 0 ,12, ZN.Colors.ACTIVE, ZN.Colors.HD, nil, "", "LEFT")
 
 HomeContent.ShowNoteEditBox.btnClose:SetScript("OnClick", function(self) HomeContent.ShowNoteEditBox:Hide() end)
 
@@ -45,10 +45,22 @@ HomeSidebar.ShowNoteInEditorButton = ZN.CreateGenericButton("ShowNoteInEditorBut
 HomeSidebar.TemplateSelectButton:SetScript("OnClick", function(self) ZN:CreateDropdown(self, ZN:getTableKeys(ZNotes.BossTemplates), ZN:getTableOrder(ZNotes.BossTemplates), 240, ZN.Colors.BG, "LEFT", 10, nil, "TOOLTIP") end)
 
 if IsAddOnLoaded("ExRT") then
-  HomeSidebar.SendToExRTButton:SetScript("OnClick", function(self) ZN:SendToExRT("Send to ExRT Button") end)
+  HomeSidebar.SendToExRTButton:SetScript("OnClick", function(self) 
+    VExRT.Note.Text1 = ZN:PrintNote(selectedTemplate, true)
+    _G["GExRT"].A["Note"].frame:Save()
+  end)
 end
 
 HomeSidebar.ShowNoteInEditorButton:SetScript("OnClick", function(self) 
+  if not IsInGroup() then
+    ZN:Print("You need to be in a party or raid.")
+    return
+  end
+  if selectedTemplate == nil or selectedTemplate == "Select Template.." then
+    ZN:Print("You need to select a Boss Template")
+    return
+  end
   HomeContent.ShowNoteEditBox:SetShown(not HomeContent.ShowNoteEditBox:IsShown()); 
-  HomeContent.ShowNoteEditBox.EditBox.editbox:SetText("-->"..selectedTemplate.."<--")    
+  HomeContent.ShowNoteEditBox.EditBox.editbox:SetText(ZN:PrintNote(selectedTemplate, true))    
+
 end)

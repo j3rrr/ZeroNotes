@@ -5,73 +5,7 @@ local ZBMWagoUrl = "https://wago.io/ssH2QdjlK"
 local ZNDImportString = "NO STRING YET"
 local ZNDWagoUrl = "no url yet"
 
-function ZN:serializeTable(val, name, skipnewlines, depth)
-  skipnewlines = skipnewlines or false
-  depth = depth or 0
-
-  local tmp = string.rep(" ", depth)
-
-  if name then 
-    if type(name) == "number" then
-      name = "["..name.."]"
-    end
-      tmp = tmp .. name .. " = "       
-  end
-  if depth == 0 then      
-    tmp = "return "
-  end
-
-  if type(val) == "table" then
-      tmp = tmp .. "{" .. (not skipnewlines and "\n" or "")
-
-      for k, v in pairs(val) do
-          tmp =  tmp .. ZN:serializeTable(v, k, skipnewlines, depth + 1) .. "," .. (not skipnewlines and "\n" or "")
-      end
-
-      tmp = tmp .. string.rep(" ", depth) .. "}"
-  elseif type(val) == "number" then
-      tmp = tmp .. tostring(val)
-  elseif type(val) == "string" then
-      tmp = tmp .. string.format("%q", val)
-  elseif type(val) == "boolean" then
-      tmp = tmp .. (val and "true" or "false")
-  else
-      tmp = tmp .. "\"[inserializeable datatype:" .. type(val) .. "]\""
-  end
-
-  return tmp
-end
-
-local b='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/' -- You will need this for encoding/decoding
--- encoding
-function ZN:enc(data)
-  return ((data:gsub('.', function(x) 
-    local r,b='',x:byte()
-    for i=8,1,-1 do r=r..(b%2^i-b%2^(i-1)>0 and '1' or '0') end
-    return r;
-  end)..'0000'):gsub('%d%d%d?%d?%d?%d?', function(x)
-    if (#x < 6) then return '' end
-    local c=0
-    for i=1,6 do c=c+(x:sub(i,i)=='1' and 2^(6-i) or 0) end
-    return b:sub(c+1,c+1)
-  end)..({ '', '==', '=' })[#data%3+1])
-end
-
--- decoding
-function ZN:dec(data)
-  data = string.gsub(data, '[^'..b..'=]', '')
-  return (data:gsub('.', function(x)
-    if (x == '=') then return '' end
-    local r,f='',(b:find(x)-1)
-    for i=6,1,-1 do r=r..(f%2^i-f%2^(i-1)>0 and '1' or '0') end
-    return r;
-  end):gsub('%d%d%d?%d?%d?%d?%d?%d?', function(x)
-    if (#x ~= 8) then return '' end
-    local c=0
-    for i=1,8 do c=c+(x:sub(i,i)=='1' and 2^(8-i) or 0) end
-    return string.char(c)
-  end))
-end
+local selectedTemplate = nil
 
 ImpExpSidebar = ZNSidebarFrame.Subframes.ImpExp
 ImpExpContent = ZNBodyFrame.Subframes.ImpExp
@@ -166,6 +100,10 @@ BossTemplateSubframe.TemplateExportButton = ZN.CreateGenericButton("TemplateExpo
 
 BossTemplateSubframe.TemplateSelectButton:SetScript("OnClick", function(self) ZN:CreateDropdown(self, ZN:getTableKeys(ZNotes.BossTemplates), ZN:getTableOrder(ZNotes.BossTemplates), 240, ZN.Colors.INACTIVE, "LEFT", 10) end)
 BossTemplateSubframe.TemplateExportButton:SetScript("OnClick", function(self) 
+  if selectedTemplate == nil or selectedTemplate == "Select Template.." then
+    ZN:Print("You need to select a Boss Template")
+    return
+  end
   local str = ZN:serializeTable(ZNotes.BossTemplates[selectedTemplate], nil, true) 
   
   BossTemplateSubframe.ExportEditBox.editbox:SetText(ZN:enc(str)) 

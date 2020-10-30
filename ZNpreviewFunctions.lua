@@ -124,21 +124,21 @@ function ZN:printPreviewNote(arr)
   for i = 1, table.getn(rawNoteData["lines"]) do
     if rawNoteData["lines"][i]["trenner"] then
       local raidicon = ""
-      if rawNoteData["lines"][i]["raidicon"] == "{1}" then
+      if rawNoteData["lines"][i]["raidicon"] == "{rt1}" then
         raidicon = CreateTextureMarkup(ZN.previewIconsList[1], 0, 0, 0, 0, 0, 0, 0, 0, 0, -12)
-      elseif rawNoteData["lines"][i]["raidicon"] == "{2}" then
+      elseif rawNoteData["lines"][i]["raidicon"] == "{rt2}" then
         raidicon = CreateTextureMarkup(ZN.previewIconsList[2], 0, 0, 0, 0, 0, 0, 0, 0, 0, -12)
-      elseif rawNoteData["lines"][i]["raidicon"] == "{3}" then
+      elseif rawNoteData["lines"][i]["raidicon"] == "{rt3}" then
         raidicon = CreateTextureMarkup(ZN.previewIconsList[3], 0, 0, 0, 0, 0, 0, 0, 0, 0, -12)
-      elseif rawNoteData["lines"][i]["raidicon"] == "{4}" then
+      elseif rawNoteData["lines"][i]["raidicon"] == "{rt4}" then
         raidicon = CreateTextureMarkup(ZN.previewIconsList[4], 0, 0, 0, 0, 0, 0, 0, 0, 0, -12)
-      elseif rawNoteData["lines"][i]["raidicon"] == "{5}" then
+      elseif rawNoteData["lines"][i]["raidicon"] == "{rt5}" then
         raidicon = CreateTextureMarkup(ZN.previewIconsList[5], 0, 0, 0, 0, 0, 0, 0, 0, 0, -12)
-      elseif rawNoteData["lines"][i]["raidicon"] == "{6}" then
+      elseif rawNoteData["lines"][i]["raidicon"] == "{rt6}" then
         raidicon = CreateTextureMarkup(ZN.previewIconsList[6], 0, 0, 0, 0, 0, 0, 0, 0, 0, -12)
-      elseif rawNoteData["lines"][i]["raidicon"] == "{7}" then
+      elseif rawNoteData["lines"][i]["raidicon"] == "{rt7}" then
         raidicon = CreateTextureMarkup(ZN.previewIconsList[7], 0, 0, 0, 0, 0, 0, 0, 0, 0, -12)
-      elseif rawNoteData["lines"][i]["raidicon"] == "{8}" then
+      elseif rawNoteData["lines"][i]["raidicon"] == "{rt8}" then
         raidicon = CreateTextureMarkup(ZN.previewIconsList[8], 0, 0, 0, 0, 0, 0, 0, 0, 0, -12)
       end
       local convertedTime = ZN:SecondsToClock(rawNoteData["lines"][i]["time"])

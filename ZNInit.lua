@@ -4,6 +4,74 @@ local _, ZN, L = ...
 ZN.Title="Zero Notes"
 ZN.Version="1.0"
 
+function ZN:serializeTable(val, name, skipnewlines, depth)
+  skipnewlines = skipnewlines or false
+  depth = depth or 0
+
+  local tmp = string.rep(" ", depth)
+
+  if name then 
+    if type(name) == "number" then
+      name = "["..name.."]"
+    end
+      tmp = tmp .. name .. " = "       
+  end
+  if depth == 0 then      
+    tmp = "return "
+  end
+
+  if type(val) == "table" then
+      tmp = tmp .. "{" .. (not skipnewlines and "\n" or "")
+
+      for k, v in pairs(val) do
+          tmp =  tmp .. ZN:serializeTable(v, k, skipnewlines, depth + 1) .. "," .. (not skipnewlines and "\n" or "")
+      end
+
+      tmp = tmp .. string.rep(" ", depth) .. "}"
+  elseif type(val) == "number" then
+      tmp = tmp .. tostring(val)
+  elseif type(val) == "string" then
+      tmp = tmp .. string.format("%q", val)
+  elseif type(val) == "boolean" then
+      tmp = tmp .. (val and "true" or "false")
+  else
+      tmp = tmp .. "\"[inserializeable datatype:" .. type(val) .. "]\""
+  end
+
+  return tmp
+end
+
+local b='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/' -- You will need this for encoding/decoding
+-- encoding
+function ZN:enc(data)
+  return ((data:gsub('.', function(x) 
+    local r,b='',x:byte()
+    for i=8,1,-1 do r=r..(b%2^i-b%2^(i-1)>0 and '1' or '0') end
+    return r;
+  end)..'0000'):gsub('%d%d%d?%d?%d?%d?', function(x)
+    if (#x < 6) then return '' end
+    local c=0
+    for i=1,6 do c=c+(x:sub(i,i)=='1' and 2^(6-i) or 0) end
+    return b:sub(c+1,c+1)
+  end)..({ '', '==', '=' })[#data%3+1])
+end
+
+-- decoding
+function ZN:dec(data)
+  data = string.gsub(data, '[^'..b..'=]', '')
+  return (data:gsub('.', function(x)
+    if (x == '=') then return '' end
+    local r,f='',(b:find(x)-1)
+    for i=6,1,-1 do r=r..(f%2^i-f%2^(i-1)>0 and '1' or '0') end
+    return r;
+  end):gsub('%d%d%d?%d?%d?%d?%d?%d?', function(x)
+    if (#x ~= 8) then return '' end
+    local c=0
+    for i=1,8 do c=c+(x:sub(i,i)=='1' and 2^(8-i) or 0) end
+    return string.char(c)
+  end))
+end
+
 function table.copy(t)
   local u = { }
   for k, v in pairs(t) do u[k] = v end
@@ -23,7 +91,6 @@ function ZN:SecondsToClock(seconds)
 end
 
 ZN.DropDowns = {}
-
 
 ZN.Colors = {
 	["BG"] = "15191C",
@@ -453,7 +520,7 @@ ZN.DefaultPlayerSpells={
   {
     ["type"] = "util",
     ["id"] = 15286,
-    ["class"] = "priest",
+    ["class"] = "shadow",
     ["role"] = "range",
     ["cd"] = 180,
     ["color"] = "ffffff",
@@ -621,14 +688,14 @@ ZNotes.BossTemplates = ZNotes.BossTemplates or {
       ["time"]= 0,
       ["prio"]= 9000,
       ["trenner"]= true,
-      ["raidicon"]= "{1}"
+      ["raidicon"]= "{rt1}"
     },
       {
       ["text"]= "Phase 2",
       ["time"]= 110,
       ["prio"]= 9000,
       ["trenner"]= true,
-      ["raidicon"]= "{8}"
+      ["raidicon"]= "{rt8}"
     },
   }
 }
@@ -636,4 +703,165 @@ end
 
 ZN.BossTemplatesOrder = {
   "SampleBoss",
+}
+
+ZN.SpecNames = {
+  -- Death Knight
+  [250] = 'Blood',
+  [251] = 'Frost',
+  [252] = 'Unholy',
+  -- Demon Hunter
+  [577] = 'Havoc',
+  [581] = 'Vengeance',
+  -- Druid 
+  [102] = 'Balance',
+  [103] = 'Feral',
+  [104] = 'Guardian',
+  [105] = 'Restoration',
+  -- Hunter 
+  [253] = 'Beast Mastery',
+  [254] = 'Marksmanship',
+  [255] = 'Survival',
+  -- Mage 
+  [62] = 'Arcane',
+  [63] = 'Fire',
+  [64] = 'Frost',
+  -- Monk 
+  [268] = 'Brewmaster',
+  [269] = 'Windwalker',
+  [270] = 'Mistweaver',
+  -- Paladin 
+  [65] = 'Holy',
+  [66] = 'Protection',
+  [70] = 'Retribution',
+  -- Priest 
+  [256] = 'Discipline',
+  [257] = 'Holy',
+  [258] = 'Shadow',
+  -- Rogue 
+  [259] = 'Assassination',
+  [260] = 'Outlaw',
+  [261] = 'Subtlety',
+  -- Shaman 
+  [262] = 'Elemental',
+  [263] = 'Enhancement',
+  [264] = 'Restoration',
+  -- Warlock 
+  [265] = 'Affliction',
+  [266] = 'Demonology',
+  [267] = 'Destruction',
+  -- Warrior 
+  [71] = 'Arms',
+  [72] = 'Fury',
+  [73] = 'Protection'
+}
+
+ZN.RoleTable = {
+  -- Death Knight
+  [250] = 'tank',
+  [251] = 'melee',
+  [252] = 'melee',
+  -- Demon Hunter
+  [577] = 'melee',
+  [581] = 'tank',
+  -- Druid
+  [102] = 'range',
+  [103] = 'melee',
+  [104] = 'tank',
+  [105] = 'heal',
+  -- Hunter
+  [253] = 'range',
+  [254] = 'range',
+  [255] = 'melee',
+  -- Mage
+  [62] = 'range',
+  [63] = 'range',
+  [64] = 'range',
+  -- Monk
+  [268] = 'tank',
+  [269] = 'melee',
+  [270] = 'heal',
+  -- Paladin
+  [65] = 'heal',
+  [66] = 'tank',
+  [70] = 'melee',
+  -- Priest
+  [256] = 'heal',
+  [257] = 'heal',
+  [258] = 'range',
+  -- Rogue
+  [259] = 'melee',
+  [260] = 'melee',
+  [261] = 'melee',
+  -- Shaman
+  [262] = 'range',
+  [263] = 'melee',
+  [264] = 'heal',
+  -- Warlock
+  [265] = 'range',
+  [266] = 'range',
+  [267] = 'range',
+  -- Warrior
+  [71] = 'melee',
+  [72] = 'melee',
+  [73] = 'tank'
+}
+
+ZN.RegionString = {
+  [1] = 'us',
+  [2] = 'kr',
+  [3] = 'eu',
+  [4] = 'tw',
+  [5] = 'cn'
+}
+
+ZN.ClassTable = {
+  -- Death Knight
+  [250] = 'dk',
+  [251] = 'dk',
+  [252] = 'dk',
+  -- Demon Hunter
+  [577] = 'dh',
+  [581] = 'dh',
+  -- Druid
+  [102] = 'druid',
+  [103] = 'druid',
+  [104] = 'druid',
+  [105] = 'druid',
+  -- Hunter
+  [253] = 'hunter',
+  [254] = 'hunter',
+  [255] = 'hunter',
+  -- Mage
+  [62] = 'mage',
+  [63] = 'mage',
+  [64] = 'mage',
+  -- Monk
+  [268] = 'monk',
+  [269] = 'monk',
+  [270] = 'monk',
+  -- Paladin
+  [65] = 'paladin',
+  [66] = 'paladin',
+  [70] = 'paladin',
+  -- Priest
+  [256] = 'diszi',
+  [257] = 'priest',
+  [258] = 'shadow',
+  -- Rogue
+  [259] = 'rogue',
+  [260] = 'rogue',
+  [261] = 'rogue',
+  -- Shaman
+  [262] = 'shaman',
+  [263] = 'shaman',
+  [264] = 'shaman',
+  -- Warlock
+  [265] = 'warlock',
+  [266] = 'warlock',
+  [267] = 'warlock',
+  -- Warrior
+  [71] = 'warrior',
+  [72] = 'warrior',
+  [73] = 'warrior'
 }
