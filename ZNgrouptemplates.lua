@@ -20,8 +20,10 @@ GroupTemplates.GroupTemplatesRight = ZN.createSubFrame("GroupTemplatesRight", Gr
 ZN.GroupMemberRows = {}
 ZN.GroupMemberRowsSelectedClass = {}
 
+
 local function CreateGroupMemberRow(index, anchorFrame)
-  
+  local specList = nil
+  local specListOrder = nil
   local parent = GroupTemplates.GroupTemplatesLeft
   local yOffsset = 0
   if index > 1 then 
@@ -46,6 +48,8 @@ local function CreateGroupMemberRow(index, anchorFrame)
   MemberRow.Class.doOnUpdate = true
   MemberRow.Class.OnUpdate = function(_,_,_,newValue) 
     ZN.GroupMemberRowsSelectedClass[index] = newValue
+    specList = ZN.Specs[ZN.GroupMemberRowsSelectedClass[index]]
+    specListOrder = ZN:getTableOrder(ZN.Specs[ZN.GroupMemberRowsSelectedClass[index]])
     print(ZN.GroupMemberRowsSelectedClass[index])
   end
   MemberRow.Spec = ZN.CreateGenericButton("GroupMemberSpec"..index, MemberRow, "LEFT", MemberRow.Class, "RIGHT", 80, 40, 0, 0,10,0, 12, ZN.Colors.ACTIVE, ZN.Colors.ROWBG, nil, "Spec", "LEFT",true )
@@ -55,7 +59,7 @@ local function CreateGroupMemberRow(index, anchorFrame)
     ZN:CreateDropdown(self, ZN.ClassIconsList, ZN.ClassIconsListOrder, 40, ZN.Colors.SBButtonBG, "CENTER", 0, ZN.Colors.HD, nil, 40, -8)
   end)
   MemberRow.Spec:SetScript("OnClick", function(self)
-    ZN:CreateDropdown(self, ZN.PlayerClassesColored, ZN.PlayerClassesColoredOrder, 240, ZN.Colors.BG, "LEFT", 10)
+    ZN:CreateDropdown(self, specList, specListOrder , 240, ZN.Colors.SBButtonBG, "LEFT", 10,ZN.Colors.HD)
   end)
 
 

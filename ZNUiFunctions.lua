@@ -320,8 +320,8 @@ function ZN:CreateDropdown(parentObj, list, order, width, dropDownBgColor, butto
 		end
 	else
 		parentObj.dropdown:SetHeight((listItemHeight and listItemHeight or 30)*#order)
-		for i=1, #dropdown.dropdownItems do
-			dropdown.dropdownItems[i]:SetShown(false)
+		for i=1, #parentObj.dropdown.dropdownItems do
+			parentObj.dropdown.dropdownItems[i]:SetShown(false)
 		end
 		for i = 1, #order do
 			if i> #parentObj.dropdown.dropdownItems then
@@ -341,9 +341,10 @@ function ZN:CreateDropdown(parentObj, list, order, width, dropDownBgColor, butto
 			else
 				parentObj.dropdown.dropdownItems[i].class = order[i]
 				parentObj.dropdown.dropdownItems[i].newText = list[order[i]]:upper()
-				parentObj.dropdown.dropdownItems[i].newText = dropdown.dropdownItems[i].newText:gsub("(:%d+|)T", "%1t") -- Fix texture paths that need to end in lowercase |t
+				parentObj.dropdown.dropdownItems[i].newText = parentObj.dropdown.dropdownItems[i].newText:gsub("(:%d+|)T", "%1t") -- Fix texture paths that need to end in lowercase |t
+				parentObj.dropdown.dropdownItems[i].ZNText:SetText(parentObj.dropdown.dropdownItems[i].newText)
 			end
-			dropdown.dropdownItems[i]:SetShown(true)
+			parentObj.dropdown.dropdownItems[i]:SetShown(true)
 		end
 	end
 	local wasShown = parentObj.dropdown:IsShown();
