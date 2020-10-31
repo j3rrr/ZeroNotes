@@ -484,7 +484,7 @@ ZNBodyFrame.Subframes.BossNote = ZN.createSubFrame("ZNBodyBossNote", ZNBodyFrame
 ZNBodyFrame.Subframes.PlayerHead = ZN.createSubFrame("ZNBodyPlayerHead", ZNBodyFrame, 930, 30, nil, 1, "TOP","HIGH", true, 0, 0)
 ZNBodyFrame.Subframes.Player = ZN.createScrollFrame("ZNBodyPlayerContent", ZNBodyFrame, 930, 500, nil, 1, "TOP","HIGH", true)
 -- Boss Preview Frame
-ZNBodyFrame.Subframes.PreviewTemplateHead = ZN.createSubFrame("PreviewTemplateHead", ZNHeaderFrame, 1000, 32, ZN.Colors.black, 0.8, "BOTTOM","HIGH", true, 0, 0, ZNHeaderFrame, "TOP")
+ZNBodyFrame.Subframes.PreviewTemplateHead = ZN.createSubFrame("PreviewTemplateHead", ZNHeaderFrame, 1000, 32, ZN.Colors.black, 0.8, "BOTTOM","HIGH", true, 0, 0, ZNHeaderFrame, "TOP", true)
 ZNBodyFrame.Subframes.PreviewTemplateContent = ZN.createSubFrame("PreviewTemplateContent", ZNBodyFrame, 950, 540, ZN.Colors.black, 0.9, "TOP","DIALOG", true, 0, 0)
 ZNBodyFrame.Subframes.PreviewTemplateHead.btnCollapsePreviewTemlate = ZN.CreateIconButton(ZNBodyFrame.Subframes.PreviewTemplateHead, "RIGHT", ZNBodyFrame.Subframes.PreviewTemplateHead, "RIGHT", 16, 16, -26, 0, "Interface\\AddOns\\ZeroNotes\\Media\\Texture\\arrow_down", ZN.Colors.ACTIVE, ZN.Colors.INACTIVE, false)
 ZNBodyFrame.Subframes.PreviewTemplateHead.btnCollapsePreviewTemlate:SetScript("OnClick", function() ZN:ClickPreviewCollapse() end)
