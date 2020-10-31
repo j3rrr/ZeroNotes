@@ -219,17 +219,20 @@ function ZN.CreateGenericButton(name, parent, point, anchorFrame, anchorPoint, w
 		end
 	end
 
-    btn.ZNText = btn:CreateFontString()
-    btn.ZNText:SetPoint("LEFT", btn, "LEFT", fontxOffset, fontyOffset)
-    btn.ZNText:SetSize(width, height)
-    btn.ZNText:SetFont("Interface\\AddOns\\ZeroNotes\\Media\\Font\\ZNReg.ttf", fontSize)
+
+	btn.ZNText = btn:CreateFontString()
+	btn.ZNText:SetPoint("LEFT", btn, "LEFT", fontxOffset, fontyOffset)
+	btn.ZNText:SetSize(width, height)
+	btn.ZNText:SetFont("Interface\\AddOns\\ZeroNotes\\Media\\Font\\ZNReg.ttf", fontSize)
 	if fontcolor then
 		btn.ZNText:SetTextColor(tonumber("0x"..fontcolor:sub(1,2))/255, tonumber("0x"..fontcolor:sub(3,4))/255, tonumber("0x"..fontcolor:sub(5,6))/255, 1);
 	end
 	btn.ZNText:SetJustifyH(buttonTextAlign);
 	btn.ZNText:SetJustifyV("CENTER");
-	btn.ZNText:SetText(buttonText:upper());
-	
+	btn.text = buttonText:upper()
+	btn.text = btn.text:gsub("(:%d+|)T", "%1t") -- Fix texture paths that need to end in lowercase |t
+	btn.ZNText:SetText(btn.text);
+
 	if label then 
 		btn.ZNLabel = btn:CreateFontString()
 		btn.ZNLabel:SetPoint("BOTTOMLEFT", btn, "TOPLEFT", 0, 10)

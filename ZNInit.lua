@@ -1068,3 +1068,33 @@ ZN.RaidIconsList = {
 	"Interface\\TargetingFrame\\UI-RaidTargetingIcon_7",
 	"Interface\\TargetingFrame\\UI-RaidTargetingIcon_8",
 }
+
+ZN.ClassIconsList = {
+  ["dh"] = CreateTextureMarkup("Interface\\Addons\\ZeroNotes\\Media\\Texture\\class\\dh", 0, 0, 24, 24, 0, 0, 0, 0, 0, 0),
+  ["dk"] = CreateTextureMarkup("Interface\\Addons\\ZeroNotes\\Media\\Texture\\class\\dk", 0, 0, 24, 24, 0, 0, 0, 0, 0, 0),
+  ["druid"] = CreateTextureMarkup("Interface\\Addons\\ZeroNotes\\Media\\Texture\\class\\druid", 0, 0, 24, 24, 0, 0, 0, 0, 0, 0),
+  ["hunter"] = CreateTextureMarkup("Interface\\Addons\\ZeroNotes\\Media\\Texture\\class\\hunter", 0, 0, 24, 24, 0, 0, 0, 0, 0, 0),
+  ["mage"] = CreateTextureMarkup("Interface\\Addons\\ZeroNotes\\Media\\Texture\\class\\mage", 0, 0, 24, 24, 0, 0, 0, 0, 0, 0),
+  ["monk"] = CreateTextureMarkup("Interface\\Addons\\ZeroNotes\\Media\\Texture\\class\\monk", 0, 0, 24, 24, 0, 0, 0, 0, 0, 0),
+  ["paladin"] =CreateTextureMarkup("Interface\\Addons\\ZeroNotes\\Media\\Texture\\class\\paladin", 0, 0, 24, 24, 0, 0, 0, 0, 0, 0),
+  ["priest"] = CreateTextureMarkup("Interface\\Addons\\ZeroNotes\\Media\\Texture\\class\\priest", 0, 0, 24, 24, 0, 0, 0, 0, 0, 0),
+  ["rogue"] = CreateTextureMarkup("Interface\\Addons\\ZeroNotes\\Media\\Texture\\class\\rogue", 0, 0, 24, 24, 0, 0, 0, 0, 0, 0),
+  ["shaman"] = CreateTextureMarkup("Interface\\Addons\\ZeroNotes\\Media\\Texture\\class\\shaman", 0, 0, 24, 24, 0, 0, 0, 0, 0, 0),
+  ["warlock"] = CreateTextureMarkup("Interface\\Addons\\ZeroNotes\\Media\\Texture\\class\\warlock", 0, 0, 24, 24, 0, 0, 0, 0, 0, 0),
+  ["warrior"] = CreateTextureMarkup("Interface\\Addons\\ZeroNotes\\Media\\Texture\\class\\warrior", 0, 0, 24, 24, 0, 0, 0, 0, 0, 0),
+}
+
+ZN.ClassIconsListOrder = {
+  "dk",
+  "dh",
+  "druid",
+  "hunter",
+  "mage",
+  "monk",
+  "paladin",
+  "priest",
+  "rogue",
+  "shaman",
+  "warlock",
+  "warrior",
+}

@@ -15,36 +15,62 @@ GroupTemplates.GroupTemplatesLeft = ZN.createSubFrame("GroupTemplatesLeft", Grou
 GroupTemplates.GroupTemplatesMiddle = ZN.createSubFrame("GroupTemplatesMiddle", GroupTemplates, 300, 530, ZN.Colors.BG, 1, "TOPLEFT", "HIGH", false, 10, 0, GroupTemplates.GroupTemplatesLeft, "TOPRIGHT")
 GroupTemplates.GroupTemplatesRight = ZN.createSubFrame("GroupTemplatesRight", GroupTemplates, 300, 530, ZN.Colors.BG, 1, "TOPLEFT", "HIGH", false, 10, 0, GroupTemplates.GroupTemplatesMiddle, "TOPRIGHT")
 
-ZN.GroupMemberRows = {}
 
-local function CreateGroupMemberRow(index)
+
+ZN.GroupMemberRows = {}
+ZN.GroupMemberRowsSelectedClass = {}
+
+local function CreateGroupMemberRow(index, anchorFrame)
+  
   local parent = GroupTemplates.GroupTemplatesLeft
-  local yOffsset = 0  
-  -- if index > 1 then 
+  local yOffsset = 0
+  if index > 1 then 
  
-      yOffsset = -(42*((index-1)%10))
+      yOffsset = -2
     if index == 6 or index == 16 or index == 26 then
       yOffsset = yOffsset - 8
     end
-  --end
+  end
   if index > 10 then
     parent = GroupTemplates.GroupTemplatesMiddle
   end
     if index > 20 then
-    parent = GroupTemplates.GroupTemplatesRight
+    parent = GroupTemplates.GroupTemplatesRight    
   end
-  local MemberRow = ZN.createSubFrame("ZNGroupMemberRow"..index, parent, 300, 40, ZN.Colors.ROWBG, 1, "TOPLEFT", "HIGH", false, 0, yOffsset)
+  if index == 11 or index == 21 then
+    anchorFrame = parent
+  end
+  local MemberRow = ZN.createSubFrame("ZNGroupMemberRow"..index, parent, 300, 40, ZN.Colors.ROWBG, 1, "TOPLEFT", "HIGH", false, 0, yOffsset, anchorFrame, "BOTTOMLEFT")
 
-  MemberRow.Class = ZN.CreateIconButton(MemberRow, "LEFT", MemberRow, "LEFT", 26, 26, 14, 0, "Interface\\AddOns\\ZeroNotes\\Media\\Texture\\class\\druid", nil, nil, true, nil)
+  MemberRow.Class = ZN.CreateGenericButton("GroupMemberClass"..index, MemberRow, "LEFT", MemberRow, "LEFT", 40, 40, 0, 0 ,0 ,-8, 12, nil, ZN.Colors.ROWBG, nil, CreateTextureMarkup("Interface\\Addons\\ZeroNotes\\Media\\Texture\\class\\hunter", 0, 0, 24, 24, 0, 0, 0, 0, 0, 0), "CENTER",true)
+  MemberRow.Class.doOnUpdate = true
+  MemberRow.Class.OnUpdate = function(_,_,_,newValue) 
+    ZN.GroupMemberRowsSelectedClass[index] = newValue
+    print(ZN.GroupMemberRowsSelectedClass[index])
+  end
   MemberRow.Spec = ZN.CreateGenericButton("GroupMemberSpec"..index, MemberRow, "LEFT", MemberRow.Class, "RIGHT", 80, 40, 0, 0,10,0, 12, ZN.Colors.ACTIVE, ZN.Colors.ROWBG, nil, "Spec", "LEFT",true )
   MemberRow.Name = ZN.SingleLineEditBox("GroupMember"..index, MemberRow, "LEFT", MemberRow.Spec, "RIGHT", 180, 40, 0, 0, 0, 0 ,12, ZN.Colors.ACTIVE, ZN.Colors.ROWBG, nil, "Name", "LEFT")
 
-  MemberRow.Class:SetScript("OnClick", function(self) print("test "..index) end)
+  MemberRow.Class:SetScript("OnClick", function(self)
+    ZN:CreateDropdown(self, ZN.ClassIconsList, ZN.ClassIconsListOrder, 40, ZN.Colors.SBButtonBG, "CENTER", 0, ZN.Colors.HD, nil, 40, -8)
+  end)
+  MemberRow.Spec:SetScript("OnClick", function(self)
+    ZN:CreateDropdown(self, ZN.PlayerClassesColored, ZN.PlayerClassesColoredOrder, 240, ZN.Colors.BG, "LEFT", 10)
+  end)
+
 
   return MemberRow
 end
 
+local anchor = GroupTemplates.GroupTemplatesLeft
+
 for i = 1, 30 do
-  ZN.GroupMemberRows[i] = CreateGroupMemberRow(i)
+  ZN.GroupMemberRows[i] = CreateGroupMemberRow(i, anchor)
+  if i == 1 or i == 11 or i == 21 then
+    _,parent = ZN.GroupMemberRows[i]:GetPoint()
+    ZN.GroupMemberRows[i]:ClearAllPoints()
+    ZN.GroupMemberRows[i]:SetPoint("TOPLEFT", parent,"TOPLEFT")
+  end
+  anchor = ZN.GroupMemberRows[i]
 end
 

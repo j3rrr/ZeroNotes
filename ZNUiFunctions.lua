@@ -294,7 +294,7 @@ function ZN:ToggleImpExpView(frameToShow)
 	end
 end
 
-function ZN:CreateDropdown(parentObj, list, order, width, dropDownBgColor, buttonAlign, buttonTextXOffset, hoverColor, strata)
+function ZN:CreateDropdown(parentObj, list, order, width, dropDownBgColor, buttonAlign, buttonTextXOffset, hoverColor, strata, listItemHeight, buttonTextYOffset)
 
 	if not parentObj.dropdownInit then
 		parentObj.dropdownInit = true
@@ -303,12 +303,15 @@ function ZN:CreateDropdown(parentObj, list, order, width, dropDownBgColor, butto
 		parentObj.dropdown = dropdown
 		
 		for i = 1, #order do
-			local dropdownItem = ZN.CreateGenericButton(nil, dropdown, "TOPLEFT", dropdown, "TOPLEFT", width, 30, 0, (-30*(i-1)), buttonTextXOffset, 0, 12, nil, dropDownBgColor, nil, list[order[i]]:upper() , buttonAlign ,true, hoverColor)
+			local text = list[order[i]]:upper()
+			text = text:gsub("(:%d+|)T", "%1t")
+			local dropdownItem = ZN.CreateGenericButton(nil, dropdown, "TOPLEFT", dropdown, "TOPLEFT", width, listItemHeight and listItemHeight or 30, 0,listItemHeight and (-listItemHeight*(i-1)) or (-30*(i-1)), buttonTextXOffset, buttonTextYOffset and buttonTextYOffset or 0, 12, nil, dropDownBgColor, nil, text , buttonAlign ,true, hoverColor)
 			dropdownItem.class = order[i]
-			dropdownItem.coloredClass = list[order[i]]
+			dropdownItem.newText = list[order[i]]:upper()
+			dropdownItem.newText = dropdownItem.newText:gsub("(:%d+|)T", "%1t") -- Fix texture paths that need to end in lowercase |t
 			dropdownItem.parentObj = parentObj
 			dropdownItem:SetScript("OnClick", function(self)
-				self.parentObj.ZNText:SetText(dropdownItem.coloredClass:upper())
+				self.parentObj.ZNText:SetText(dropdownItem.newText)
 				self.parentObj.Update(dropdownItem.class)
 				self.parentObj.dropdown:SetShown(not self.parentObj.dropdown:IsShown());
 			end)
