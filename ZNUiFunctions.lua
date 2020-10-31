@@ -299,8 +299,9 @@ function ZN:CreateDropdown(parentObj, list, order, width, dropDownBgColor, butto
 	if not parentObj.dropdownInit then
 		parentObj.dropdownInit = true
 		local parentName = parentObj.name
-		local dropdown = ZN.DropdownList(parentName.."Dropdown", parentObj.parent, "TOPLEFT", parentObj, "BOTTOMLEFT" , width, 30, dropDownBgColor, 1, "CENTER", true, #order, strata)
+		local dropdown = ZN.DropdownList(parentName.."Dropdown", parentObj.parent, "TOPLEFT", parentObj, "BOTTOMLEFT" , width, listItemHeight and listItemHeight or 30, dropDownBgColor, 1, "CENTER", true, #order, strata)
 		parentObj.dropdown = dropdown
+		dropdown.dropdownItems = {}
 		
 		for i = 1, #order do
 			local text = list[order[i]]:upper()
@@ -315,6 +316,34 @@ function ZN:CreateDropdown(parentObj, list, order, width, dropDownBgColor, butto
 				self.parentObj.Update(dropdownItem.class)
 				self.parentObj.dropdown:SetShown(not self.parentObj.dropdown:IsShown());
 			end)
+			dropdown.dropdownItems[i]=dropdownItem
+		end
+	else
+		parentObj.dropdown:SetHeight((listItemHeight and listItemHeight or 30)*#order)
+		for i=1, #dropdown.dropdownItems do
+			dropdown.dropdownItems[i]:SetShown(false)
+		end
+		for i = 1, #order do
+			if i> #parentObj.dropdown.dropdownItems then
+				local text = list[order[i]]:upper()
+				text = text:gsub("(:%d+|)T", "%1t")
+				local dropdownItem = ZN.CreateGenericButton(nil, parentObj.dropdown, "TOPLEFT", parentObj.dropdown, "TOPLEFT", width, listItemHeight and listItemHeight or 30, 0,listItemHeight and (-listItemHeight*(i-1)) or (-30*(i-1)), buttonTextXOffset, buttonTextYOffset and buttonTextYOffset or 0, 12, nil, dropDownBgColor, nil, text , buttonAlign ,true, hoverColor)
+				dropdownItem.class = order[i]
+				dropdownItem.newText = list[order[i]]:upper()
+				dropdownItem.newText = dropdownItem.newText:gsub("(:%d+|)T", "%1t") -- Fix texture paths that need to end in lowercase |t
+				dropdownItem.parentObj = parentObj
+				dropdownItem:SetScript("OnClick", function(self)
+				self.parentObj.ZNText:SetText(dropdownItem.newText)
+				self.parentObj.Update(dropdownItem.class)
+				self.parentObj.dropdown:SetShown(not self.parentObj.dropdown:IsShown());
+			end)
+			parentObj.dropdown.dropdownItems[i]=dropdownItem
+			else
+				parentObj.dropdown.dropdownItems[i].class = order[i]
+				parentObj.dropdown.dropdownItems[i].newText = list[order[i]]:upper()
+				parentObj.dropdown.dropdownItems[i].newText = dropdown.dropdownItems[i].newText:gsub("(:%d+|)T", "%1t") -- Fix texture paths that need to end in lowercase |t
+			end
+			dropdown.dropdownItems[i]:SetShown(true)
 		end
 	end
 	local wasShown = parentObj.dropdown:IsShown();
