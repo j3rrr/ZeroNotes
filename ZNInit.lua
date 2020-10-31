@@ -1176,14 +1176,14 @@ ZN.ClassIconsListOrder = {
 }
 
 ZN.TrennerIconsList = {
-  ["{rt1}"] = CreateTextureMarkup("Interface\\TargetingFrame\\UI-RaidTargetingIcon_1", 0, 0, 24, 24, 0, 0, 0, 0, 0, 0),
-  ["{rt2}"] = CreateTextureMarkup("Interface\\TargetingFrame\\UI-RaidTargetingIcon_2", 0, 0, 24, 24, 0, 0, 0, 0, 0, 0),
-  ["{rt3}"] = CreateTextureMarkup("Interface\\TargetingFrame\\UI-RaidTargetingIcon_3", 0, 0, 24, 24, 0, 0, 0, 0, 0, 0),
-  ["{rt4}"] = CreateTextureMarkup("Interface\\TargetingFrame\\UI-RaidTargetingIcon_4", 0, 0, 24, 24, 0, 0, 0, 0, 0, 0),
-  ["{rt5}"] = CreateTextureMarkup("Interface\\TargetingFrame\\UI-RaidTargetingIcon_5", 0, 0, 24, 24, 0, 0, 0, 0, 0, 0),
-  ["{rt6}"] = CreateTextureMarkup("Interface\\TargetingFrame\\UI-RaidTargetingIcon_6", 0, 0, 24, 24, 0, 0, 0, 0, 0, 0),
-  ["{rt7}"] = CreateTextureMarkup("Interface\\TargetingFrame\\UI-RaidTargetingIcon_7", 0, 0, 24, 24, 0, 0, 0, 0, 0, 0),
-  ["{rt8}"] = CreateTextureMarkup("Interface\\TargetingFrame\\UI-RaidTargetingIcon_8", 0, 0, 24, 24, 0, 0, 0, 0, 0, 0),
+  ["{rt1}"] = CreateTextureMarkup("Interface\\TargetingFrame\\UI-RaidTargetingIcon_1", 0, 0, 16, 16, 0, 0, 0, 0, 0, 0),
+  ["{rt2}"] = CreateTextureMarkup("Interface\\TargetingFrame\\UI-RaidTargetingIcon_2", 0, 0, 16, 16, 0, 0, 0, 0, 0, 0),
+  ["{rt3}"] = CreateTextureMarkup("Interface\\TargetingFrame\\UI-RaidTargetingIcon_3", 0, 0, 16, 16, 0, 0, 0, 0, 0, 0),
+  ["{rt4}"] = CreateTextureMarkup("Interface\\TargetingFrame\\UI-RaidTargetingIcon_4", 0, 0, 16, 16, 0, 0, 0, 0, 0, 0),
+  ["{rt5}"] = CreateTextureMarkup("Interface\\TargetingFrame\\UI-RaidTargetingIcon_5", 0, 0, 16, 16, 0, 0, 0, 0, 0, 0),
+  ["{rt6}"] = CreateTextureMarkup("Interface\\TargetingFrame\\UI-RaidTargetingIcon_6", 0, 0, 16, 16, 0, 0, 0, 0, 0, 0),
+  ["{rt7}"] = CreateTextureMarkup("Interface\\TargetingFrame\\UI-RaidTargetingIcon_7", 0, 0, 16, 16, 0, 0, 0, 0, 0, 0),
+  ["{rt8}"] = CreateTextureMarkup("Interface\\TargetingFrame\\UI-RaidTargetingIcon_8", 0, 0, 16, 16, 0, 0, 0, 0, 0, 0),
 }
 
 ZN.TrennerIconsListOrder = {

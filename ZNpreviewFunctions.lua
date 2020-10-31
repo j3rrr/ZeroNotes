@@ -141,7 +141,7 @@ function ZN:printPreviewNote(arr)
     else
       local convertedTime = ZN:SecondsToClock(rawNoteData["lines"][i]["time"])
       local iconPath = select(3,GetSpellInfo(rawNoteData["lines"][i]["bossSpellId"]))
-      local spellIcon = CreateTextureMarkup(iconPath, 0, 0, 16, 16, 0, 0, 0, 0, 0, -8)
+      local spellIcon = CreateTextureMarkup(iconPath and iconPath or "Interface\\Icons\\INV_MISC_QUESTIONMARK", 0, 0, 16, 16, 0, 0, 0, 0, 0, -8)
       local healIcon  = CreateTextureMarkup("Interface\\Addons\\ZeroNotes\\Media\\Texture\\h", 0, 0, 16, 16, 0, 0, 0, 0, 0, -8)
       local healNeeds = rawNoteData["lines"][i]["needHeal"]
       local healString = ""
