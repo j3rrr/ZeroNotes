@@ -89,16 +89,19 @@ ZN.BossSpellTableColumnHeaderNames = {
     ["text"] = "Divider Text",
     ["time"] = "Time",
     ["raidicon"] = "Icon",
+    ["delete"]= "Delete",
   }
 ZN.BossTrennerTableColumnHeaders = {
   "text",
   "time",
   "raidicon",
+  "delete",
   }
 ZN.BossTrennerTableColumns = {
-  ["text"] = 340,
+  ["text"] = 285,
   ["time"] = 60,
   ["raidicon"] = 60,
+  ["delete"] = 55,
   }
 ZN.BossDropdowns = {
   ["icon"] = {["content"]=ZN.ColoredRoles, ["order"]=ZN.ColoredRolesOrder},
@@ -210,8 +213,8 @@ local function CreateText(parent, point, anchor, anchorPoint, width, type, text,
   return txt
 end
 
-local function CreateIconButton(parent, point, anchor, anchorPoint, type, row, boss)
-  local btn =ZN.CreateIconButton(parent, point, anchor, anchorPoint, ZN.BossTableIconButton[type].size, ZN.BossTableIconButton[type].size, ZN.BossTableIconButton[type].xOffset, 0, ZN.BossTableIconButton[type].texture, ZN.Colors.ACTIVE, ZN.Colors.INACTIVE, false)
+local function CreateIconButton(parent, point, anchor, anchorPoint, type, row, boss, xoffset)
+  local btn =ZN.CreateIconButton(parent, point, anchor, anchorPoint, ZN.BossTableIconButton[type].size, ZN.BossTableIconButton[type].size, xoffset and xoffset or ZN.BossTableIconButton[type].xOffset, 0, ZN.BossTableIconButton[type].texture, ZN.Colors.ACTIVE, ZN.Colors.INACTIVE, false)
   btn.Row = row
   btn.boss=boss
   btn.Column = ZN.BossAttributeMapping[type]
@@ -301,6 +304,23 @@ local function CreateBossSpellRow(BossSpellID, BossSpell, AnchorFrame, boss)
     return ContentRow
 end
 
+local function CreateBossTrennerRow(BossSpellID, BossSpell, AnchorFrame, boss)
+  local ContentRow = ZN.createSubFrame("ZNBossTrennerRow"..BossSpellID, ZNBodyFrame.Subframes.BossSpells.scrollChild, 460, ZN.BossTableRows.row, ZN.Colors.ROWBG, 1, "TOP", "HIGH", false, 0,-ZN.BossTableRows.rowgap, AnchorFrame, "BOTTOM")
+  
+  ContentRow.Text = CreateSingleLineEditBox("Text"..BossSpellID, ContentRow, "LEFT", ContentRow, "LEFT",ZN.BossTrennerTableColumns["text"], "text", BossSpell.text,0,BossSpellID, boss)
+  ContentRow.Time = CreateSingleLineEditBox("Time"..BossSpellID, ContentRow, "LEFT", ContentRow.Text, "RIGHT",ZN.BossSpellTableColumns["time"], "time", BossSpell.time,0,BossSpellID, boss)
+
+  ContentRow.Delete = CreateIconButton(ContentRow, "LEFT", ContentRow.Time, "RIGHT", "delete", BossSpellID,boss)
+
+  ContentRow.Delete:SetScript("OnClick", function(self)
+    table.remove(ZNotes.BossTemplates[self.boss],self.Row)
+    ZN:ReloadBossTrennerTable(self.boss)
+    ZN:showPreview(ZN:printPreviewNote(selectedTemplate), ZNBodyFrame.Subframes.PreviewTemplateContent.ScrollNote.scrollChild)
+  end)
+
+  return ContentRow
+end
+
 function ZN:addNewBossSpell(boss)
   table.insert(ZNotes.BossTemplates[boss],
   {
@@ -364,78 +384,48 @@ function ZN:InitBoss()
     -- Title Row
     BossSpellTable.TitleRow = CreateSpellTitleRow()
     BossTrennerTable.TitleRow = CreateTrennerTitleRow()
-
-    -- local spellI=1
-    -- local trennerI=1
-    -- local boss="SampleBoss"
-    -- for i=1, #ZNotes.BossTemplates[boss] do
-    --     if not ZNotes.BossTemplates[boss][i].trenner then
-    --         ZN.BossSpellsIndex[spellI]=i
-    --         spellI = spellI + 1
-    --     else
-    --         ZN.BossTrennerIndex[trennerI]=i
-    --         trennerI = trennerI + 1
-    --     end
-    -- end
-  
-    -- ZN:BuildPlayerFilterArray()
-    -- ZN:BuildPlayerSortArray()
-  
-    --  local scrollHeight = ZN.PlayerTableRows.title + (ZN.BossTableRows.row+ZN.BossTableRows.rowgap)*#ZN.BossSpellsIndex
-    -- BossSpellTable.scrollChild:SetHeight(scrollHeight)
-  
-    -- local anchor=BossSpellTable.TitleRow
-  
-    -- for i=1, #ZN.BossSpellsIndex do
-    --   local newRow = CreateBossSpellRow(ZN.BossSpellsIndex[i], ZNotes.BossTemplates[boss][ZN.BossSpellsIndex[i]], anchor,boss)
-    --   if i==1 then
-    --     newRow:ClearAllPoints()
-    --     newRow:SetPoint("TOP", ZNBodyFrame.Subframes.BossSpells.scrollChild,"TOP")
-    --   end
-    --   ZN.BossSpellRows[i] = newRow
-    --   anchor = newRow
-    -- end  
   end
 
-    function ZN:ReloadBossSpellTable(boss)
-    ZN.BossSpellsIndex = {}
-    local BossSpellTable = ZNBodyFrame.Subframes.BossSpells
+function ZN:ReloadBossSpellTable(boss)
+  ZN.BossSpellsIndex = {}
+  local BossSpellTable = ZNBodyFrame.Subframes.BossSpells
 
-  
-    local scrollHeight = ZN.PlayerTableRows.title + (ZN.BossTableRows.row+ZN.BossTableRows.rowgap)*#ZN.BossSpellsIndex
-    BossSpellTable.scrollChild:SetHeight(scrollHeight)
-  
-    local spellI=1
-    --local boss="SampleBoss"
-    for i=1, #ZNotes.BossTemplates[boss] do
-        if not ZNotes.BossTemplates[boss][i].trenner then
-            ZN.BossSpellsIndex[spellI]=i
-            spellI = spellI + 1
-        end
-    end
-    ZN:BuildBossSpellSortArray (boss)
 
-    for i=1, #ZN.BossSpellRows do
-      ZN.BossSpellRows[i]:SetShown(false)
-    end
-  
-    local anchor=BossSpellTable.TitleRow
-    
-    for i=1, #ZN.BossSpellSortArray do
-      if i >#ZN.BossSpellRows then
-        ZN.BossSpellRows[i] = CreateBossSpellRow(ZN.BossSpellsIndex[ZN.BossSpellSortArray[i]], ZNotes.BossTemplates[boss][ZN.BossSpellsIndex[ZN.BossSpellSortArray[i]]], anchor,boss)
-      else 
-        UpdateBossSpellRow(ZN.BossSpellsIndex[ZN.BossSpellSortArray[i]], ZNotes.BossTemplates[boss][ZN.BossSpellsIndex[ZN.BossSpellSortArray[i]]], anchor,ZN.BossSpellRows[i],boss)
+  local scrollHeight = ZN.PlayerTableRows.title + (ZN.BossTableRows.row+ZN.BossTableRows.rowgap)*#ZN.BossSpellsIndex
+  BossSpellTable.scrollChild:SetHeight(scrollHeight)
+
+  local spellI=1
+  --local boss="SampleBoss"
+  print(#ZNotes.BossTemplates[boss])
+  for i=1, #ZNotes.BossTemplates[boss] do
+      if not ZNotes.BossTemplates[boss][i].trenner then
+          ZN.BossSpellsIndex[spellI]=i
+          spellI = spellI + 1
       end
-      if i==1 then
-        ZN.BossSpellRows[i]:ClearAllPoints()
-        ZN.BossSpellRows[i]:SetPoint("TOP", ZNBodyFrame.Subframes.BossSpells.scrollChild,"TOP")
-      end
-      ZN.BossSpellRows[i]:SetShown(true)
-      anchor = ZN.BossSpellRows[i]
-    end  
-  
   end
+  ZN:BuildBossSpellSortArray (boss)
+
+  for i=1, #ZN.BossSpellRows do
+    ZN.BossSpellRows[i]:SetShown(false)
+  end
+
+  local anchor=BossSpellTable.TitleRow
+  
+  for i=1, #ZN.BossSpellSortArray do
+    if i >#ZN.BossSpellRows then
+      ZN.BossSpellRows[i] = CreateBossSpellRow(ZN.BossSpellsIndex[ZN.BossSpellSortArray[i]], ZNotes.BossTemplates[boss][ZN.BossSpellsIndex[ZN.BossSpellSortArray[i]]], anchor,boss)
+    else 
+      UpdateBossSpellRow(ZN.BossSpellsIndex[ZN.BossSpellSortArray[i]], ZNotes.BossTemplates[boss][ZN.BossSpellsIndex[ZN.BossSpellSortArray[i]]], anchor,ZN.BossSpellRows[i],boss)
+    end
+    if i==1 then
+      ZN.BossSpellRows[i]:ClearAllPoints()
+      ZN.BossSpellRows[i]:SetPoint("TOP", ZNBodyFrame.Subframes.BossSpells.scrollChild,"TOP")
+    end
+    ZN.BossSpellRows[i]:SetShown(true)
+    anchor = ZN.BossSpellRows[i]
+  end  
+  
+end
 
   ZN.BossSpellSortArray={}
   function ZN:BuildBossSpellSortArray (boss)
