@@ -2,36 +2,45 @@ local _, ZN, L = ...
 
 local selectedTemplate = nil
 
--- Boss Sidebar
+-- Boss Sidebar ZNHeaderFrame
 BossSidebar = ZNSidebarFrame.Subframes.Boss 
-BossSidebar.TemplateSelectButton = ZN.CreateGenericButton("ZNBossTemplateSelectButton", BossSidebar, "TOPLEFT", BossSidebar, "TOPLEFT", 240, 30, 0, -40,10,0, 12, ZN.Colors.ACTIVE, ZN.Colors.SBButtonBG, "Select Template", "Select Template..", "LEFT",true )
-BossSidebar.TemplateSelectButton.doOnUpdate = true
-BossSidebar.TemplateSelectButton.OnUpdate = function(_,_,_,newValue) 
+-- BossSidebar.TemplateSelectButton = ZN.CreateGenericButton("ZNBossTemplateSelectButton", BossSidebar, "TOPLEFT", BossSidebar, "TOPLEFT", 240, 30, 0, -40,10,0, 12, ZN.Colors.ACTIVE, ZN.Colors.SBButtonBG, "Select Template", "Select Template..", "LEFT",true )
+-- BossSidebar.TemplateSelectButton.doOnUpdate = true
+-- BossSidebar.TemplateSelectButton.OnUpdate = function(_,_,_,newValue) 
+--     selectedTemplate = newValue 
+--     ZN:ReloadBossSpellTable(newValue)
+-- end
+--BossSidebar.TemplatePreviewButton = ZN.CreateGenericButton("ZNBossTemplatePreviewButton", BossSidebar, "TOPLEFT", BossSidebar.TemplateSelectButton, "BOTTOMLEFT", 240, 30, 0, -20,0,0, 12, ZN.Colors.ACTIVE, ZN.Colors.SBButtonBG, nil, "Preview Note", "CENTER",true )
+--
+--BossSidebar.TemplatePreviewFrame = ZN.createSubFrame("ZNBossTemplatePreviewFrame", BossSidebar, 232, 350, nil, 1, "BOTTOMLEFT", "DIALOG", false, 0, 50)
+--BossSidebar.TemplatePreviewFrame.Scroll = ZN.createScrollFrame("ZNBossTemplatePreviewScrollFrame", BossSidebar.TemplatePreviewFrame, 232, 350, nil, 1, "CENTER","DIALOG", false, false, ZN.Colors.SBButtonBG)
+
+BossTemplateSelectButtonHead = ZN.CreateGenericButton("ZNBossTemplateSelectButton", ZNBodyFrame.Subframes.BossSpellHead, "LEFT", ZNHeaderFrame.Version, "LEFT", 240, 30, 50, 0,10,0, 12, ZN.Colors.ACTIVE, ZN.Colors.SBButtonBG, nil, "Select Template..", "LEFT",true )
+BossTemplateSelectButtonHead.doOnUpdate = true
+BossTemplateSelectButtonHead.OnUpdate = function(_,_,_,newValue) 
     selectedTemplate = newValue 
     ZN:ReloadBossSpellTable(newValue)
+    ZN:showPreview(ZN:printPreviewNote(selectedTemplate), ZNBodyFrame.Subframes.PreviewTemplateContent.ScrollNote.scrollChild)
 end
-BossSidebar.TemplatePreviewButton = ZN.CreateGenericButton("ZNBossTemplatePreviewButton", BossSidebar, "TOPLEFT", BossSidebar.TemplateSelectButton, "BOTTOMLEFT", 240, 30, 0, -20,0,0, 12, ZN.Colors.ACTIVE, ZN.Colors.SBButtonBG, nil, "Preview Note", "CENTER",true )
-BossSidebar.TemplatePreviewFrame = ZN.createSubFrame("ZNBossTemplatePreviewFrame", BossSidebar, 232, 350, nil, 1, "BOTTOMLEFT", "DIALOG", false, 0, 50)
-BossSidebar.TemplatePreviewFrame.Scroll = ZN.createScrollFrame("ZNBossTemplatePreviewScrollFrame", BossSidebar.TemplatePreviewFrame, 232, 350, nil, 1, "CENTER","DIALOG", false, false, ZN.Colors.SBButtonBG)
 
 -- Boss Sidebar Functions
-BossSidebar.TemplateSelectButton:SetScript("OnClick", function(self) ZN:CreateDropdown(self, ZN:getTableKeys(ZNotes.BossTemplates), ZN:getTableOrder(ZNotes.BossTemplates), 240, ZN.Colors.BG, "LEFT", 10, nil, "TOOLTIP") end)
-BossSidebar.TemplatePreviewButton:SetScript("OnClick", function(self) 
-  if selectedTemplate == nil or selectedTemplate == "Select Template.." then
-    ZN:Print("You need to select a Boss Template")
-    return
-  end
-  ZN:showPreview(ZN:printPreviewNote(selectedTemplate), BossSidebar.TemplatePreviewFrame.Scroll.scrollChild)
- end)
+BossTemplateSelectButtonHead:SetScript("OnClick", function(self) ZN:CreateDropdown(self, ZN:getTableKeys(ZNotes.BossTemplates), ZN:getTableOrder(ZNotes.BossTemplates), 240, ZN.Colors.BG, "LEFT", 10, nil, "TOOLTIP") end)
+-- BossSidebar.TemplatePreviewButton:SetScript("OnClick", function(self) 
+--   if selectedTemplate == nil or selectedTemplate == "Select Template.." then
+--     ZN:Print("You need to select a Boss Template")
+--     return
+--   end
+--   ZN:showPreview(ZN:printPreviewNote(selectedTemplate), BossSidebar.TemplatePreviewFrame.Scroll.scrollChild)
+--  end)
 
 -- Boss Sidebar Buttons
 
 ZN.BossTableRows = {
-    ["title"] = 30,
-    ["row"] = 40,
-    ["rowgap"] = 2,
+  ["title"] = 30,
+  ["row"] = 40,
+  ["rowgap"] = 2,
   }
-  ZN.BossSpellTableColumnHeaderNames = {
+ZN.BossSpellTableColumnHeaderNames = {
     ["spellid"] = "ID",
     ["spellname"] = "Spellname",
     ["time"] = "Time",
@@ -76,138 +85,136 @@ ZN.BossTableRows = {
     ["edit"]= 55,
     ["delete"] = 55,
   }
-  ZN.BossTrennerTableColumnHeaderNames = {
+ ZN.BossTrennerTableColumnHeaderNames = {
     ["text"] = "Divider Text",
     ["time"] = "Time",
     ["raidicon"] = "Icon",
   }
-  ZN.BossTrennerTableColumnHeaders = {
-    "text",
-    "time",
-    "raidicon",
+ZN.BossTrennerTableColumnHeaders = {
+  "text",
+  "time",
+  "raidicon",
   }
-
-
-  ZN.BossTrennerTableColumns = {
-    ["text"] = 340,
-    ["time"] = 60,
-    ["raidicon"] = 60,
+ZN.BossTrennerTableColumns = {
+  ["text"] = 340,
+  ["time"] = 60,
+  ["raidicon"] = 60,
   }
-  ZN.BossDropdowns = {
-    ["icon"] = {["content"]=ZN.ColoredRoles, ["order"]=ZN.ColoredRolesOrder},
+ZN.BossDropdowns = {
+  ["icon"] = {["content"]=ZN.ColoredRoles, ["order"]=ZN.ColoredRolesOrder},
   }
-  ZN.BossAttributeMapping = {
-    ["time"] = "time",
-    ["repeatAfter"] = "repeatAfter",
-    ["spellid"] = "id",
-    ["spellname"] = "name",
-    ["need"] = "need",
-    ["aoe"] = "aoe",
-    ["station"] = "station",
-    ["repeatX"] = "repeatX",
-    ["prio"] = "prio",
-    ["trenner"] = "trenner",
-    ["raidicon"] = "raidico",
-    ["heal"] = "heal",
-    ["util"] = "util",
-    ["imun"] = "imun",
-  }
-  ZN.BossTableIconButton = {
-    ["aoe"]= {["size"]= 16, ["xOffset"]=44, ["type"]="checkBox"},
-    ["station"]= {["size"]= 16, ["xOffset"]=22, ["type"]="checkBox"},
-    ["edit"]= {["size"]= 16, ["xOffset"]=19, ["type"]="edit", ["texture"]="Interface\\AddOns\\ZeroNotes\\Media\\Texture\\edit"},
-    ["delete"]= {["size"]= 16, ["xOffset"]=39, ["type"]="delete", ["texture"]="Interface\\AddOns\\ZeroNotes\\Media\\Texture\\delete2"}
-  }
+ZN.BossAttributeMapping = {
+  ["time"] = "time",
+  ["repeatAfter"] = "repeatAfter",
+  ["spellid"] = "id",
+  ["spellname"] = "name",
+  ["need"] = "need",
+  ["aoe"] = "aoe",
+  ["station"] = "station",
+  ["repeatX"] = "repeatX",
+  ["prio"] = "prio",
+  ["trenner"] = "trenner",
+  ["raidicon"] = "raidico",
+  ["heal"] = "heal",
+  ["util"] = "util",
+  ["imun"] = "imun",
+}
+ZN.BossTableIconButton = {
+  ["aoe"]= {["size"]= 16, ["xOffset"]=44, ["type"]="checkBox"},
+  ["station"]= {["size"]= 16, ["xOffset"]=22, ["type"]="checkBox"},
+  ["edit"]= {["size"]= 16, ["xOffset"]=19, ["type"]="edit", ["texture"]="Interface\\AddOns\\ZeroNotes\\Media\\Texture\\edit"},
+  ["delete"]= {["size"]= 16, ["xOffset"]=39, ["type"]="delete", ["texture"]="Interface\\AddOns\\ZeroNotes\\Media\\Texture\\delete2"}
+}
 
-    ZNSidebarFrame.btnReloadBossSpell = ZN.CreateIconButton(ZNSidebarFrame, "BOTTOM", ZNSidebarFrame.btnCollapseSidebar, "TOP", 20, 20, 0, 196, "Interface\\AddOns\\ZeroNotes\\Media\\Texture\\update", ZN.Colors.ACTIVE, ZN.Colors.INACTIVE, false, nil, true, "Update Boss Spell", ZN.Colors.ACTIVE)
-    ZNSidebarFrame.btnAddBossSpell = ZN.CreateIconButton(ZNSidebarFrame, "BOTTOM", ZNSidebarFrame.btnReloadBossSpell, "TOP", 20, 20, 0, 20, "Interface\\AddOns\\ZeroNotes\\Media\\Texture\\plus_nobg", ZN.Colors.ACTIVE, ZN.Colors.INACTIVE, false, nil, true, "Add Boss Spell", ZN.Colors.ACTIVE)
+ZNSidebarFrame.btnReloadBossSpell = ZN.CreateIconButton(ZNSidebarFrame, "BOTTOM", ZNSidebarFrame.btnCollapseSidebar, "TOP", 20, 20, 0, 196, "Interface\\AddOns\\ZeroNotes\\Media\\Texture\\update", ZN.Colors.ACTIVE, ZN.Colors.INACTIVE, false, nil, true, "Update Boss Spell", ZN.Colors.ACTIVE)
+ZNSidebarFrame.btnAddBossSpell = ZN.CreateIconButton(ZNSidebarFrame, "BOTTOM", ZNSidebarFrame.btnReloadBossSpell, "TOP", 20, 20, 0, 20, "Interface\\AddOns\\ZeroNotes\\Media\\Texture\\plus_nobg", ZN.Colors.ACTIVE, ZN.Colors.INACTIVE, false, nil, true, "Add Boss Spell", ZN.Colors.ACTIVE)
 
-    ZNSidebarFrame.btnReloadBossSpell:SetShown(false)
-    ZNSidebarFrame.btnAddBossSpell:SetShown(false)
+ZNSidebarFrame.btnReloadBossSpell:SetShown(false)
+ZNSidebarFrame.btnAddBossSpell:SetShown(false)
 
-    -- ZNSidebarFrame.btnReloadBossSpell:SetScript("OnClick",function(self) ZN:ReloadPlayerTable() end)
-    -- ZNSidebarFrame.btnAddBossSpell:SetScript("OnClick",function(self) ZN:addNewPlayerSpell() end)
+-- ZNSidebarFrame.btnReloadBossSpell:SetScript("OnClick",function(self) ZN:ReloadPlayerTable() end)
+-- ZNSidebarFrame.btnAddBossSpell:SetScript("OnClick",function(self) ZN:addNewPlayerSpell() end)
 
-    ZNSidebarFrame.btnReloadBossTrenner = ZN.CreateIconButton(ZNSidebarFrame, "BOTTOM", ZNSidebarFrame.btnCollapseSidebar, "TOP", 20, 20, 0, 20, "Interface\\AddOns\\ZeroNotes\\Media\\Texture\\update", ZN.Colors.ACTIVE, ZN.Colors.INACTIVE, false, nil, true, "Update Boss Divider", ZN.Colors.ACTIVE)
-    ZNSidebarFrame.btnAddBossTrenner = ZN.CreateIconButton(ZNSidebarFrame, "BOTTOM", ZNSidebarFrame.btnReloadBossTrenner, "TOP", 20, 20, 0, 20, "Interface\\AddOns\\ZeroNotes\\Media\\Texture\\plus_nobg", ZN.Colors.ACTIVE, ZN.Colors.INACTIVE, false, nil, true, "Add Boss Divider", ZN.Colors.ACTIVE)
+ZNSidebarFrame.btnReloadBossTrenner = ZN.CreateIconButton(ZNSidebarFrame, "BOTTOM", ZNSidebarFrame.btnCollapseSidebar, "TOP", 20, 20, 0, 20, "Interface\\AddOns\\ZeroNotes\\Media\\Texture\\update", ZN.Colors.ACTIVE, ZN.Colors.INACTIVE, false, nil, true, "Update Boss Divider", ZN.Colors.ACTIVE)
+ZNSidebarFrame.btnAddBossTrenner = ZN.CreateIconButton(ZNSidebarFrame, "BOTTOM", ZNSidebarFrame.btnReloadBossTrenner, "TOP", 20, 20, 0, 20, "Interface\\AddOns\\ZeroNotes\\Media\\Texture\\plus_nobg", ZN.Colors.ACTIVE, ZN.Colors.INACTIVE, false, nil, true, "Add Boss Divider", ZN.Colors.ACTIVE)
 
-    ZNSidebarFrame.btnReloadBossTrenner:SetShown(false)
-    ZNSidebarFrame.btnAddBossTrenner:SetShown(false)
+ZNSidebarFrame.btnReloadBossTrenner:SetShown(false)
+ZNSidebarFrame.btnAddBossTrenner:SetShown(false)
 
-    -- ZNSidebarFrame.btnReloadBossTrenner:SetScript("OnClick",function(self) ZN:ReloadPlayerTable() end)
-    -- ZNSidebarFrame.btnAddBossTrenner:SetScript("OnClick",function(self) ZN:addNewPlayerSpell() end)
+-- ZNSidebarFrame.btnReloadBossTrenner:SetScript("OnClick",function(self) ZN:ReloadPlayerTable() end)
+-- ZNSidebarFrame.btnAddBossTrenner:SetScript("OnClick",function(self) ZN:addNewPlayerSpell() end)
 
-  local function CreateGenericButton (name, parent, point, anchor, anchorPoint, width, type, text,row)
-    local btn = ZN.CreateGenericButton(name, parent, point, anchor, anchorPoint, width, ZN.PlayerTableRows.row, 0, 0, 0, 0 ,12, ZN.Colors.INACTIVE, ZN.Colors.ROWBG, nil, text, "CENTER", false)
-    btn:SetScript("OnClick", function(self) ZN:CreateDropdown(self, ZN.BossDropdowns[type].content, ZN.BossDropdowns[type].order, width, ZN.Colors.SBButtonBG, "CENTER",0, ZN.Colors.HD) end)
-    btn.Row = row
-    btn.Column = ZN.BossAttributeMapping[type]
-    btn.OnUpdate=function(_, row, column, newvalue)
-      ZNotes.BossSpells[btn.Row][btn.Column]=newvalue
-    end
-    btn.doOnUpdate=true
-    return btn
+local function CreateGenericButton (name, parent, point, anchor, anchorPoint, width, type, text,row)
+  local btn = ZN.CreateGenericButton(name, parent, point, anchor, anchorPoint, width, ZN.PlayerTableRows.row, 0, 0, 0, 0 ,12, ZN.Colors.INACTIVE, ZN.Colors.ROWBG, nil, text, "CENTER", false)
+  btn:SetScript("OnClick", function(self) ZN:CreateDropdown(self, ZN.BossDropdowns[type].content, ZN.BossDropdowns[type].order, width, ZN.Colors.SBButtonBG, "CENTER",0, ZN.Colors.HD) end)
+  btn.Row = row
+  btn.Column = ZN.BossAttributeMapping[type]
+  btn.OnUpdate=function(_, row, column, newvalue)
+    ZNotes.BossSpells[btn.Row][btn.Column]=newvalue
   end
-  
-  local function CreateSingleLineEditBox(name, parent, point, anchor, anchorPoint, width, type, text, xOffSet, row, boss)
-    local tb = ZN.SingleLineEditBox(name, parent, point, anchor, anchorPoint, width, ZN.PlayerTableRows.row, xOffSet and xOffSet or 0, 0, 0, 0 ,12, ZN.Colors.INACTIVE, ZN.Colors.ROWBG, nil, text, "CENTER")
-    tb.Row = row
-    tb.boss=boss
-    tb.Column = ZN.BossAttributeMapping[type]
-    tb.refersTo=nil
-    tb.OnUpdate=function(_, row, column, newvalue)
-      newvalue = tonumber(newvalue)
-      if newvalue == nil then
-        UIErrorsFrame:AddMessage("You need to enter a numeric value", 0.8, 0.07, 0.2, 5.0)
-        tb:SetText(ZNotes.BossTemplates[tb.boss][tb.Row][tb.Column])
-      else
-        ZNotes.BossTemplates[tb.boss][tb.Row][tb.Column]=newvalue
-      end
-      if tb.Column=="id" then
-        tb.refersTo:SetText((GetSpellInfo(newvalue) and GetSpellInfo(newvalue) or "|cffff3f40Invalid Spell ID|r"):upper())
-        ZNotes.BossTemplates[tb.boss][tb.Row]["name"]=GetSpellInfo(newvalue)
-      end
+  btn.doOnUpdate=true
+  return btn
+end
+
+local function CreateSingleLineEditBox(name, parent, point, anchor, anchorPoint, width, type, text, xOffSet, row, boss)
+  local tb = ZN.SingleLineEditBox(name, parent, point, anchor, anchorPoint, width, ZN.PlayerTableRows.row, xOffSet and xOffSet or 0, 0, 0, 0 ,12, ZN.Colors.INACTIVE, ZN.Colors.ROWBG, nil, text, "CENTER")
+  tb.Row = row
+  tb.boss=boss
+  tb.Column = ZN.BossAttributeMapping[type]
+  tb.refersTo=nil
+  tb.OnUpdate=function(_, row, column, newvalue)
+    newvalue = tonumber(newvalue)
+    if newvalue == nil then
+      UIErrorsFrame:AddMessage("You need to enter a numeric value", 0.8, 0.07, 0.2, 5.0)
+      tb:SetText(ZNotes.BossTemplates[tb.boss][tb.Row][tb.Column])
+    else
+      ZNotes.BossTemplates[tb.boss][tb.Row][tb.Column]=newvalue
     end
-    tb.doOnUpdate=true
-    return tb
+    if tb.Column=="id" then
+      tb.refersTo:SetText((GetSpellInfo(newvalue) and GetSpellInfo(newvalue) or "|cffff3f40Invalid Spell ID|r"):upper())
+      ZNotes.BossTemplates[tb.boss][tb.Row]["name"]=GetSpellInfo(newvalue)
+    end
   end
-  
-  local function CreateCheckBox(parent, point, anchor, anchorPoint, type, row, checked, boss)
-    local cb = ZN.CreateIconButton(parent, point, anchor, anchorPoint, ZN.BossTableIconButton[type].size, ZN.BossTableIconButton[type].size, ZN.BossTableIconButton[type].xOffset, 0, ZN.CheckBoxTextures.checked, ZN.CheckBoxTextures.checkedColor, ZN.CheckBoxTextures.uncheckedColor, true, ZN.Colors.ACTIVE)
-    cb.toggleChecked = function()
-      if cb.active then
-        cb.active=false
-        cb:SetNormalTexture(ZN.CheckBoxTextures.unchecked)
-        cb:GetNormalTexture():SetVertexColor(tonumber("0x"..ZN.CheckBoxTextures.uncheckedColor:sub(1,2))/255, tonumber("0x"..ZN.CheckBoxTextures.uncheckedColor:sub(3,4))/255, tonumber("0x"..ZN.CheckBoxTextures.uncheckedColor:sub(5,6))/255, 1)
-      else
-        cb.active=true
-        cb:SetNormalTexture(ZN.CheckBoxTextures.checked)
-        cb:GetNormalTexture():SetVertexColor(tonumber("0x"..ZN.CheckBoxTextures.checkedColor:sub(1,2))/255, tonumber("0x"..ZN.CheckBoxTextures.checkedColor:sub(3,4))/255, tonumber("0x"..ZN.CheckBoxTextures.checkedColor:sub(5,6))/255, 1)
-      end
-    end
-    if not checked then
-      cb.toggleChecked()
+  tb.doOnUpdate=true
+  return tb
+end
+
+local function CreateCheckBox(parent, point, anchor, anchorPoint, type, row, checked, boss)
+  local cb = ZN.CreateIconButton(parent, point, anchor, anchorPoint, ZN.BossTableIconButton[type].size, ZN.BossTableIconButton[type].size, ZN.BossTableIconButton[type].xOffset, 0, ZN.CheckBoxTextures.checked, ZN.CheckBoxTextures.checkedColor, ZN.CheckBoxTextures.uncheckedColor, true, ZN.Colors.ACTIVE)
+  cb.toggleChecked = function()
+    if cb.active then
+      cb.active=false
+      cb:SetNormalTexture(ZN.CheckBoxTextures.unchecked)
       cb:GetNormalTexture():SetVertexColor(tonumber("0x"..ZN.CheckBoxTextures.uncheckedColor:sub(1,2))/255, tonumber("0x"..ZN.CheckBoxTextures.uncheckedColor:sub(3,4))/255, tonumber("0x"..ZN.CheckBoxTextures.uncheckedColor:sub(5,6))/255, 1)
+    else
+      cb.active=true
+      cb:SetNormalTexture(ZN.CheckBoxTextures.checked)
+      cb:GetNormalTexture():SetVertexColor(tonumber("0x"..ZN.CheckBoxTextures.checkedColor:sub(1,2))/255, tonumber("0x"..ZN.CheckBoxTextures.checkedColor:sub(3,4))/255, tonumber("0x"..ZN.CheckBoxTextures.checkedColor:sub(5,6))/255, 1)
     end
-    cb.Row = row
-    cb.boss=boss
-    cb.Column = ZN.BossAttributeMapping[type]
-    return cb
   end
-  
-  
-  local function CreateText(parent, point, anchor, anchorPoint, width, type, text, xOffset)
-    local txt = ZN.CreateText(parent, point, anchor, anchorPoint, width, ZN.PlayerTableRows.row, xOffset and xOffset or 0, 0, "Interface\\AddOns\\ZeroNotes\\Media\\Font\\ZNReg.ttf", 12, ZN.Colors.INACTIVE, text, "CENTER", "CENTER")
-    return txt
+  if not checked then
+    cb.toggleChecked()
+    cb:GetNormalTexture():SetVertexColor(tonumber("0x"..ZN.CheckBoxTextures.uncheckedColor:sub(1,2))/255, tonumber("0x"..ZN.CheckBoxTextures.uncheckedColor:sub(3,4))/255, tonumber("0x"..ZN.CheckBoxTextures.uncheckedColor:sub(5,6))/255, 1)
   end
-  
-  local function CreateIconButton(parent, point, anchor, anchorPoint, type, row, boss)
-    local btn =ZN.CreateIconButton(parent, point, anchor, anchorPoint, ZN.BossTableIconButton[type].size, ZN.BossTableIconButton[type].size, ZN.BossTableIconButton[type].xOffset, 0, ZN.BossTableIconButton[type].texture, ZN.Colors.ACTIVE, ZN.Colors.INACTIVE, false)
-    btn.Row = row
-    btn.boss=boss
-    btn.Column = ZN.BossAttributeMapping[type]
-    return btn
-  end
+  cb.Row = row
+  cb.boss=boss
+  cb.Column = ZN.BossAttributeMapping[type]
+  return cb
+end
+
+
+local function CreateText(parent, point, anchor, anchorPoint, width, type, text, xOffset)
+  local txt = ZN.CreateText(parent, point, anchor, anchorPoint, width, ZN.PlayerTableRows.row, xOffset and xOffset or 0, 0, "Interface\\AddOns\\ZeroNotes\\Media\\Font\\ZNReg.ttf", 12, ZN.Colors.INACTIVE, text, "CENTER", "CENTER")
+  return txt
+end
+
+local function CreateIconButton(parent, point, anchor, anchorPoint, type, row, boss)
+  local btn =ZN.CreateIconButton(parent, point, anchor, anchorPoint, ZN.BossTableIconButton[type].size, ZN.BossTableIconButton[type].size, ZN.BossTableIconButton[type].xOffset, 0, ZN.BossTableIconButton[type].texture, ZN.Colors.ACTIVE, ZN.Colors.INACTIVE, false)
+  btn.Row = row
+  btn.boss=boss
+  btn.Column = ZN.BossAttributeMapping[type]
+  return btn
+end
 
 local function CreateSpellTitleRow()
     local TitleRow = ZN.createSubFrame("ZNBossSpellTitleRow", ZNBodyFrame.Subframes.BossSpellHead, 930, ZN.BossTableRows.title, ZN.Colors.BG, 1, "TOP", "HIGH", false, -5,0)

@@ -140,6 +140,7 @@ ZN.Colors = {
   ["itemSuperior"] = "a335ee", -- #a335ee
   ["itemLegendary"] = "ff8000", -- #ff8000
   ["itemHeirloom"] = "e6cc80", -- #e6cc80
+  ["black"] = "000000" -- #000000
 }
 
 ZN.ColoredRoles = {
@@ -702,6 +703,23 @@ ZNotes.BossTemplates = ZNotes.BossTemplates or {
 }
 end
 
+function ZN.initGroupTemplates()
+ZNotes.GroupTemplates = ZNotes.GroupTemplates or {
+  ["Sample Group"] = {
+    {
+      ["name"] = "Player 1",
+      ["class"] = "warrior",
+      ["role"] = "melee",
+    },
+    {
+      ["name"] = "Player 2",
+      ["class"] = "hunter",
+      ["role"] = "range",
+    },
+  }
+}
+end
+
 ZN.BossTemplatesOrder = {
   "SampleBoss",
 }
@@ -930,6 +948,7 @@ ZN.PlayerTableColumnButtonTypes = {
   ["spellrating"] = "SingleLineEditBox",
   ["delete"] = "IconButton",
 }
+
 ZN.PlayerTableIconButton = {
   ["aoe"]= {["size"]= 16, ["xOffset"]=17, ["type"]="checkBox"},
   ["station"]= {["size"]= 16, ["xOffset"]=34, ["type"]="checkBox"},
@@ -955,6 +974,7 @@ ZN.PlayerDropdowns = {
   ["class"] = {["content"]=ZN.PlayerClassesColored, ["order"]=ZN.PlayerClassesColoredOrder},
   ["spelltype"] = {["content"]=ZN.Types, ["order"]=ZN.TypesOrder}
 }
+
 ZN.RoleSelectionColor = {
   ["heal"] = "|cffabd473Heal|r",
   ["tank"] = "|cffc5af2aTank|r",
@@ -1013,7 +1033,6 @@ ZN.PlayerSortOrder = {
   "type",
   "cd",
 }
-
 
 ZN.TextSortOrder = {
   ["heal"]=30,

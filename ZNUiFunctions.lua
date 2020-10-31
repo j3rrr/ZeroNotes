@@ -27,7 +27,9 @@ function ZN:ClickHome(ZNHeaderFrame, ZNSidebarFrame, ZNBodyFrame)
 	ZNHeaderFrame.btnBoss:GetNormalTexture():SetVertexColor(tonumber("0x"..ZN.Colors.INACTIVE:sub(1,2))/255, tonumber("0x"..ZN.Colors.INACTIVE:sub(3,4))/255, tonumber("0x"..ZN.Colors.INACTIVE:sub(5,6))/255, 1)
     ZNHeaderFrame.btnPlayer.active = false
 	ZNHeaderFrame.btnPlayer:GetNormalTexture():SetVertexColor(tonumber("0x"..ZN.Colors.INACTIVE:sub(1,2))/255, tonumber("0x"..ZN.Colors.INACTIVE:sub(3,4))/255, tonumber("0x"..ZN.Colors.INACTIVE:sub(5,6))/255, 1)
-	
+		ZNHeaderFrame.btnGroup.active = false
+	ZNHeaderFrame.btnGroup:GetNormalTexture():SetVertexColor(tonumber("0x"..ZN.Colors.INACTIVE:sub(1,2))/255, tonumber("0x"..ZN.Colors.INACTIVE:sub(3,4))/255, tonumber("0x"..ZN.Colors.INACTIVE:sub(5,6))/255, 1)
+
 	for k,v in pairs(ZNSidebarFrame.Subframes) do
 			v:SetShown(false)
 			v.visible=false
@@ -63,7 +65,9 @@ function ZN:ClickImpExp(ZNHeaderFrame, ZNSidebarFrame, ZNBodyFrame)
 	ZNHeaderFrame.btnBoss:GetNormalTexture():SetVertexColor(tonumber("0x"..ZN.Colors.INACTIVE:sub(1,2))/255, tonumber("0x"..ZN.Colors.INACTIVE:sub(3,4))/255, tonumber("0x"..ZN.Colors.INACTIVE:sub(5,6))/255, 1)
     ZNHeaderFrame.btnPlayer.active = false
 	ZNHeaderFrame.btnPlayer:GetNormalTexture():SetVertexColor(tonumber("0x"..ZN.Colors.INACTIVE:sub(1,2))/255, tonumber("0x"..ZN.Colors.INACTIVE:sub(3,4))/255, tonumber("0x"..ZN.Colors.INACTIVE:sub(5,6))/255, 1)
-	
+		ZNHeaderFrame.btnGroup.active = false
+	ZNHeaderFrame.btnGroup:GetNormalTexture():SetVertexColor(tonumber("0x"..ZN.Colors.INACTIVE:sub(1,2))/255, tonumber("0x"..ZN.Colors.INACTIVE:sub(3,4))/255, tonumber("0x"..ZN.Colors.INACTIVE:sub(5,6))/255, 1)
+
 	for k,v in pairs(ZNSidebarFrame.Subframes) do
 			v:SetShown(false)
 			v.visible=false
@@ -97,7 +101,9 @@ function ZN:ClickBoss(ZNHeaderFrame, ZNSidebarFrame, ZNBodyFrame)
 	ZNHeaderFrame.btnBoss:GetNormalTexture():SetVertexColor(tonumber("0x"..ZN.Colors.ACTIVE:sub(1,2))/255, tonumber("0x"..ZN.Colors.ACTIVE:sub(3,4))/255, tonumber("0x"..ZN.Colors.ACTIVE:sub(5,6))/255, 1)
     ZNHeaderFrame.btnPlayer.active = false
 	ZNHeaderFrame.btnPlayer:GetNormalTexture():SetVertexColor(tonumber("0x"..ZN.Colors.INACTIVE:sub(1,2))/255, tonumber("0x"..ZN.Colors.INACTIVE:sub(3,4))/255, tonumber("0x"..ZN.Colors.INACTIVE:sub(5,6))/255, 1)
-	
+		ZNHeaderFrame.btnGroup.active = false
+	ZNHeaderFrame.btnGroup:GetNormalTexture():SetVertexColor(tonumber("0x"..ZN.Colors.INACTIVE:sub(1,2))/255, tonumber("0x"..ZN.Colors.INACTIVE:sub(3,4))/255, tonumber("0x"..ZN.Colors.INACTIVE:sub(5,6))/255, 1)
+
 	if not ZN.BossInit then
 		ZN.BossInit=true
 		ZN:InitBoss()
@@ -115,9 +121,11 @@ function ZN:ClickBoss(ZNHeaderFrame, ZNSidebarFrame, ZNBodyFrame)
 	ZNBodyFrame.Subframes["BossTrennerHead"]:SetShown(true)
 	ZNBodyFrame.Subframes["BossTrenner"]:SetShown(true)
 	ZNBodyFrame.Subframes["BossNote"]:SetShown(true)
+	ZNBodyFrame.Subframes["PreviewTemplateHead"]:SetShown(true)
+	ZNBodyFrame.Subframes["PreviewTemplateContent"]:SetShown(false)
 	ZNSidebarFrame.Subframes["Boss"]:SetShown(true)
 	ZNSidebarFrame.Subframes["Boss"].visible=true
-	ZNSidebarFrame.btnCollapseSidebar:SetShown(true)
+	ZNSidebarFrame.btnCollapseSidebar:SetShown(false)
 	ZNSidebarFrame.btnReloadPlayer:SetShown(false)
 	ZNSidebarFrame.btnResetPlayer:SetShown(false)
 	ZNSidebarFrame.btnAddPlayer:SetShown(false)
@@ -137,6 +145,8 @@ function ZN:ClickPlayer(ZNHeaderFrame, ZNSidebarFrame, ZNBodyFrame)
 	ZNHeaderFrame.btnBoss:GetNormalTexture():SetVertexColor(tonumber("0x"..ZN.Colors.INACTIVE:sub(1,2))/255, tonumber("0x"..ZN.Colors.INACTIVE:sub(3,4))/255, tonumber("0x"..ZN.Colors.INACTIVE:sub(5,6))/255, 1)
     ZNHeaderFrame.btnPlayer.active = true
 	ZNHeaderFrame.btnPlayer:GetNormalTexture():SetVertexColor(tonumber("0x"..ZN.Colors.ACTIVE:sub(1,2))/255, tonumber("0x"..ZN.Colors.ACTIVE:sub(3,4))/255, tonumber("0x"..ZN.Colors.ACTIVE:sub(5,6))/255, 1)
+	ZNHeaderFrame.btnGroup.active = false
+	ZNHeaderFrame.btnGroup:GetNormalTexture():SetVertexColor(tonumber("0x"..ZN.Colors.INACTIVE:sub(1,2))/255, tonumber("0x"..ZN.Colors.INACTIVE:sub(3,4))/255, tonumber("0x"..ZN.Colors.INACTIVE:sub(5,6))/255, 1)
 	
 	if not ZN.PlayerInit then
 		ZN.PlayerInit=true
@@ -162,6 +172,44 @@ function ZN:ClickPlayer(ZNHeaderFrame, ZNSidebarFrame, ZNBodyFrame)
 	ZNSidebarFrame.btnAddBossTrenner:SetShown(false)
 	ZNSidebarFrame.btnReloadBossTrenner:SetShown(false)
 	ZNSidebarFrame.btnCollapseSidebar:SetShown(true)
+	ZN:ClickCollapse(nil, ZNHeaderFrame, ZNSidebarFrame, true, false)
+end
+
+function ZN:ClickGroupTemplates(ZNHeaderFrame, ZNSidebarFrame, ZNBodyFrame)
+	ZNHeaderFrame.btnHome.active = false
+	ZNHeaderFrame.btnHome:GetNormalTexture():SetVertexColor(tonumber("0x"..ZN.Colors.INACTIVE:sub(1,2))/255, tonumber("0x"..ZN.Colors.INACTIVE:sub(3,4))/255, tonumber("0x"..ZN.Colors.INACTIVE:sub(5,6))/255, 1)
+	ZNHeaderFrame.btnImpExp.active = false
+	ZNHeaderFrame.btnImpExp:GetNormalTexture():SetVertexColor(tonumber("0x"..ZN.Colors.INACTIVE:sub(1,2))/255, tonumber("0x"..ZN.Colors.INACTIVE:sub(3,4))/255, tonumber("0x"..ZN.Colors.INACTIVE:sub(5,6))/255, 1)
+	ZNHeaderFrame.btnBoss.active = false
+	ZNHeaderFrame.btnBoss:GetNormalTexture():SetVertexColor(tonumber("0x"..ZN.Colors.INACTIVE:sub(1,2))/255, tonumber("0x"..ZN.Colors.INACTIVE:sub(3,4))/255, tonumber("0x"..ZN.Colors.INACTIVE:sub(5,6))/255, 1)
+	ZNHeaderFrame.btnPlayer.active = false
+	ZNHeaderFrame.btnPlayer:GetNormalTexture():SetVertexColor(tonumber("0x"..ZN.Colors.INACTIVE:sub(1,2))/255, tonumber("0x"..ZN.Colors.INACTIVE:sub(3,4))/255, tonumber("0x"..ZN.Colors.INACTIVE:sub(5,6))/255, 1)
+	ZNHeaderFrame.btnGroup.active = true
+	ZNHeaderFrame.btnGroup:GetNormalTexture():SetVertexColor(tonumber("0x"..ZN.Colors.ACTIVE:sub(1,2))/255, tonumber("0x"..ZN.Colors.ACTIVE:sub(3,4))/255, tonumber("0x"..ZN.Colors.ACTIVE:sub(5,6))/255, 1)
+	
+	for k,v in pairs(ZNSidebarFrame.Subframes) do
+			v:SetShown(false)
+			v.visible=false
+	end
+	for k,v in pairs(ZNBodyFrame.Subframes) do
+			v:SetShown(false)
+	end
+	ZNBodyFrame.Subframes["GroupTemplates"]:SetShown(true)
+	ZNSidebarFrame.Subframes["GroupTemplates"]:SetShown(true)
+	ZNSidebarFrame.Subframes["GroupTemplates"].visible=true
+	ZNSidebarFrame.btnCollapseSidebar:SetShown(false)
+	if ZNSidebarFrame.btnReloadPlayer then
+		ZNSidebarFrame.btnReloadPlayer:SetShown(false)
+		ZNSidebarFrame.btnAddPlayer:SetShown(false)
+		ZNSidebarFrame.btnResetPlayer:SetShown(false)
+	end
+
+	if ZNSidebarFrame.btnAddBossSpell then
+		ZNSidebarFrame.btnAddBossSpell:SetShown(false)
+		ZNSidebarFrame.btnReloadBossSpell:SetShown(false)
+		ZNSidebarFrame.btnAddBossTrenner:SetShown(false)
+		ZNSidebarFrame.btnReloadBossTrenner:SetShown(false)
+	end
 	ZN:ClickCollapse(nil, ZNHeaderFrame, ZNSidebarFrame, true, false)
 end
 
@@ -207,6 +255,20 @@ function ZN:ClickCollapse(ZNFrame, ZNHeaderFrame, ZNSidebarFrame, collapse, expa
 			ZNSidebarFrame.btnResetPlayer:SetPoint("RIGHT", ZNSidebarFrame.btnReloadPlayer, "LEFT", -20, 0)
 		end
 
+	end
+end
+
+function ZN:ClickPreviewCollapse()
+	if not ZNBodyFrame.Subframes.PreviewTemplateContent:IsShown() then
+		ZNBodyFrame.Subframes.PreviewTemplateHead.btnCollapsePreviewTemlate:SetNormalTexture("Interface\\AddOns\\ZeroNotes\\Media\\Texture\\arrow_up")
+		ZNBodyFrame.Subframes.PreviewTemplateHead.btnCollapsePreviewTemlate:GetNormalTexture():SetVertexColor(tonumber("0x"..ZN.Colors.INACTIVE:sub(1,2))/255, tonumber("0x"..ZN.Colors.INACTIVE:sub(3,4))/255, tonumber("0x"..ZN.Colors.INACTIVE:sub(5,6))/255, 1)
+		ZNBodyFrame.Subframes.PreviewTemplateHead.ShowHide:SetText("Hide Preview")
+		ZNBodyFrame.Subframes.PreviewTemplateContent:Show()
+	elseif ZNBodyFrame.Subframes.PreviewTemplateContent:IsShown() then 
+		ZNBodyFrame.Subframes.PreviewTemplateHead.btnCollapsePreviewTemlate:SetNormalTexture("Interface\\AddOns\\ZeroNotes\\Media\\Texture\\arrow_down")
+		ZNBodyFrame.Subframes.PreviewTemplateHead.btnCollapsePreviewTemlate:GetNormalTexture():SetVertexColor(tonumber("0x"..ZN.Colors.INACTIVE:sub(1,2))/255, tonumber("0x"..ZN.Colors.INACTIVE:sub(3,4))/255, tonumber("0x"..ZN.Colors.INACTIVE:sub(5,6))/255, 1)
+		ZNBodyFrame.Subframes.PreviewTemplateHead.ShowHide:SetText("Show Preview")
+		ZNBodyFrame.Subframes.PreviewTemplateContent:Hide()
 	end
 end
 

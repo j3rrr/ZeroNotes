@@ -424,37 +424,6 @@ function ZN.MultiLineEditBox(name, parent, point, anchorFrame, anchorPoint, widt
 	return s
 end
 
--- function ZN.createToolTip(name, )
--- 	local tt = CreateFrame('FRAME', name, UIParent)
--- 	tt:SetFrameStrata(strata)
--- 	tt:SetWidth(width)
--- 	tt:SetHeight(height)
--- 	tt:SetPoint('RIGHT', UIParent, 'CENTER',width/2)
--- 	tt:EnableMouse(true)
--- 	tt:SetMovable(true)
--- 	tt:RegisterForDrag('LeftButton')
--- 	tt:EnableKeyboard(true)
--- 	tt:SetPropagateKeyboardInput(true)
--- 	tt:SetClampedToScreen(true)
--- 	--NewFrame:Hide()
--- 	tt.updateDelay = 0
--- 	tt.background = tt:CreateTexture(nil, 'BACKGROUND')
--- 	tt.background:SetAllPoints(tt)
--- 	tt.background:SetColorTexture(tonumber("0x"..color:sub(1,2))/255, tonumber("0x"..color:sub(3,4))/255, tonumber("0x"..color:sub(5,6))/255, a)
--- 	tt:SetScript('OnDragStart', function(self)
--- 		self:StartMoving()
--- 		end)
--- 	tt:SetScript('OnDragStop', function(self)
--- 		self:StopMovingOrSizing()
--- 		end)
--- 	tt:SetScript('OnKeyDown', function(self, key)
--- 		if key == 'ESCAPE' then
--- 			self:SetPropagateKeyboardInput(false)
--- 			self:Hide()
--- 		end
--- 	end)
--- 	return tt
--- end
 -- Templates End
 --##############################################################################
 
@@ -485,6 +454,7 @@ ZNHeaderFrame.btnHome:SetScript("OnClick", function(self) ZN:ClickHome(ZNHeaderF
 ZNHeaderFrame.btnImpExp:SetScript("OnClick", function(self) ZN:ClickImpExp(ZNHeaderFrame, ZNSidebarFrame, ZNBodyFrame) end)
 ZNHeaderFrame.btnBoss:SetScript("OnClick", function(self) ZN:ClickBoss(ZNHeaderFrame, ZNSidebarFrame, ZNBodyFrame) end)
 ZNHeaderFrame.btnPlayer:SetScript("OnClick", function(self) ZN:ClickPlayer(ZNHeaderFrame, ZNSidebarFrame, ZNBodyFrame) end)
+ZNHeaderFrame.btnGroup:SetScript("OnClick", function(self) ZN:ClickGroupTemplates(ZNHeaderFrame, ZNSidebarFrame, ZNBodyFrame) end)
 --##############################################################################
 -- Sidebar 
 ZNSidebarFrame.btnCollapseSidebar = ZN.CreateIconButton(ZNSidebarFrame, "BOTTOMRIGHT", ZNSidebarFrame, "BOTTOMRIGHT", 20, 20, -14, 14, "Interface\\AddOns\\ZeroNotes\\Media\\Texture\\arrow_left", ZN.Colors.ACTIVE, ZN.Colors.INACTIVE, false)
@@ -493,6 +463,7 @@ ZNSidebarFrame.Subframes.Home = ZN.createSubFrame("ZNSideBarHomeContent", ZNSide
 ZNSidebarFrame.Subframes.ImpExp = ZN.createSubFrame("ZNSideBarImpExpContent", ZNSidebarFrame, 240, 540, nil, 1, "CENTER", "DIALOG", true)
 ZNSidebarFrame.Subframes.Boss = ZN.createSubFrame("ZNSideBarBossContent", ZNSidebarFrame, 240, 540, nil, 1, "CENTER", "DIALOG", true)
 ZNSidebarFrame.Subframes.Player = ZN.createSubFrame("ZNSideBarPlayerContent", ZNSidebarFrame, 240, 500, nil, 1, "TOP","DIALOG", true)
+ZNSidebarFrame.Subframes.GroupTemplates = ZN.createSubFrame("ZNSideBarGroupTemplatesContent", ZNSidebarFrame, 240, 500, nil, 1, "TOP","DIALOG", true)
 -- Sidebar Functions
 ZNSidebarFrame.btnCollapseSidebar:SetScript("OnClick", function(self) ZN:ClickCollapse(ZNFrame, ZNHeaderFrame, ZNSidebarFrame) end)
 --##############################################################################
@@ -500,6 +471,8 @@ ZNSidebarFrame.btnCollapseSidebar:SetScript("OnClick", function(self) ZN:ClickCo
 ZNBodyFrame.Subframes = {}
 ZNBodyFrame.Subframes.Home = ZN.createSubFrame("ZNBodyHomeContent", ZNBodyFrame, 640, 530, nil, 1, "RIGHT","HIGH", true, -30, 0)
 ZNBodyFrame.Subframes.ImpExp = ZN.createSubFrame("ZNBodyImpExpContent", ZNBodyFrame, 680, 530, nil, 1, "RIGHT","HIGH", true, -10, 0)
+ZNBodyFrame.Subframes.GroupTemplates = ZN.createSubFrame("ZNBodyGroupTemplatesContent", ZNBodyFrame, 930, 530, nil, 1, "RIGHT","HIGH", true, -10, 0)
+-- Boss Table
 ZNBodyFrame.Subframes.BossSpellHead = ZN.createSubFrame("ZNBodyBossSpellHead", ZNBodyFrame, 930, 30, nil, 1, "TOP","HIGH", true, 0, 0)
 ZNBodyFrame.Subframes.BossSpells = ZN.createScrollFrame("ZNBodyBossSpellContent", ZNBodyFrame, 930, 300, ZN.Colors.dk, 1, "TOP","HIGH", true)
 ZNBodyFrame.Subframes.BossTrennerHead = ZN.createSubFrame("ZNBodyBossTrennerHead", ZNBodyFrame, 460, 30, nil, 1, "TOP","HIGH", true, 0, 0)
@@ -507,7 +480,14 @@ ZNBodyFrame.Subframes.BossTrenner = ZN.createScrollFrame("ZNBodyBossTrennerConte
 ZNBodyFrame.Subframes.BossNote = ZN.createSubFrame("ZNBodyBossNote", ZNBodyFrame, 460, 200, ZN.Colors.shaman, 1, "TOP","HIGH", true, 0, 0)
 ZNBodyFrame.Subframes.PlayerHead = ZN.createSubFrame("ZNBodyPlayerHead", ZNBodyFrame, 930, 30, nil, 1, "TOP","HIGH", true, 0, 0)
 ZNBodyFrame.Subframes.Player = ZN.createScrollFrame("ZNBodyPlayerContent", ZNBodyFrame, 930, 500, nil, 1, "TOP","HIGH", true)
-
+-- Boss Preview Frame
+ZNBodyFrame.Subframes.PreviewTemplateHead = ZN.createSubFrame("PreviewTemplateHead", ZNHeaderFrame, 1000, 32, ZN.Colors.black, 0.8, "BOTTOM","HIGH", true, 0, 0, ZNHeaderFrame, "TOP")
+ZNBodyFrame.Subframes.PreviewTemplateContent = ZN.createSubFrame("PreviewTemplateContent", ZNBodyFrame, 950, 540, ZN.Colors.black, 0.9, "TOP","DIALOG", true, 0, 0)
+ZNBodyFrame.Subframes.PreviewTemplateHead.btnCollapsePreviewTemlate = ZN.CreateIconButton(ZNBodyFrame.Subframes.PreviewTemplateHead, "RIGHT", ZNBodyFrame.Subframes.PreviewTemplateHead, "RIGHT", 16, 16, -26, 0, "Interface\\AddOns\\ZeroNotes\\Media\\Texture\\arrow_down", ZN.Colors.ACTIVE, ZN.Colors.INACTIVE, false)
+ZNBodyFrame.Subframes.PreviewTemplateHead.btnCollapsePreviewTemlate:SetScript("OnClick", function() ZN:ClickPreviewCollapse() end)
+ZNBodyFrame.Subframes.PreviewTemplateContent.ScrollNote = ZN.createScrollFrame("ScrollNote", ZNBodyFrame.Subframes.PreviewTemplateContent, 800, 500, nil, 1, "CENTER","DIALOG", false, false, ZN.Colors.HD)
+ZNBodyFrame.Subframes.PreviewTemplateHead.ShowHide = ZN.CreateText(ZNBodyFrame.Subframes.PreviewTemplateHead, "RIGHT", ZNBodyFrame.Subframes.PreviewTemplateHead.btnCollapsePreviewTemlate, "LEFT", 100, 20, 0, 4, "Interface\\AddOns\\ZeroNotes\\Media\\Font\\ZNVers.ttf", 12, ZN.Colors.INACTIVE, "Preview Note")
+-- Player Table
 ZNBodyFrame.Subframes.Player:SetPoint("TOP", ZNBodyFrame.Subframes.PlayerHead,"BOTTOM", -5, 0)
 ZNBodyFrame.Subframes.BossSpells:SetPoint("TOP", ZNBodyFrame.Subframes.BossSpellHead,"BOTTOM", -5, 0)
 ZNBodyFrame.Subframes.BossTrennerHead:SetPoint("TOPLEFT", ZNBodyFrame.Subframes.BossSpells,"BOTTOMLEFT", 5, 0)
