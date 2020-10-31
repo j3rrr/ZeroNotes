@@ -333,9 +333,9 @@ function ZN:CreateDropdown(parentObj, list, order, width, dropDownBgColor, butto
 				dropdownItem.newText = dropdownItem.newText:gsub("(:%d+|)T", "%1t") -- Fix texture paths that need to end in lowercase |t
 				dropdownItem.parentObj = parentObj
 				dropdownItem:SetScript("OnClick", function(self)
-				self.parentObj.ZNText:SetText(dropdownItem.newText)
-				self.parentObj.Update(dropdownItem.class)
-				self.parentObj.dropdown:SetShown(not self.parentObj.dropdown:IsShown());
+					self.parentObj.ZNText:SetText(dropdownItem.newText)
+					self.parentObj.Update(dropdownItem.class)
+					self.parentObj.dropdown:SetShown(not self.parentObj.dropdown:IsShown());
 			end)
 			parentObj.dropdown.dropdownItems[i]=dropdownItem
 			else
