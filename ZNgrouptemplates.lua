@@ -59,7 +59,7 @@ local function CreateGroupMemberRow(index, anchorFrame)
     ZN:CreateDropdown(self, ZN.ClassIconsList, ZN.ClassIconsListOrder, 40, ZN.Colors.SBButtonBG, "CENTER", 0, ZN.Colors.HD, nil, 40, -8)
   end)
   MemberRow.Spec:SetScript("OnClick", function(self)
-    ZN:CreateDropdown(self, specList, specListOrder , 240, ZN.Colors.BG, "LEFT", 10)
+    ZN:CreateDropdown(self, specList, specListOrder , 240, ZN.Colors.SBButtonBG, "LEFT", 10,ZN.Colors.HD)
   end)
 
 
