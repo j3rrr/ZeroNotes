@@ -474,7 +474,7 @@ ZNBodyFrame.Subframes.ImpExp = ZN.createSubFrame("ZNBodyImpExpContent", ZNBodyFr
 ZNBodyFrame.Subframes.GroupTemplates = ZN.createSubFrame("ZNBodyGroupTemplatesContent", ZNBodyFrame, 930, 530, nil, 1, "RIGHT","HIGH", true, -10, 0)
 -- Boss Table
 ZNBodyFrame.Subframes.BossSpellHead = ZN.createSubFrame("ZNBodyBossSpellHead", ZNBodyFrame, 930, 30, nil, 1, "TOP","HIGH", true, 0, 0)
-ZNBodyFrame.Subframes.BossSpells = ZN.createScrollFrame("ZNBodyBossSpellContent", ZNBodyFrame, 930, 300, ZN.Colors.dk, 1, "TOP","HIGH", true)
+ZNBodyFrame.Subframes.BossSpells = ZN.createScrollFrame("ZNBodyBossSpellContent", ZNBodyFrame, 930, 300, nil, 1, "TOP","HIGH", true)
 ZNBodyFrame.Subframes.BossTrennerHead = ZN.createSubFrame("ZNBodyBossTrennerHead", ZNBodyFrame, 460, 30, nil, 1, "TOP","HIGH", true, 0, 0)
 ZNBodyFrame.Subframes.BossTrenner = ZN.createScrollFrame("ZNBodyBossTrennerContent", ZNBodyFrame, 460, 170, ZN.Colors.hunter, 1, "TOP","HIGH", true)
 ZNBodyFrame.Subframes.BossNote = ZN.createSubFrame("ZNBodyBossNote", ZNBodyFrame, 460, 200, ZN.Colors.shaman, 1, "TOP","HIGH", true, 0, 0)
