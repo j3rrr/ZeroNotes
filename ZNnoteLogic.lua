@@ -100,12 +100,11 @@ function ZN:templateToRoster(group)
   end
   return tmp
 end
-znroster = {}
+--znroster = {}
 
 function ZN:BuildRaidRoster(group)
-  print(group)
   if group ~= "Use Current Group" and ZNotes.GroupTemplates[group] then
-    znroster = ZN:templateToRoster(group)
+    --znroster = ZN:templateToRoster(group)
     return ZN:templateToRoster(group)
   end
   local RaidSize = GetNumGroupMembers()
@@ -192,15 +191,15 @@ function ZN:getAvailableSpells(group)
       for _,spell in ipairs(db) do
         if player.role == spell.role and player.class == spell.class then
           local tmp = {}
-          if seen[spell["name"]] then
+          if seen[spell["id"]..spell["role"]] then
             ZN:addPlayerToSpell(player["name"], availableSpells, spell["name"])
           else
-            tmp = spell
+            tmp = table.copy(spell)
             tmp["color"] = ZN.Colors[player.class]
             tmp["player"] = {}
             tmp.baseRating = tmp.rating
             table.insert(tmp["player"], {["name"]= player["name"]})
-            seen[spell["name"]] = true
+            seen[spell["id"]..spell["role"]] = true
           end
           if tmp["name"] then 
             table.insert(availableSpells["spells"], tmp)
@@ -209,6 +208,7 @@ function ZN:getAvailableSpells(group)
       end      
     --end
   end
+  --znspells=availableSpells
   return availableSpells
 end
 
@@ -353,16 +353,22 @@ function ZN:ShiftSpellRatings(needs,sortedAvailableSpells)
   local role = needs.role and needs.role or nil
   local class = needs.class and needs.class or nil
   local value = needs.value and needs.value or nil
+  local type = needs.type and needs.type or nil
 
   if role == "all" then role = nil end
   if class == "all" then class = nil end 
   if value == 0 then value = nil end 
 
+  --print("spell type: "..type..", role: ".. (role and role or "leer")..", class: "..(class and class or "leer")..", rating: "..(value and value or "leer"))
   for i,spell in pairs(sortedAvailableSpells) do 
-    if value and ((role and not class and spell.role==role) or (class and not role and spell.class==class) or (class and role and spell.class==class and spell.role==role)) then
+    --print("player type: "..spell.type..", role: "..spell.role..", class: "..spell.class)
+    if value and spell.type==type and ((role and not class and spell.role==role) or (class and not role and spell.class==class) or (class and role and spell.class==class and spell.role==role)) then
       spell.rating= spell.baseRating+value
+      
+      --print("enhanced rating: "..spell.rating)
     else
       spell.rating= spell.baseRating
+      --print("normal rating: "..spell.rating)
     end
   end
 end
