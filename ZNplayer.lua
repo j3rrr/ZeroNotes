@@ -119,8 +119,8 @@ local function CreateSingleLineEditBox(name, parent, point, anchor, anchorPoint,
       ZNotes.PlayerSpells[tb.Row][tb.Column]=newvalue
     end
     if tb.Column=="id" then
-      tb.refersTo:SetText((GetSpellInfo(newvalue) and GetSpellInfo(newvalue) or "|cffff3f40Invalid Spell ID|r"):upper())
-      ZNotes.PlayerSpells[tb.Row]["name"]=GetSpellInfo(newvalue)
+      tb.refersTo:SetText((GetSpellInfo(ZNotes.PlayerSpells[tb.Row][tb.Column]) and GetSpellInfo(ZNotes.PlayerSpells[tb.Row][tb.Column]) or "|cffff3f40Invalid Spell ID|r"):upper())
+      ZNotes.PlayerSpells[tb.Row]["name"]=GetSpellInfo(ZNotes.PlayerSpells[tb.Row][tb.Column])
     end
   end
   tb.doOnUpdate=true
