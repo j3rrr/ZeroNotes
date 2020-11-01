@@ -12,6 +12,8 @@ local function onUILoad(text)
     end
     ZN.initBossTemplates()
     ZN.initGroupTemplates()
+    ZN.initLastTemplates()
+    ZN:createGroupTemplateFrames()
     ZNEventHandler:Unregister('ADDON_LOADED', 'onUILoad')
     ZNEventHandler:Unregister('PLAYER_LOGIN', 'onUILoad')
     ZN.icon:Register("ZNLDB", ZN.ZNLDB, ZNotes.minimap)

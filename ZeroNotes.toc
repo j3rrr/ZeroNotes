@@ -15,7 +15,7 @@ ZNplayer.lua
 ZNboss.lua
 ZNinfo.lua
 ZNstartUp.lua
-ZNpreviewFunctions.lua
 ZNgrouptemplates.lua
+ZNpreviewFunctions.lua
 ZNhome.lua
 ZNimpexp.lua

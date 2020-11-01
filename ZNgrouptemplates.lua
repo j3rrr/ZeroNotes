@@ -1,28 +1,73 @@
 local _, ZN, L = ...
 
-local selectedGroupTemplate = "Sample Group"
-GroupTemplates = ZNBodyFrame.Subframes.GroupTemplates
+function ZN:createGroupTemplateFrames()
+  GroupTemplates = ZNBodyFrame.Subframes.GroupTemplates
 
-GroupTemplateSelectButtonHead = ZN.CreateGenericButton("ZNGroupTemplateSelectButton", GroupTemplates, "LEFT", ZNHeaderFrame.Version, "LEFT", 240, 30, 50, 0,10,0, 12, ZN.Colors.ACTIVE, ZN.Colors.SBButtonBG, nil, "Select Template..", "LEFT",true )
-GroupTemplateSelectButtonHead.doOnUpdate = true
-GroupTemplateSelectButtonHead.OnUpdate = function(_,_,_,newValue) 
-    selectedGroupTemplate = newValue 
-    print(selectedGroupTemplate)
-    --savedvariable
-    ZN:updateGroupView()
+  GroupTemplateSelectButtonHead = ZN.CreateGenericButton("ZNGroupTemplateSelectButton", GroupTemplates, "LEFT", ZNHeaderFrame.Version, "LEFT", 240, 30, 50, 0,10,0, 12, ZN.Colors.ACTIVE, ZN.Colors.SBButtonBG, nil, ZN.selectedGroupTemplate , "LEFT",true )
+  GroupTemplateSelectButtonHead.doOnUpdate = true
+  GroupTemplateSelectButtonHead.OnUpdate = function(_,_,_,newValue) 
+      ZN.selectedGroupTemplate = newValue 
+      print(ZN.selectedGroupTemplate)
+      ZNotes.lastTemplates.lastGroupTemplate = newValue
+      ZN:updateGroupView()
+  end
+  GroupTemplateSelectButtonHead:SetScript("OnClick", function(self) ZN:CreateDropdown(self, ZN:getTableKeys(ZNotes.GroupTemplates), ZN:getTableOrder(ZNotes.GroupTemplates), 240, ZN.Colors.BG, "LEFT", 10, nil, "TOOLTIP") end)
+
+  GroupTemplates.GroupTemplatesLeft = ZN.createSubFrame("GroupTemplatesLeft", GroupTemplates, 300, 530, ZN.Colors.BG, 1, "TOPLEFT", "HIGH", false, 0, 0)
+  GroupTemplates.GroupTemplatesMiddle = ZN.createSubFrame("GroupTemplatesMiddle", GroupTemplates, 300, 530, ZN.Colors.BG, 1, "TOPLEFT", "HIGH", false, 10, 0, GroupTemplates.GroupTemplatesLeft, "TOPRIGHT")
+  GroupTemplates.GroupTemplatesRight = ZN.createSubFrame("GroupTemplatesRight", GroupTemplates, 300, 530, ZN.Colors.BG, 1, "TOPLEFT", "HIGH", false, 10, 0, GroupTemplates.GroupTemplatesMiddle, "TOPRIGHT")
+
+  GroupTemplates.btnNewTemplate = ZN.CreateIconButton(GroupTemplates, "LEFT", GroupTemplateSelectButtonHead, "RIGHT", 18, 18, 8, 0, "Interface\\AddOns\\ZeroNotes\\Media\\Texture\\newtempl", ZN.Colors.ACTIVE, ZN.Colors.INACTIVE, false, ZN.Colors.ACTIVE, true, "Create New Template", ZN.Colors.ACTIVE)
+  GroupTemplates.btnEditTemplate = ZN.CreateIconButton(GroupTemplates, "RIGHT", GroupTemplateSelectButtonHead, "RIGHT", 16, 16, -8, 0, "Interface\\AddOns\\ZeroNotes\\Media\\Texture\\edit", ZN.Colors.ACTIVE, ZN.Colors.INACTIVE, false, ZN.Colors.ACTIVE, true, "Edit Template", ZN.Colors.ACTIVE)
+  GroupTemplates.btnEditTemplate:SetFrameStrata("DIALOG")
+
+  GroupTemplates.btnNewTemplate:SetScript("OnClick", function(self) ZN:createNewGroupTemplate() end)
+  GroupTemplates.btnEditTemplate:SetScript("OnClick", function(self) print("Edit Template") end)
+
+  ZNnewGroupFrame = ZN.createSubFrame("ZNnewGroupFrame",ZNFrame, 300, 200, ZN.Colors.HD, 1, 'CENTER', 'TOOLTIP', true)
+  ZNnewGroupFrame.btnClose = ZN.CreateIconButton(ZNnewGroupFrame, "TOPRIGHT", ZNnewGroupFrame, "TOPRIGHT", 16, 16, -10, -10, "Interface\\AddOns\\ZeroNotes\\Media\\Texture\\x_big_active", ZN.Colors.ACTIVE, ZN.Colors.INACTIVE, false)
+  ZNnewGroupFrame.Message = ZN.CreateText(ZNnewGroupFrame, "TOP", ZNnewGroupFrame, "TOP", 250, 30, 0, -40, "Interface\\AddOns\\ZeroNotes\\Media\\Font\\ZNReg.ttf", 12, ZN.Colors.ACTIVE, "Template Name", "LEFT")
+  ZNnewGroupFrame.newGroupName = ZN.SingleLineEditBox("newGroupName", ZNnewGroupFrame, "TOP", ZNnewGroupFrame.Message, "BOTTOM", 250, 30, 0, -10, 20, 0 ,12, ZN.Colors.ACTIVE, ZN.Colors.SBButtonBG, nil, "", "LEFT")
+  ZNnewGroupFrame.ReloadMessage = ZN.CreateText(ZNnewGroupFrame, "TOP", ZNnewGroupFrame.newGroupName, "TOP", 250, 20, 0, -20, "Interface\\AddOns\\ZeroNotes\\Media\\Font\\ZNVers.ttf", 10, ZN.Colors.ACTIVE, "'Create' will reload your ui", "LEFT")
+  ZNnewGroupFrame.ConfirmButton = ZN.CreateGenericButton("ZNnewGroupConfirmButton", ZNnewGroupFrame, "BOTTOMLEFT", ZNnewGroupFrame, "BOTTOMLEFT", 125, 30, 20, 20,0,0, 12, ZN.Colors.ACTIVE, ZN.Colors.SBButtonBG, nil, "Create", "CENTER",true, ZN.Colors.BG )
+  ZNnewGroupFrame.CancelButton = ZN.CreateGenericButton("ZNnewGroupCancelButton", ZNnewGroupFrame, "BOTTOMRIGHT", ZNnewGroupFrame, "BOTTOMRIGHT", 125, 30, -20, 20,0,0, 12, ZN.Colors.ACTIVE, ZN.Colors.SBButtonBG, nil, "Cancel", "CENTER",true, ZN.Colors.BG )
+
+  ZNnewGroupFrame.ConfirmButton:SetScript("OnClick", function(self)
+    local name = ZNnewGroupFrame.newGroupName:GetText()
+    if name == nil or name == "" then
+      ZN:Print("Please enter a name for your Template")
+    else
+        ZNotes.GroupTemplates[name] = {}
+        for i = 1, 30 do
+          ZNotes.GroupTemplates[name][i] = {
+            ["name"] = "Name",
+            ["class"] = "none",
+            ["spec"] = "empty",
+          }
+        end
+        ZNotes.lastTemplates.lastGroupTemplate = name
+        ZN.selectedGroupTemplate = name
+        GroupTemplateSelectButtonHead.ZNText:SetText(ZN.selectedGroupTemplate:upper())
+        ZNnewGroupFrame:Hide()
+        ZN:updateGroupView()
+        --ReloadUI()
+    end
+  end)
+  ZNnewGroupFrame.btnClose:SetScript("OnClick", function(self) ZNnewGroupFrame:Hide() end)
+  ZNnewGroupFrame.CancelButton:SetScript("OnClick", function(self) ZNnewGroupFrame:Hide() end)
+
+  ZNSidebarFrame.btnDeleteGroupTemplate = ZN.CreateIconButton(ZNSidebarFrame, "BOTTOMRIGHT", ZNSidebarFrame, "BOTTOMRIGHT", 20, 20, -14, 20, "Interface\\AddOns\\ZeroNotes\\Media\\Texture\\delete2", ZN.Colors.ACTIVE, ZN.Colors.INACTIVE, false, nil, true, "Delete Template", ZN.Colors.ACTIVE)
+	ZNSidebarFrame.btnDeleteGroupTemplate:SetShown(false)
 end
-GroupTemplateSelectButtonHead:SetScript("OnClick", function(self) ZN:CreateDropdown(self, ZN:getTableKeys(ZNotes.GroupTemplates), ZN:getTableOrder(ZNotes.GroupTemplates), 240, ZN.Colors.BG, "LEFT", 10, nil, "TOOLTIP") end)
-
-GroupTemplates.GroupTemplatesLeft = ZN.createSubFrame("GroupTemplatesLeft", GroupTemplates, 300, 530, ZN.Colors.BG, 1, "TOPLEFT", "HIGH", false, 0, 0)
-GroupTemplates.GroupTemplatesMiddle = ZN.createSubFrame("GroupTemplatesMiddle", GroupTemplates, 300, 530, ZN.Colors.BG, 1, "TOPLEFT", "HIGH", false, 10, 0, GroupTemplates.GroupTemplatesLeft, "TOPRIGHT")
-GroupTemplates.GroupTemplatesRight = ZN.createSubFrame("GroupTemplatesRight", GroupTemplates, 300, 530, ZN.Colors.BG, 1, "TOPLEFT", "HIGH", false, 10, 0, GroupTemplates.GroupTemplatesMiddle, "TOPRIGHT")
-
-
 
 ZN.GroupMemberRows = {}
 ZN.GroupMemberRowsSelectedClass = {}
 
-local function CreateGroupMemberRow(index, anchorFrame, template)
+function ZN:createNewGroupTemplate()
+  ZNnewGroupFrame:Show()
+end
+
+function ZN:CreateGroupMemberRow(index, anchorFrame, template)
 
   local parent = GroupTemplates.GroupTemplatesLeft
   local yOffsset = 0
@@ -54,8 +99,8 @@ local function CreateGroupMemberRow(index, anchorFrame, template)
   MemberRow.Spec.Row = index
   MemberRow.Name.Row = index
 
-  if not ZNotes.GroupTemplates[selectedGroupTemplate][index] then
-    ZNotes.GroupTemplates[selectedGroupTemplate][index] = {
+  if not ZNotes.GroupTemplates[ZN.selectedGroupTemplate][index] then
+    ZNotes.GroupTemplates[ZN.selectedGroupTemplate][index] = {
       ["name"] = "Name",
       ["class"] = "none",
       ["spec"] = "empty",
@@ -73,15 +118,15 @@ local function CreateGroupMemberRow(index, anchorFrame, template)
       MemberRow.Spec.ZNText:SetText("SPEC")
     end
     print(ZN.GroupMemberRowsSelectedClass[index])
-    ZNotes.GroupTemplates[selectedGroupTemplate][row]["class"] = newValue
+    ZNotes.GroupTemplates[ZN.selectedGroupTemplate][row]["class"] = newValue
   end  
   MemberRow.Spec.doOnUpdate = true
   MemberRow.Spec.OnUpdate = function(_,row,_,newValue) 
-   ZNotes.GroupTemplates[selectedGroupTemplate][row]["spec"] = newValue
+   ZNotes.GroupTemplates[ZN.selectedGroupTemplate][row]["spec"] = newValue
   end  
   MemberRow.Name.doOnUpdate = true
   MemberRow.Name.OnUpdate = function(_,row,_,newValue) 
-   ZNotes.GroupTemplates[selectedGroupTemplate][row]["name"] = newValue
+   ZNotes.GroupTemplates[ZN.selectedGroupTemplate][row]["name"] = newValue
   end  
 
   MemberRow.Class:SetScript("OnClick", function(self)
@@ -105,12 +150,12 @@ function ZN:updateGroupMemberRow(dummy, MemberRow)
   MemberRow.Name:SetText(dummy["name"])
 end
 
-local anchor = GroupTemplates.GroupTemplatesLeft
 local template = {}
 
 function ZN:updateGroupView()
-  if selectedGroupTemplate ~= nil then 
-    template = ZNotes.GroupTemplates[selectedGroupTemplate]
+  local anchor = GroupTemplates.GroupTemplatesLeft
+  if ZN.selectedGroupTemplate ~= nil then 
+    template = ZNotes.GroupTemplates[ZN.selectedGroupTemplate]
   end
 
   for i = 1, 30 do
@@ -123,7 +168,7 @@ function ZN:updateGroupView()
       dummy = template[i]
     end
     if i > #ZN.GroupMemberRows then
-      ZN.GroupMemberRows[i] = CreateGroupMemberRow(i, anchor, dummy)
+      ZN.GroupMemberRows[i] = ZN:CreateGroupMemberRow(i, anchor, dummy)
     else
       ZN:updateGroupMemberRow(dummy, ZN.GroupMemberRows[i])
     end
