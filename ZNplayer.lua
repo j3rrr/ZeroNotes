@@ -235,7 +235,7 @@ function ZN:InitPlayer()
   ZN:BuildPlayerFilterArray()
   ZN:BuildPlayerSortArray()
 
-  local scrollHeight = ZN.PlayerTableRows.title + (ZN.PlayerTableRows.row+ZN.PlayerTableRows.rowgap)*#ZN.PlayerSortArray
+  local scrollHeight = (ZN.PlayerTableRows.row+ZN.PlayerTableRows.rowgap)*#ZN.PlayerSortArray
   PlayerTable.scrollChild:SetHeight(scrollHeight)
 
   local anchor=PlayerTable.TitleRow
@@ -305,7 +305,7 @@ function ZN:ReloadPlayerTable()
   ZN:BuildPlayerFilterArray()
   ZN:BuildPlayerSortArray()
 
-  local scrollHeight = ZN.PlayerTableRows.title + (ZN.PlayerTableRows.row+ZN.PlayerTableRows.rowgap)*#ZN.PlayerSortArray
+  local scrollHeight = (ZN.PlayerTableRows.row+ZN.PlayerTableRows.rowgap)*#ZN.PlayerSortArray
   PlayerTable.scrollChild:SetHeight(scrollHeight)
 
   for i=1, #ZN.PlayerRows do

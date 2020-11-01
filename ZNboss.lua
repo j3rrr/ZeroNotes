@@ -25,7 +25,7 @@ BossTemplateSelectButtonHead.OnUpdate = function(_,_,_,newValue)
     ZNBodyFrame.Subframes.BossNote.EditBox.editbox.boss=newValue
     ZNBodyFrame.Subframes.BossNote.EditBox.editbox:SetText(ZNotes.BossTemplates[newValue].NoteEnd and ZNotes.BossTemplates[newValue].NoteEnd or "")
 
-    ZN:showPreview(ZN:printPreviewNote(selectedTemplate), ZNBodyFrame.Subframes.PreviewTemplateContent.ScrollNote.scrollChild)
+    ZN:showPreview(ZN:printPreviewNote(selectedTemplate), ZNBodyFrame.Subframes.PreviewTemplateContent.ScrollNote.scrollChild,selectedTemplate)
 end
 
 -- Boss Sidebar Functions
@@ -110,6 +110,8 @@ ZN.BossTrennerTableColumns = {
   }
 ZN.BossDropdowns = {
   ["raidicon"] = {["content"]=ZN.TrennerIconsList, ["order"]=ZN.TrennerIconsListOrder},
+  ["role"] = {["content"]=ZN.RoleSelectionColor, ["order"]=ZN.RoleSelectionOrder},
+  ["class"] = {["content"]=ZN.PlayerClassesColored, ["order"]=ZN.PlayerClassesColoredOrder},
   }
 ZN.BossAttributeMapping = {
   ["time"] = "time",
@@ -127,7 +129,29 @@ ZN.BossAttributeMapping = {
   ["util"] = "util",
   ["imun"] = "imun",
   ["text"] = "text",
+  ["class"] = "class",
+  ["role"] = "role",
+  ["value"] = "value"
 }
+ZN.BossPrioTableColumnHeaders = {
+  "type",
+  "role",
+  "class",
+  "value",
+  }
+ZN.BossPrioTableColumns = {
+  ["type"] = 75,
+  ["role"] = 75,
+  ["class"] = 150,
+  ["value"] = 60,
+  }
+ZN.BossPrioTableColumnHeaderNames = {
+  ["type"] = "Need Type",
+  ["role"] = "Role",
+  ["class"] = "Class",
+  ["value"]= "+ Rating",
+}
+
 ZN.BossTableIconButton = {
   ["aoe"]= {["size"]= 16, ["xOffset"]=44, ["type"]="checkBox"},
   ["station"]= {["size"]= 16, ["xOffset"]=22, ["type"]="checkBox"},
@@ -155,8 +179,8 @@ ZNSidebarFrame.btnAddBossTrenner:SetScript("OnClick",function(self) if selectedT
 
 --ZNBodyFrame.Subframes.BossNote
 ZNBodyFrame.Subframes.BossNote.TitleRow = ZN.createSubFrame("ZNBossNoteTitleRow", ZNBodyFrame.Subframes.BossNote, 460, ZN.BossTableRows.title, ZN.Colors.BG, 1, "TOP", "HIGH", false, 0,0)
-ZNBodyFrame.Subframes.BossNote.TitleRow.Header = ZN.CreateGenericButton("ZNBossNoteTitleRowHeader", ZNBodyFrame.Subframes.BossNote.TitleRow, "TOP", ZNBodyFrame.Subframes.BossNote.TitleRow, "TOP", 460, ZN.PlayerTableRows.title, 0, 0, 0, 0 ,12, ZN.Colors.INACTIVE, ZN.Colors.BG, nil, "Enter custom text for Note end, e.g. interrupt rotation", "CENTER", false)
-ZNBodyFrame.Subframes.BossNote.EditBox = ZN.MultiLineEditBox("ZNBossNoteEditBox", ZNBodyFrame.Subframes.BossNote, "BOTTOMLEFT", ZNBodyFrame.Subframes.BossNote, "BOTTOMLEFT", 459, 170, 1, 0, 0, 0 ,12, ZN.Colors.ACTIVE, ZN.Colors.HD, nil, "", "LEFT")
+ZNBodyFrame.Subframes.BossNote.TitleRow.Header = ZN.CreateGenericButton("ZNBossNoteTitleRowHeader", ZNBodyFrame.Subframes.BossNote.TitleRow, "TOP", ZNBodyFrame.Subframes.BossNote.TitleRow, "TOP", 460, ZN.PlayerTableRows.title, 0, 0, 0, 0 ,10, ZN.Colors.INACTIVE, ZN.Colors.BG, nil, "Add custom text below note, e.g. interrupt rotation", "CENTER", false)
+ZNBodyFrame.Subframes.BossNote.EditBox = ZN.MultiLineEditBox("ZNBossNoteEditBox", ZNBodyFrame.Subframes.BossNote, "BOTTOMLEFT", ZNBodyFrame.Subframes.BossNote, "BOTTOMLEFT", 459, 170, 1, 0, 0, 0 ,12, ZN.Colors.INACTIVE, ZN.Colors.HD, nil, "", "LEFT")
 ZNBodyFrame.Subframes.BossNote.EditBox:SetShown(false)
 ZNBodyFrame.Subframes.BossNote.EditBox.editbox.doOnUpdate=true
 ZNBodyFrame.Subframes.BossNote.EditBox.editbox.OnUpdate = function(_,_,_,newValue,eb)
@@ -172,7 +196,7 @@ end)
 ZNBodyFrame.Subframes.BossNote.EditBox.editbox:SetScript("OnEditFocusLost", function(self)
   self:ClearFocus()
   ZNBodyFrame.Subframes.BossNote.EditBox.editbox.hintText:SetShown(false)
-  self:SetTextColor(tonumber("0x"..ZN.Colors.ACTIVE:sub(1,2))/255, tonumber("0x"..ZN.Colors.ACTIVE:sub(3,4))/255, tonumber("0x"..ZN.Colors.ACTIVE:sub(5,6))/255, 1);
+  self:SetTextColor(tonumber("0x"..ZN.Colors.INACTIVE:sub(1,2))/255, tonumber("0x"..ZN.Colors.INACTIVE:sub(3,4))/255, tonumber("0x"..ZN.Colors.INACTIVE:sub(5,6))/255, 1);
 end)
 ZNBodyFrame.Subframes.BossNote.EditBox.editbox:SetScript("OnEnterPressed", function(self)
   if not IsShiftKeyDown() then
@@ -186,16 +210,44 @@ ZNBodyFrame.Subframes.BossNote.EditBox.editbox:SetScript("OnEnterPressed", funct
   end
 end)
 
+ZNBodyFrame.Subframes.PrioDropdown = ZN.createSubFrame("ZNBossPrioDropDown", ZNFrame, 372, 202, ZN.Colors.BG, 1, "CENTER", "DIALOG", true)
+ZNBodyFrame.Subframes.PrioDropdown:SetBackdrop({bgFile = "Interface/Tooltips/UI-Tooltip-Background", 
+edgeFile = [[Interface\Buttons\WHITE8x8]],
+edgeSize = 1,
+});
+ZNBodyFrame.Subframes.PrioDropdown:SetBackdropColor(tonumber("0x"..ZN.Colors.BG:sub(1,2))/255, tonumber("0x"..ZN.Colors.BG:sub(3,4))/255, tonumber("0x"..ZN.Colors.BG:sub(5,6))/255, 1);
+ZNBodyFrame.Subframes.PrioDropdown:SetBackdropBorderColor(tonumber("0x"..ZN.Colors.INACTIVE:sub(1,2))/255, tonumber("0x"..ZN.Colors.INACTIVE:sub(3,4))/255, tonumber("0x"..ZN.Colors.INACTIVE:sub(5,6))/255, 1);
+ZNBodyFrame.Subframes.PrioDropdown.ScrollFrame = ZN.createScrollFrame("ZNBossPrioContent", ZNBodyFrame.Subframes.PrioDropdown, 370, 170, nil, 1, "TOP","DIALOG", false)
+ZNBodyFrame.Subframes.PrioDropdown.ScrollFrame:SetPoint("TOPLEFT", ZNBodyFrame.Subframes.PrioDropdown, "TOPLEFT",1,-31)
+ZNBodyFrame.Subframes.PrioDropdown.ScrollFrame.ScrollBar:SetPoint("TOPRIGHT", ZNBodyFrame.Subframes.PrioDropdown.ScrollFrame, "TOPRIGHT", 0, 0);
+ZNBodyFrame.Subframes.PrioDropdown.ScrollFrame.ScrollBar:SetPoint("BOTTOMRIGHT", ZNBodyFrame.Subframes.PrioDropdown.ScrollFrame, "BOTTOMRIGHT", 0, 0);
+table.insert(ZN.DropDownsEdit,ZNBodyFrame.Subframes.PrioDropdown)
+ZNBodyFrame.Subframes.PrioDropdown:SetScript("OnMouseDown", function(self, button)
+  if button == "LeftButton" then
+    for i=1, #ZN.DropDowns do
+      ZN.DropDowns[i]:SetShown(false)
+    end
+  end
+end)
+ZNBodyFrame.Subframes.PrioDropdown.ScrollFrame:SetScript("OnMouseDown", function(self, button)
+  if button == "LeftButton" then
+    for i=1, #ZN.DropDowns do
+      ZN.DropDowns[i]:SetShown(false)
+    end
+  end
+end)
 
-local function CreateGenericButton (name, parent, point, anchor, anchorPoint, width, type, text,row, boss)
-  local btn = ZN.CreateGenericButton(name, parent, point, anchor, anchorPoint, width, ZN.PlayerTableRows.row, 0, 0, 0, -12 ,12, ZN.Colors.INACTIVE, ZN.Colors.ROWBG, nil, text, "CENTER", false)
+
+
+local function CreateGenericButton (name, parent, point, anchor, anchorPoint, width, type, text,row, boss, fontoffset)
+  local btn = ZN.CreateGenericButton(name, parent, point, anchor, anchorPoint, width, ZN.PlayerTableRows.row, 0, 0, 0, fontoffset and fontoffset or 0 ,12, ZN.Colors.INACTIVE, ZN.Colors.ROWBG, nil, text, "CENTER", false)
   btn:SetScript("OnClick", function(self) ZN:CreateDropdown(self, ZN.BossDropdowns[type].content, ZN.BossDropdowns[type].order, width, ZN.Colors.SBButtonBG, "CENTER",0, ZN.Colors.HD) end)
   btn.Row = row
   btn.boss=boss
   btn.Column = ZN.BossAttributeMapping[type]
   btn.OnUpdate=function(_, row, column, newvalue)
      ZNotes.BossTemplates[btn.boss][btn.Row][btn.Column]=newvalue
-     ZN:showPreview(ZN:printPreviewNote(selectedTemplate), ZNBodyFrame.Subframes.PreviewTemplateContent.ScrollNote.scrollChild)
+     ZN:showPreview(ZN:printPreviewNote(selectedTemplate), ZNBodyFrame.Subframes.PreviewTemplateContent.ScrollNote.scrollChild,selectedTemplate)
   end
   btn.doOnUpdate=true
   return btn
@@ -219,7 +271,7 @@ local function CreateSingleLineEditBox(name, parent, point, anchor, anchorPoint,
       tb.refersTo:SetText((GetSpellInfo(newvalue) and GetSpellInfo(newvalue) or "|cffff3f40Invalid Spell ID|r"):upper())
       ZNotes.BossTemplates[tb.boss][tb.Row]["name"]=GetSpellInfo(newvalue)
     end
-    ZN:showPreview(ZN:printPreviewNote(selectedTemplate), ZNBodyFrame.Subframes.PreviewTemplateContent.ScrollNote.scrollChild)
+    ZN:showPreview(ZN:printPreviewNote(selectedTemplate), ZNBodyFrame.Subframes.PreviewTemplateContent.ScrollNote.scrollChild,selectedTemplate)
   end
   tb.doOnUpdate=true
   return tb
@@ -260,6 +312,20 @@ local function CreateIconButton(parent, point, anchor, anchorPoint, type, row, b
   btn.boss=boss
   btn.Column = ZN.BossAttributeMapping[type]
   return btn
+end
+
+function ZN:CreatePrioTitleRow()
+  local TitleRow = ZN.createSubFrame("ZNBossPrioTitleRow", ZNBodyFrame.Subframes.PrioDropdown, 360, ZN.BossTableRows.title, ZN.Colors.BG, 1, "TOPLEFT", "TOOLTIP", false, 1,-1)
+  local anchor = TitleRow
+  for i=1, #ZN.BossPrioTableColumnHeaders do
+      local header = ZN.BossPrioTableColumnHeaders[i]
+      local text = ZN.BossPrioTableColumnHeaderNames[header]
+      local width = ZN.BossPrioTableColumns[header]
+      local height = ZN.BossTableRows.title
+      local headerButton = ZN.CreateGenericButton(nil, TitleRow, "LEFT", anchor, anchor==TitleRow and "LEFT" or "RIGHT", width, height, 0, 0, 0, 0 ,10, ZN.Colors.INACTIVE, ZN.Colors.BG, nil, text, "CENTER", false)
+      anchor = headerButton
+  end
+  return TitleRow
 end
 
 local function CreateSpellTitleRow()
@@ -316,31 +382,41 @@ local function CreateBossSpellRow(BossSpellID, BossSpell, AnchorFrame, boss)
           self:SetText(ZN:CountBossSpellNeeds(self.boss, self.Row, self.Column))
         else
             ZN:SetBossSpellNeeds(self.boss, self.Row, self.parent)
-            ZN:showPreview(ZN:printPreviewNote(selectedTemplate), ZNBodyFrame.Subframes.PreviewTemplateContent.ScrollNote.scrollChild)
+            ZN:showPreview(ZN:printPreviewNote(selectedTemplate), ZNBodyFrame.Subframes.PreviewTemplateContent.ScrollNote.scrollChild,selectedTemplate)
         end
       end
     ContentRow.util.OnUpdate = ContentRow.heal.OnUpdate
     ContentRow.imun.OnUpdate = ContentRow.heal.OnUpdate
 
     ContentRow.Aoe:SetScript("OnClick",function(self)
-    self.toggleChecked()
-    ZNotes.BossTemplates[self.boss][self.Row][self.Column] = self.active
-    ZN:showPreview(ZN:printPreviewNote(selectedTemplate), ZNBodyFrame.Subframes.PreviewTemplateContent.ScrollNote.scrollChild)
+      self.toggleChecked()
+      ZNotes.BossTemplates[self.boss][self.Row][self.Column] = self.active
+      ZN:showPreview(ZN:printPreviewNote(selectedTemplate), ZNBodyFrame.Subframes.PreviewTemplateContent.ScrollNote.scrollChild,selectedTemplate)
     end)
 
     ContentRow.Station:SetScript("OnClick",function(self)
-    self.toggleChecked()
-    ZNotes.BossTemplates[self.boss][self.Row][self.Column] = self.active
-    ZN:showPreview(ZN:printPreviewNote(selectedTemplate), ZNBodyFrame.Subframes.PreviewTemplateContent.ScrollNote.scrollChild)
+      self.toggleChecked()
+      ZNotes.BossTemplates[self.boss][self.Row][self.Column] = self.active
+      ZN:showPreview(ZN:printPreviewNote(selectedTemplate), ZNBodyFrame.Subframes.PreviewTemplateContent.ScrollNote.scrollChild,selectedTemplate)
     end)
 
     ContentRow.Delete:SetScript("OnClick", function(self)
-    table.remove(ZNotes.BossTemplates[self.boss],self.Row)
-    ZN:ReloadBossSpellTable(self.boss)
-    ZN:showPreview(ZN:printPreviewNote(selectedTemplate), ZNBodyFrame.Subframes.PreviewTemplateContent.ScrollNote.scrollChild)
+      table.remove(ZNotes.BossTemplates[self.boss],self.Row)
+      ZN:ReloadBossSpellTable(self.boss)
+      ZN:showPreview(ZN:printPreviewNote(selectedTemplate), ZNBodyFrame.Subframes.PreviewTemplateContent.ScrollNote.scrollChild,selectedTemplate)
     end)
 
-    --edit function
+    ContentRow.edit:SetScript("OnClick", function(self)
+      ZN:ReloadBossPrioTable(self.boss, self.Row)
+      local _,parent = ZNBodyFrame.Subframes.PrioDropdown:GetPoint()
+      if parent ~= self or not ZNBodyFrame.Subframes.PrioDropdown:IsShown() then 
+        ZNBodyFrame.Subframes.PrioDropdown:ClearAllPoints()
+        ZNBodyFrame.Subframes.PrioDropdown:SetPoint("TOPRIGHT", self, "BOTTOMRIGHT",0,-14)
+        ZNBodyFrame.Subframes.PrioDropdown:SetShown(true)
+      else
+        ZNBodyFrame.Subframes.PrioDropdown:SetShown(false)
+      end
+    end)
 
     return ContentRow
 end
@@ -350,19 +426,64 @@ local function CreateBossTrennerRow(BossSpellID, BossSpell, AnchorFrame, boss)
   
   ContentRow.Text = CreateSingleLineEditBox("Text"..BossSpellID, ContentRow, "LEFT", ContentRow, "LEFT",ZN.BossTrennerTableColumns["text"], "text", BossSpell.text,0,BossSpellID, boss)
   ContentRow.Time = CreateSingleLineEditBox("Time"..BossSpellID, ContentRow, "LEFT", ContentRow.Text, "RIGHT",ZN.BossTrennerTableColumns["time"], "time", BossSpell.time,0,BossSpellID, boss)
-  ContentRow.Icon = CreateGenericButton ("Icon"..BossSpellID, ContentRow, "LEFT", ContentRow.Time, "RIGHT", ZN.BossTrennerTableColumns["raidicon"], "raidicon", ZN.TrennerIconsList[BossSpell.raidicon],BossSpellID,boss)
+  ContentRow.Icon = CreateGenericButton ("Icon"..BossSpellID, ContentRow, "LEFT", ContentRow.Time, "RIGHT", ZN.BossTrennerTableColumns["raidicon"], "raidicon", ZN.TrennerIconsList[BossSpell.raidicon],BossSpellID,boss,-12)
   ContentRow.Delete = CreateIconButton(ContentRow, "LEFT", ContentRow.Icon, "RIGHT", "delete", BossSpellID,boss,19)
 
   ContentRow.Delete:SetScript("OnClick", function(self)
     table.remove(ZNotes.BossTemplates[self.boss],self.Row)
     ZN:ReloadBossTrennerTable(self.boss)
-    ZN:showPreview(ZN:printPreviewNote(selectedTemplate), ZNBodyFrame.Subframes.PreviewTemplateContent.ScrollNote.scrollChild)
+    ZN:showPreview(ZN:printPreviewNote(selectedTemplate), ZNBodyFrame.Subframes.PreviewTemplateContent.ScrollNote.scrollChild,selectedTemplate)
   end)
 
   ContentRow.Text.OnUpdate=function(_, row, column, newvalue)
     ZNotes.BossTemplates[ ContentRow.Text.boss][ ContentRow.Text.Row][ ContentRow.Text.Column]=newvalue
-    ZN:showPreview(ZN:printPreviewNote(selectedTemplate), ZNBodyFrame.Subframes.PreviewTemplateContent.ScrollNote.scrollChild)
+    ZN:showPreview(ZN:printPreviewNote(selectedTemplate), ZNBodyFrame.Subframes.PreviewTemplateContent.ScrollNote.scrollChild,selectedTemplate)
   end
+
+  return ContentRow
+end
+
+local function CreateBossPrioRow(BossSpellID, BossSpell, AnchorFrame, boss, needindex)
+  local ContentRow = ZN.createSubFrame("ZNBossPrioRow"..BossSpellID, ZNBodyFrame.Subframes.PrioDropdown.ScrollFrame.scrollChild, 360, ZN.BossTableRows.row, ZN.Colors.ROWBG, 1, "TOPLEFT", "TOOLTIP", false, 0,-ZN.BossTableRows.rowgap, AnchorFrame, "BOTTOMLEFT")
+  local role = ZNotes.BossTemplates[boss][BossSpellID]["need"][needindex].role and ZNotes.BossTemplates[boss][BossSpellID]["need"][needindex].role or "all"
+  local class = ZNotes.BossTemplates[boss][BossSpellID]["need"][needindex].class and ZNotes.BossTemplates[boss][BossSpellID]["need"][needindex].class or "all"
+  local value = ZNotes.BossTemplates[boss][BossSpellID]["need"][needindex].value and ZNotes.BossTemplates[boss][BossSpellID]["need"][needindex].value or "0"
+  ContentRow.Type = CreateText(ContentRow, "LEFT", ContentRow, "LEFT", ZN.BossPrioTableColumns["type"], "type", ZNotes.BossTemplates[boss][BossSpellID]["need"][needindex].type:upper())
+  ContentRow.Role = CreateGenericButton ("Role"..BossSpellID, ContentRow, "LEFT", ContentRow.Type, "RIGHT", ZN.BossPrioTableColumns["role"], "role", ZN.RoleSelectionColor[role],BossSpellID,boss)
+  ContentRow.Class = CreateGenericButton ("Class"..BossSpellID, ContentRow, "LEFT", ContentRow.Role, "RIGHT", ZN.BossPrioTableColumns["class"], "class", ZN.PlayerClassesColored[class],BossSpellID,boss)
+  ContentRow.Value = CreateSingleLineEditBox("Value", ContentRow, "LEFT", ContentRow.Class, "RIGHT", ZN.BossPrioTableColumns["value"], "value", value, 0, BossSpellID, boss)
+
+  ContentRow.Role.needindex=needindex
+  ContentRow.Class.needindex=needindex
+  ContentRow.Value.needindex=needindex
+
+  ContentRow.Role.OnUpdate=function(_, row, column, newvalue,self)
+    ZNotes.BossTemplates[self.boss][row]["need"][self.needindex][column]=newvalue
+    ZN:showPreview(ZN:printPreviewNote(selectedTemplate), ZNBodyFrame.Subframes.PreviewTemplateContent.ScrollNote.scrollChild,selectedTemplate)
+  end
+  ContentRow.Class.OnUpdate=function(_, row, column, newvalue,self)
+    ZNotes.BossTemplates[self.boss][row]["need"][self.needindex][column]=newvalue
+    ZN:showPreview(ZN:printPreviewNote(selectedTemplate), ZNBodyFrame.Subframes.PreviewTemplateContent.ScrollNote.scrollChild,selectedTemplate)
+  end
+
+  ContentRow.Value.OnUpdate=function(_, row, column, newvalue,self)
+    newvalue = tonumber(newvalue)
+    if newvalue == nil then
+      UIErrorsFrame:AddMessage("You need to enter a numeric value", 0.8, 0.07, 0.2, 5.0)
+      ContentRow.Value:SetText(ZNotes.BossTemplates[self.boss][row]["need"][self.needindex][column] and ZNotes.BossTemplates[self.boss][row]["need"][self.needindex][column] or 0)
+    else
+      ZNotes.BossTemplates[self.boss][row]["need"][self.needindex][column]=newvalue
+    end
+    ZN:showPreview(ZN:printPreviewNote(selectedTemplate), ZNBodyFrame.Subframes.PreviewTemplateContent.ScrollNote.scrollChild,selectedTemplate)
+  end
+
+  ContentRow:SetScript("OnMouseDown", function(self, button)
+    if button == "LeftButton" then
+      for i=1, #ZN.DropDowns do
+        ZN.DropDowns[i]:SetShown(false)
+      end
+    end
+  end)
 
   return ContentRow
 end
@@ -393,6 +514,29 @@ function ZN:addNewBossTrenner(boss)
     ["raidicon"] = "{rt1}",
   })
   ZN:ReloadBossTrennerTable(boss)
+end
+
+local function UpdateBossPrioRow(BossSpellID, BossSpell, AnchorFrame, ContentRow, boss, needindex)
+  ContentRow:SetPoint("TOP", AnchorFrame, "BOTTOM",0,-ZN.BossTableRows.rowgap)
+  local role = ZNotes.BossTemplates[boss][BossSpellID]["need"][needindex].role and ZNotes.BossTemplates[boss][BossSpellID]["need"][needindex].role or "all"
+  local class = ZNotes.BossTemplates[boss][BossSpellID]["need"][needindex].class and ZNotes.BossTemplates[boss][BossSpellID]["need"][needindex].class or "all"
+  local value = ZNotes.BossTemplates[boss][BossSpellID]["need"][needindex].value and ZNotes.BossTemplates[boss][BossSpellID]["need"][needindex].value or "0"
+  
+  ContentRow.Type:SetText(ZNotes.BossTemplates[boss][BossSpellID]["need"][needindex].type:upper())
+  ContentRow.Role.Row=BossSpellID
+  ContentRow.Role.boss=boss
+  ContentRow.Role.needindex=needindex
+  ContentRow.Role.ZNText:SetText(ZN.RoleSelectionColor[role]:upper())
+  ContentRow.Class.Row=BossSpellID
+  ContentRow.Class.boss=boss
+  ContentRow.Class.needindex=needindex
+  ContentRow.Class.ZNText:SetText(ZN.PlayerClassesColored[class]:upper())
+  ContentRow.Value.Row=BossSpellID
+  ContentRow.Value.boss=boss
+  ContentRow.Value.needindex=needindex
+  ContentRow.Value:SetText(value)
+
+  return ContentRow
 end
 
 local function UpdateBossTrennerRow(BossSpellID, BossSpell, AnchorFrame,ContentRow,boss)
@@ -452,6 +596,7 @@ ZN.BossSpellsIndex = {}
 ZN.BossTrennerIndex = {}
 ZN.BossSpellRows = {}
 ZN.BossTrennerRows = {}
+ZN.BossPrioRows = {}
 function ZN:InitBoss()
     -- Player Body
     local BossSpellTable = ZNBodyFrame.Subframes.BossSpells
@@ -459,6 +604,35 @@ function ZN:InitBoss()
     -- Title Row
     BossSpellTable.TitleRow = CreateSpellTitleRow()
     BossTrennerTable.TitleRow = CreateTrennerTitleRow()
+    ZNBodyFrame.Subframes.PrioDropdown.TitleRow = ZN:CreatePrioTitleRow()
+end
+
+function ZN:ReloadBossPrioTable(boss, BossSpellID, needindex)
+  local PrioTable = ZNBodyFrame.Subframes.PrioDropdown.ScrollFrame
+
+  local scrollHeight = (ZN.BossTableRows.row+ZN.BossTableRows.rowgap)*#ZNotes.BossTemplates[boss][BossSpellID].need
+  PrioTable.scrollChild:SetHeight(scrollHeight)
+
+  for i=1, #ZN.BossPrioRows do
+    ZN.BossPrioRows[i]:SetShown(false)
+  end
+
+  local anchor=PrioTable
+  
+  for i=1, #ZNotes.BossTemplates[boss][BossSpellID].need do
+    if i >#ZN.BossPrioRows then
+      ZN.BossPrioRows[i] = CreateBossPrioRow(BossSpellID, ZNotes.BossTemplates[boss][BossSpellID], anchor, boss, i)
+    else 
+      UpdateBossPrioRow(BossSpellID, ZNotes.BossTemplates[boss][BossSpellID], anchor, ZN.BossPrioRows[i], boss, i)
+    end
+    if i==1 then
+      ZN.BossPrioRows[i]:ClearAllPoints()
+      ZN.BossPrioRows[i]:SetPoint("TOPLEFT", PrioTable.scrollChild,"TOPLEFT")
+    end
+    ZN.BossPrioRows[i]:SetShown(true)
+    anchor = ZN.BossPrioRows[i]
+  end  
+  
 end
 
 function ZN:ReloadBossTrennerTable(boss)
@@ -474,7 +648,7 @@ function ZN:ReloadBossTrennerTable(boss)
       end
   end
   ZN:BuildBossTrennerSortArray (boss)
-  local scrollHeight = ZN.PlayerTableRows.title + (ZN.BossTableRows.row+ZN.BossTableRows.rowgap)*#ZN.BossTrennerIndex
+  local scrollHeight = (ZN.BossTableRows.row+ZN.BossTableRows.rowgap)*#ZN.BossTrennerIndex
   BossSpellTable.scrollChild:SetHeight(scrollHeight)
 
   for i=1, #ZN.BossTrennerRows do
@@ -512,7 +686,7 @@ function ZN:ReloadBossSpellTable(boss)
       end
   end
   ZN:BuildBossSpellSortArray (boss)
-  local scrollHeight = ZN.PlayerTableRows.title + (ZN.BossTableRows.row+ZN.BossTableRows.rowgap)*#ZN.BossSpellsIndex
+  local scrollHeight = (ZN.BossTableRows.row+ZN.BossTableRows.rowgap)*#ZN.BossSpellsIndex
   BossSpellTable.scrollChild:SetHeight(scrollHeight)
 
 

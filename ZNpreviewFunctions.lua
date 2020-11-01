@@ -1,6 +1,6 @@
 local _, ZN, L = ...
 
-function ZN:showPreview(arr, parent)
+function ZN:showPreview(arr, parent, selectedTemplate)
   local anchor = parent
   local height = 0
   local anchorPoint = "TOPLEFT"
@@ -17,14 +17,22 @@ function ZN:showPreview(arr, parent)
     if parent.Text[i] then
       parent.Text[i]:SetText(arr[i])
     else
-      parent.Text[i] = ZN.CreateText(ZNBodyFrame.Subframes.PreviewTemplateContent.ScrollNote.scrollChild, "TOPLEFT", anchor, anchorPoint, 240, 0, 0, yOffset, "Interface\\AddOns\\ZeroNotes\\Media\\Font\\ZNVers.ttf", 12, ZN.Colors.ACTIVE, arr[i], "LEFT", "TOP")
+      parent.Text[i] = ZN.CreateText(ZNBodyFrame.Subframes.PreviewTemplateContent.ScrollNote.scrollChild, "TOPLEFT", anchor, anchorPoint, 900, 0, 0, yOffset, "Interface\\AddOns\\ZeroNotes\\Media\\Font\\ZNVers.ttf", 12, ZN.Colors.ACTIVE, arr[i], "LEFT", "TOP")
     end
     parent.Text[i]:Show(true)
     anchor = parent.Text[i]
     anchorPoint = "BOTTOMLEFT"
     yOffset = -12
   end
-  
+  local i = #arr+1
+  if not ZNotes.BossTemplates[selectedTemplate]["NoteEnd"] then return end
+  if parent.Text[i] then
+    parent.Text[i]:SetText(ZNotes.BossTemplates[selectedTemplate]["NoteEnd"])
+  else
+    parent.Text[i] = ZN.CreateText(ZNBodyFrame.Subframes.PreviewTemplateContent.ScrollNote.scrollChild, "TOPLEFT", anchor, anchorPoint, 900, 0, 0, yOffset, "Interface\\AddOns\\ZeroNotes\\Media\\Font\\ZNVers.ttf", 12, ZN.Colors.ACTIVE, ZNotes.BossTemplates[selectedTemplate]["NoteEnd"], "LEFT", "TOP")
+  end
+  parent.Text[i]:Show(true)
+ 
   
 end
 

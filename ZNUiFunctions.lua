@@ -37,6 +37,9 @@ function ZN:ClickHome(ZNHeaderFrame, ZNSidebarFrame, ZNBodyFrame)
 	for k,v in pairs(ZNBodyFrame.Subframes) do
 			v:SetShown(false)
 	end
+	for i=1, #ZN.DropDowns do
+		ZN.DropDowns[i]:SetShown(false)
+	end
 	ZNBodyFrame.Subframes["Home"]:SetShown(true)
 	ZNSidebarFrame.Subframes["Home"]:SetShown(true)
 	ZNSidebarFrame.Subframes["Home"].visible=true
@@ -74,6 +77,9 @@ function ZN:ClickImpExp(ZNHeaderFrame, ZNSidebarFrame, ZNBodyFrame)
 	end
 	for k,v in pairs(ZNBodyFrame.Subframes) do
 			v:SetShown(false)
+	end
+	for i=1, #ZN.DropDowns do
+		ZN.DropDowns[i]:SetShown(false)
 	end
 	ZNBodyFrame.Subframes["ImpExp"]:SetShown(true)
 	ZNSidebarFrame.Subframes["ImpExp"]:SetShown(true)
@@ -115,6 +121,9 @@ function ZN:ClickBoss(ZNHeaderFrame, ZNSidebarFrame, ZNBodyFrame)
 	end
 	for k,v in pairs(ZNBodyFrame.Subframes) do
 			v:SetShown(false)
+	end
+	for i=1, #ZN.DropDowns do
+		ZN.DropDowns[i]:SetShown(false)
 	end
 	ZNBodyFrame.Subframes["BossSpellHead"]:SetShown(true)
 	ZNBodyFrame.Subframes["BossSpells"]:SetShown(true)
@@ -160,6 +169,9 @@ function ZN:ClickPlayer(ZNHeaderFrame, ZNSidebarFrame, ZNBodyFrame)
 	for k,v in pairs(ZNBodyFrame.Subframes) do
 			v:SetShown(false)
 	end
+	for i=1, #ZN.DropDowns do
+		ZN.DropDowns[i]:SetShown(false)
+	end
 	ZNBodyFrame.Subframes["Player"]:SetShown(true)
 	ZNBodyFrame.Subframes["PlayerHead"]:SetShown(true)
 	ZNSidebarFrame.Subframes["Player"]:SetShown(true)
@@ -193,6 +205,9 @@ function ZN:ClickGroupTemplates(ZNHeaderFrame, ZNSidebarFrame, ZNBodyFrame)
 	end
 	for k,v in pairs(ZNBodyFrame.Subframes) do
 			v:SetShown(false)
+	end
+	for i=1, #ZN.DropDowns do
+		ZN.DropDowns[i]:SetShown(false)
 	end
 	ZNBodyFrame.Subframes["GroupTemplates"]:SetShown(true)
 	ZNSidebarFrame.Subframes["GroupTemplates"]:SetShown(true)

@@ -91,7 +91,7 @@ function ZN:SecondsToClock(seconds)
 end
 
 ZN.DropDowns = {}
-
+ZN.DropDownsEdit = {}
 ZN.Colors = {
 	["BG"] = "15191C",
 	["HD"] = "292E32",

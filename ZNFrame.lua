@@ -49,7 +49,7 @@ function ZN.createMainFrame(name, width, height, color, a, strata)
 end
 
 function ZN.createSubFrame(name, parent, width, height, color, a, anchor, strata, hide, xOffset, yOffset, anchorFrame, anchorPoint, noMouseDown)
-	local NewFrame = CreateFrame('FRAME', name, parent)
+	local NewFrame = CreateFrame('FRAME', name, parent, "BackdropTemplate")
 	NewFrame.name = name
 	NewFrame:SetFrameStrata(strata and strata or "DIALOG")
 	NewFrame:SetWidth(width)
@@ -71,6 +71,9 @@ function ZN.createSubFrame(name, parent, width, height, color, a, anchor, strata
 			if button == "LeftButton" then
 				for i=1, #ZN.DropDowns do
 					ZN.DropDowns[i]:SetShown(false)
+				end
+				for i=1, #ZN.DropDownsEdit do
+					ZN.DropDownsEdit[i]:SetShown(false)
 				end
 			end
 		end)
@@ -122,6 +125,9 @@ function ZN.createScrollFrame(name, parent, width, height, color, a, anchor,stra
 			if button == "LeftButton" then
 				for i=1, #ZN.DropDowns do
 					ZN.DropDowns[i]:SetShown(false)
+				end
+				for i=1, #ZN.DropDownsEdit do
+					ZN.DropDownsEdit[i]:SetShown(false)
 				end
 			end
 		end)
@@ -215,7 +221,7 @@ function ZN.CreateGenericButton(name, parent, point, anchorFrame, anchorPoint, w
 	btn.Column = nil
 	btn.Update = function(newValue)
 		if btn.doOnUpdate then
-			btn.OnUpdate(btn.tableType, btn.Row, btn.Column, newValue)
+			btn.OnUpdate(btn.tableType, btn.Row, btn.Column, newValue,btn)
 		end
 	end
 
@@ -391,6 +397,7 @@ function ZN.MultiLineEditBox(name, parent, point, anchorFrame, anchorPoint, widt
 	e:SetTextInsets(5, 15, 5, 15)
 	e:HighlightText(false) 
 	e:SetAutoFocus(false)
+	e:SetTextColor(tonumber("0x"..fontcolor:sub(1,2))/255, tonumber("0x"..fontcolor:sub(3,4))/255, tonumber("0x"..fontcolor:sub(5,6))/255, 1);
 	e.doOnUpdate = false
 	e.OnUpdate = nil
 	
