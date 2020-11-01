@@ -1,6 +1,7 @@
 local _, ZN, L = ...
 
 local selectedTemplate = nil
+local selectedGroupTemplate = nil
 
 HomeContent = ZNBodyFrame.Subframes.Home
 
@@ -37,7 +38,14 @@ HomeSidebar.TemplateSelectButton.OnUpdate = function(_,_,_,newValue) selectedTem
 
 HomeSidebar.GroupTemplateSelectButton = ZN.CreateGenericButton("ZNGroupTemplateSelectButton", HomeSidebar, "TOPLEFT", HomeSidebar.TemplateSelectButton, "BOTTOMLEFT", 240, 30, 0, -40,10,0, 12, ZN.Colors.ACTIVE, ZN.Colors.SBButtonBG, "Select Group Template", "Use current group", "LEFT",true )
 HomeSidebar.GroupTemplateSelectButton.doOnUpdate = true
-HomeSidebar.GroupTemplateSelectButton.OnUpdate = function(_,_,_,newValue) selectedTemplate = newValue end
+HomeSidebar.GroupTemplateSelectButton.OnUpdate = function(_,_,_,newValue) 
+  selectedGroupTemplate = newValue
+  print(selectedGroupTemplate)
+end
+HomeSidebar.GroupTemplateSelectButton:SetScript("OnClick", function(self)
+  ZN:CreateDropdown(self, ZN:getTableKeys(ZNotes.GroupTemplates), ZN:getTemplateTableOrder(ZNotes.GroupTemplates), 240, ZN.Colors.BG, "LEFT", 10, nil, "TOOLTIP")
+end)
+
 
 if IsAddOnLoaded("ExRT") then
   HomeSidebar.SendToExRTButton = ZN.CreateGenericButton("SendToExRTButton", HomeSidebar, "BOTTOMLEFT", HomeSidebar, "BOTTOMLEFT", 240, 30, 0, 80,0,0, 12, ZN.Colors.ACTIVE, ZN.Colors.SBButtonBG, nil, "Send Note to ExRT", "CENTER",true )
@@ -52,7 +60,7 @@ HomeSidebar.TemplateSelectButton:SetScript("OnClick", function(self) ZN:CreateDr
 
 if IsAddOnLoaded("ExRT") then
   HomeSidebar.SendToExRTButton:SetScript("OnClick", function(self) 
-    VExRT.Note.Text1 = ZN:PrintNote(selectedTemplate, HomeSidebar.IncludeMissingCheckBox.active)
+    VExRT.Note.Text1 = ZN:PrintNote(selectedTemplate, HomeSidebar.IncludeMissingCheckBox.active, selectedGroupTemplate)
     _G["GExRT"].A["Note"].frame:Save()
   end)
 end
@@ -68,9 +76,9 @@ HomeSidebar.ShowNoteInEditorButton:SetScript("OnClick", function(self)
   end
   if not HomeContent.ShowNoteEditBox:IsShown() then
     HomeContent.ShowNoteEditBox:Show()
-    HomeContent.ShowNoteEditBox.EditBox.editbox:SetText(ZN:PrintNote(selectedTemplate, HomeSidebar.IncludeMissingCheckBox.active))    
+    HomeContent.ShowNoteEditBox.EditBox.editbox:SetText(ZN:PrintNote(selectedTemplate, HomeSidebar.IncludeMissingCheckBox.active, selectedGroupTemplate))    
   else
-    HomeContent.ShowNoteEditBox.EditBox.editbox:SetText(ZN:PrintNote(selectedTemplate, HomeSidebar.IncludeMissingCheckBox.active))    
+    HomeContent.ShowNoteEditBox.EditBox.editbox:SetText(ZN:PrintNote(selectedTemplate, HomeSidebar.IncludeMissingCheckBox.active, selectedGroupTemplate))    
   end
 end)
 

@@ -406,6 +406,17 @@ function ZN:getTableOrder(arr)
 	return tmp
 end
 
+function ZN:getTemplateTableOrder(arr) 
+	local tmp = {}
+	table.insert(tmp, "Use Current Group")
+	for k,v in pairs(arr) do
+		if k ~= "Use Current Group" then
+			table.insert(tmp, k)
+		end
+	end	
+	return tmp
+end
+
 function ZN:getTableKeys(arr) 
 	local tmp = {}
 	for k,v in pairs(arr) do

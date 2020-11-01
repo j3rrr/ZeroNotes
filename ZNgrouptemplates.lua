@@ -34,14 +34,14 @@ function ZN:createGroupTemplateFrames()
   ZNeditGroupFrame.btnClose = ZN.CreateIconButton(ZNeditGroupFrame, "TOPRIGHT", ZNeditGroupFrame, "TOPRIGHT", 16, 16, -11, -11, "Interface\\AddOns\\ZeroNotes\\Media\\Texture\\x_big_active", ZN.Colors.ACTIVE, ZN.Colors.INACTIVE, false)
   ZNeditGroupFrame.Message = ZN.CreateText(ZNeditGroupFrame, "TOP", ZNeditGroupFrame, "TOP", 250, 30, 0, -41, "Interface\\AddOns\\ZeroNotes\\Media\\Font\\ZNReg.ttf", 12, ZN.Colors.ACTIVE, "Edit Template Name", "LEFT")
   ZNeditGroupFrame.newGroupName = ZN.SingleLineEditBox("newGroupName", ZNeditGroupFrame, "TOP", ZNeditGroupFrame.Message, "BOTTOM", 250, 30, 0, -10, 20, 0 ,12, ZN.Colors.ACTIVE, ZN.Colors.SBButtonBG, nil, "", "LEFT")
-  ZNeditGroupFrame.ConfirmButton = ZN.CreateGenericButton("ZNnewGroupConfirmButton", ZNeditGroupFrame, "BOTTOMLEFT", ZNeditGroupFrame, "BOTTOMLEFT", 125, 30, 20, 20,0,0, 12, ZN.Colors.ACTIVE, ZN.Colors.SBButtonBG, nil, "Create", "CENTER",true, ZN.Colors.BG )
+  ZNeditGroupFrame.ConfirmButton = ZN.CreateGenericButton("ZNnewGroupConfirmButton", ZNeditGroupFrame, "BOTTOMLEFT", ZNeditGroupFrame, "BOTTOMLEFT", 125, 30, 20, 20,0,0, 12, ZN.Colors.ACTIVE, ZN.Colors.SBButtonBG, nil, "Rename", "CENTER",true, ZN.Colors.BG )
   ZNeditGroupFrame.CancelButton = ZN.CreateGenericButton("ZNnewGroupCancelButton", ZNeditGroupFrame, "BOTTOMRIGHT", ZNeditGroupFrame, "BOTTOMRIGHT", 125, 30, -20, 20,0,0, 12, ZN.Colors.ACTIVE, ZN.Colors.SBButtonBG, nil, "Cancel", "CENTER",true, ZN.Colors.BG )
 
   ZNeditGroupFrame.ConfirmButton:SetScript("OnClick", function(self)
     local name = ZNeditGroupFrame.newGroupName:GetText()
     ZNotes.GroupTemplates[name] = ZNotes.GroupTemplates[ZN.selectedGroupTemplate]
     ZNotes.GroupTemplates[ZN.selectedGroupTemplate] = nil
-    ZN:Print("Renamed "..ZN.selectedGroupTemplate.."to "..name)
+    ZN:Print("Renamed "..ZN.selectedGroupTemplate.." to "..name)
     
     ZN.selectedGroupTemplate = name
     
@@ -205,15 +205,15 @@ function ZN:CreateGroupMemberRow(index, anchorFrame, template)
       MemberRow.Spec.ZNText:SetText("SPEC")
     end
     print(ZN.GroupMemberRowsSelectedClass[index])
-    ZNotes.GroupTemplates[ZN.selectedGroupTemplate][row]["class"] = newValue
+    ZNotes.GroupTemplates[ZN.selectedGroupTemplate][ZN.GroupTemplateSortArray[row]]["class"] = newValue
   end  
   MemberRow.Spec.doOnUpdate = true
   MemberRow.Spec.OnUpdate = function(_,row,_,newValue) 
-   ZNotes.GroupTemplates[ZN.selectedGroupTemplate][row]["spec"] = newValue
+   ZNotes.GroupTemplates[ZN.selectedGroupTemplate][ZN.GroupTemplateSortArray[row]]["spec"] = newValue
   end  
   MemberRow.Name.doOnUpdate = true
   MemberRow.Name.OnUpdate = function(_,row,_,newValue) 
-   ZNotes.GroupTemplates[ZN.selectedGroupTemplate][row]["name"] = newValue
+   ZNotes.GroupTemplates[ZN.selectedGroupTemplate][ZN.GroupTemplateSortArray[row]]["name"] = newValue
   end  
 
   MemberRow.Class:SetScript("OnClick", function(self)

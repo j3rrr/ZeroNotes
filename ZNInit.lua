@@ -713,6 +713,7 @@ end
 
 function ZN.initGroupTemplates()
 ZNotes.GroupTemplates = ZNotes.GroupTemplates or {
+  ["Use Current Group"] = {}, 
   ["Sample Group"] = {
     {
       ["name"] = "Player 1",
@@ -861,6 +862,83 @@ ZN.Specs = {
   },
 }
 
+ZN.SpecsToRole = {
+  ["zzz"] = {
+    ["empty"] = ""
+  },
+  ["dk"] = {
+    -- Death Knight
+    ["blood"] = 'tank',
+    ["frost"] = 'melee',
+    ["unholy"] = 'melee',
+  },
+  ["dh"] = {
+    -- Demon Hunter
+    ["havoc"] = 'melee',
+    ["Vengeance"] = 'tank',
+  },
+  ["druid"] = {
+    -- Druid 
+    ["balance"] = 'range',
+    ["feral"] = 'melee',
+    ["guardian"] = 'tank',
+    ["resto"] = 'heal',
+  },
+  ["hunter"] = {
+    -- Hunter 
+    ["bm"] = 'range',
+    ["mm"] = 'range',
+    ["survial"] = 'melee',
+  },
+  ["mage"] = {
+    -- Mage 
+    ["arcane"] = 'range',
+    ["fire"] = 'range',
+    ["frost"] = 'range',
+  },
+  ["monk"] = {
+    -- Monk 
+    ["bm"] = 'tank',
+    ["ww"] = 'melee',
+    ["mw"] = 'heal',
+  },
+  ["paladin"] = {
+    -- Paladin 
+    ["holy"] = 'heal',
+    ["prot"] = 'tank',
+    ["ret"] = 'melee',
+  },
+  ["priest"] = {
+    -- Priest
+    ["diszi"] = 'heal',
+    ["holy"] = 'heal',
+    ["shadow"] = 'range',
+  },
+  ["rogue"] = {
+    -- Rogue 
+    ["assa"] = 'melee',
+    ["outlaw"] = 'melee',
+    ["sub"] = 'melee',
+  },
+  ["shaman"] = {
+    -- Shaman 
+    ["ele"] = 'range',
+    ["enh"] = 'melee',
+    ["resto"] = 'heal',
+  },
+  ["warlock"] = {
+    -- Warlock 
+    ["affli"] = 'range',
+    ["demo"] = 'range',
+    ["destru"] = 'range',
+  },
+  ["warrior"] = {
+    -- Warrior 
+    ["arms"] = 'melee',
+    ["fury"] = 'melee',
+    ["prot"] = 'tank'
+  },
+}
 
 ZN.RoleTable = {
   -- Death Knight

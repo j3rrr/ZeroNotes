@@ -81,7 +81,33 @@ ZN.inspectLib = LibStub:GetLibrary("LibGroupInSpecT-1.1", true)
 ZN.inspectLib.RegisterCallback(ZN, "GroupInSpecT_Update", "libInspectUpdate")
 ZN.inspectLib.RegisterCallback(ZN, "GroupInSpecT_Remove", "libInspectRemove")
 
-function ZN:BuildRaidRoster()
+function ZN:templateToRoster(group)
+  local tmp = {}
+  for i = 1, #ZNotes.GroupTemplates[group] do
+    if ZNotes.GroupTemplates[group][i]["class"] ~= "zzz" and ZNotes.GroupTemplates[group][i]["spec"] ~= "empty" then
+      local tmpObj = {}
+      tmpObj["name"] = ZNotes.GroupTemplates[group][i]["name"]
+      tmpObj["class"] = ZNotes.GroupTemplates[group][i]["class"]
+      tmpObj["role"] = ZN.SpecsToRole[ZNotes.GroupTemplates[group][i]["class"]][ZNotes.GroupTemplates[group][i]["spec"]]
+      if ZNotes.GroupTemplates[group][i]["spec"] == "diszi" then
+        tmpObj["class"] = "diszi"
+      end
+      if ZNotes.GroupTemplates[group][i]["spec"] == "shadow" then
+        tmpObj["class"] = "shadow"
+      end
+      table.insert( tmp,tmpObj )
+    end
+  end
+  return tmp
+end
+znroster = {}
+
+function ZN:BuildRaidRoster(group)
+  print(group)
+  if group ~= "Use Current Group" and ZNotes.GroupTemplates[group] then
+    znroster = ZN:templateToRoster(group)
+    return ZN:templateToRoster(group)
+  end
   local RaidSize = GetNumGroupMembers()
   local RaidRoster = {}
   local unitprefix = "raid"
@@ -141,8 +167,8 @@ function ZN:addPlayerToSpell(name, availableSpells, spellname)
   end  
 end
 
-function ZN:getAvailableSpells()
-  local currentSetup = ZN:BuildRaidRoster()
+function ZN:getAvailableSpells(group)
+  local currentSetup = ZN:BuildRaidRoster(group)
   local db = ZNotes.PlayerSpells
   
   local availableSpells = {
@@ -244,12 +270,12 @@ function ZN:isSpellAvailable(arr, spellalias, spellCd, time)
   return false
 end
 
-function ZN:createRawNote(boss)
-  local RaidRoster = ZN:BuildRaidRoster()
+function ZN:createRawNote(boss, group)
+  local RaidRoster = ZN:BuildRaidRoster(group)
   if RaidRoster == nil then
     return
   end
-  local availableSpells = ZN:getAvailableSpells()
+  local availableSpells = ZN:getAvailableSpells(group)
   noteTemplate = ZN:createNoteTemplate(boss)
 
   prioNote = {
@@ -341,8 +367,8 @@ function ZN:ShiftSpellRatings(needs,sortedAvailableSpells)
   end
 end
 
-function ZN:PrintNote(boss, inclMissing)
-  rawNoteData = ZN:createRawNote(boss)  
+function ZN:PrintNote(boss, inclMissing, group)
+  rawNoteData = ZN:createRawNote(boss, group)  
   if rawNoteData == nil then
     return
   end
