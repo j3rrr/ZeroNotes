@@ -163,7 +163,7 @@ local function CreateIconButton(parent, point, anchor, anchorPoint, type, row)
 end
 
 local function CreateContentRow(PlayerSpellID, PlayerSpell, AnchorFrame)
-  local ContentRow = ZN.createSubFrame("ZNPlayerRow"..PlayerSpellID, ZNBodyFrame.Subframes.Player.scrollChild, 930, ZN.PlayerTableRows.row, ZN.Colors.ROWBG, 1, "TOP", "HIGH", false, 0,-ZN.PlayerTableRows.rowgap, AnchorFrame, "BOTTOM")
+  local ContentRow = ZN.createSubFrame("ZNPlayerRow"..PlayerSpellID, ZNBodyFrame.Subframes.Player.scrollChild, 930, ZN.PlayerTableRows.row, ZN.Colors.ROWBG, 1, "TOPLEFT", "HIGH", false, 0,-ZN.PlayerTableRows.rowgap, AnchorFrame, "BOTTOMLEFT")
   --iconbutton on click setzen für onupdate
   ContentRow.Role = CreateGenericButton ("Role"..PlayerSpellID, ContentRow, "LEFT", ContentRow, "LEFT", "role", ZN.ColoredRoles[PlayerSpell.role],PlayerSpellID)
   -- ContentRow.Classi = CreateIconButton(ContentRow, "LEFT", ContentRow.Role, "RIGHT", "square", PlayerSpellID)
@@ -244,7 +244,7 @@ function ZN:InitPlayer()
 
     local newRow = CreateContentRow(ZN.PlayerFilterArray[ZN.PlayerSortArray[i]], ZNotes.PlayerSpells[ZN.PlayerFilterArray[ZN.PlayerSortArray[i]]], anchor)
     if i==1 then
-      newRow:SetPoint("TOP", ZNBodyFrame.Subframes.Player.scrollChild,"TOP")
+      newRow:SetPoint("TOPLEFT", ZNBodyFrame.Subframes.Player.scrollChild,"TOPLEFT")
     end
     ZN.PlayerRows[i] = newRow
     anchor = newRow
@@ -321,7 +321,7 @@ function ZN:ReloadPlayerTable()
       UpdateContentRow(ZN.PlayerFilterArray[ZN.PlayerSortArray[i]], ZNotes.PlayerSpells[ZN.PlayerFilterArray[ZN.PlayerSortArray[i]]], anchor, ZN.PlayerRows[i])
     end
     if i==1 then
-      ZN.PlayerRows[i]:SetPoint("TOP", ZNBodyFrame.Subframes.Player.scrollChild,"TOP")
+      ZN.PlayerRows[i]:SetPoint("TOPLEFT", ZNBodyFrame.Subframes.Player.scrollChild,"TOPLEFT")
     end
     ZN.PlayerRows[i]:SetShown(true)
     anchor = ZN.PlayerRows[i]

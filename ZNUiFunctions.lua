@@ -300,7 +300,7 @@ function ZN:CreateDropdown(parentObj, list, order, width, dropDownBgColor, butto
 	if not parentObj.dropdownInit then
 		parentObj.dropdownInit = true
 		local parentName = parentObj.name
-		local dropdown = ZN.DropdownList(parentName.."Dropdown", parentObj.parent, "TOPLEFT", parentObj, "BOTTOMLEFT" , width, listItemHeight and listItemHeight or 30, dropDownBgColor, 1, "CENTER", true, #order, strata)
+		local dropdown = ZN.DropdownList(parentName.."Dropdown", ZNFrame, "TOPLEFT", parentObj, "BOTTOMLEFT" , width, listItemHeight and listItemHeight or 30, dropDownBgColor, 1, "CENTER", true, #order, "TOOLTIP")
 		parentObj.dropdown = dropdown
 		dropdown.dropdownItems = {}
 		
