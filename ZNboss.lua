@@ -21,6 +21,10 @@ BossTemplateSelectButtonHead.OnUpdate = function(_,_,_,newValue)
     selectedTemplate = newValue 
     ZN:ReloadBossSpellTable(newValue)
     ZN:ReloadBossTrennerTable(newValue)
+    ZNBodyFrame.Subframes.BossNote.EditBox:SetShown(true)
+    ZNBodyFrame.Subframes.BossNote.EditBox.editbox.boss=newValue
+    ZNBodyFrame.Subframes.BossNote.EditBox.editbox:SetText(ZNotes.BossTemplates[newValue].NoteEnd and ZNotes.BossTemplates[newValue].NoteEnd or "")
+
     ZN:showPreview(ZN:printPreviewNote(selectedTemplate), ZNBodyFrame.Subframes.PreviewTemplateContent.ScrollNote.scrollChild)
 end
 
@@ -148,6 +152,40 @@ ZNSidebarFrame.btnAddBossTrenner:SetShown(false)
 
 ZNSidebarFrame.btnReloadBossTrenner:SetScript("OnClick",function(self) if selectedTemplate then ZN:ReloadBossTrennerTable(selectedTemplate) end end)
 ZNSidebarFrame.btnAddBossTrenner:SetScript("OnClick",function(self) if selectedTemplate then ZN:addNewBossTrenner(selectedTemplate) end end)
+
+--ZNBodyFrame.Subframes.BossNote
+ZNBodyFrame.Subframes.BossNote.TitleRow = ZN.createSubFrame("ZNBossNoteTitleRow", ZNBodyFrame.Subframes.BossNote, 460, ZN.BossTableRows.title, ZN.Colors.BG, 1, "TOP", "HIGH", false, 0,0)
+ZNBodyFrame.Subframes.BossNote.TitleRow.Header = ZN.CreateGenericButton("ZNBossNoteTitleRowHeader", ZNBodyFrame.Subframes.BossNote.TitleRow, "TOP", ZNBodyFrame.Subframes.BossNote.TitleRow, "TOP", 460, ZN.PlayerTableRows.title, 0, 0, 0, 0 ,12, ZN.Colors.INACTIVE, ZN.Colors.BG, nil, "Enter custom text for Note end, e.g. interrupt rotation", "CENTER", false)
+ZNBodyFrame.Subframes.BossNote.EditBox = ZN.MultiLineEditBox("ZNBossNoteEditBox", ZNBodyFrame.Subframes.BossNote, "BOTTOMLEFT", ZNBodyFrame.Subframes.BossNote, "BOTTOMLEFT", 459, 170, 1, 0, 0, 0 ,12, ZN.Colors.ACTIVE, ZN.Colors.HD, nil, "", "LEFT")
+ZNBodyFrame.Subframes.BossNote.EditBox:SetShown(false)
+ZNBodyFrame.Subframes.BossNote.EditBox.editbox.doOnUpdate=true
+ZNBodyFrame.Subframes.BossNote.EditBox.editbox.OnUpdate = function(_,_,_,newValue,eb)
+  ZNotes.BossTemplates[eb.boss].NoteEnd=newValue
+end
+ZNBodyFrame.Subframes.BossNote.EditBox.editbox.hintText = ZN.CreateText(ZNBodyFrame.Subframes.BossNote.EditBox, "BOTTOMRIGHT", ZNBodyFrame.Subframes.BossNote.EditBox, "BOTTOMRIGHT", 225, 10, 0, 3, "Interface\\AddOns\\ZeroNotes\\Media\\Font\\ZNReg.ttf", 10, ZN.Colors.INACTIVE, "Press Enter to save, Shift+Enter for new line", "LEFT", "CENTER")
+ZNBodyFrame.Subframes.BossNote.EditBox.editbox.hintText:SetShown(false)
+ZNBodyFrame.Subframes.BossNote.EditBox.editbox:SetScript("OnEditFocusGained", function(self)
+  self.oldText = self:GetText()
+  ZNBodyFrame.Subframes.BossNote.EditBox.editbox.hintText:SetShown(true)
+  self:SetTextColor(tonumber("0x"..ZN.Colors.ACTIVE:sub(1,2))/255, tonumber("0x"..ZN.Colors.ACTIVE:sub(3,4))/255, tonumber("0x"..ZN.Colors.ACTIVE:sub(5,6))/255, 1);
+end)
+ZNBodyFrame.Subframes.BossNote.EditBox.editbox:SetScript("OnEditFocusLost", function(self)
+  self:ClearFocus()
+  ZNBodyFrame.Subframes.BossNote.EditBox.editbox.hintText:SetShown(false)
+  self:SetTextColor(tonumber("0x"..ZN.Colors.ACTIVE:sub(1,2))/255, tonumber("0x"..ZN.Colors.ACTIVE:sub(3,4))/255, tonumber("0x"..ZN.Colors.ACTIVE:sub(5,6))/255, 1);
+end)
+ZNBodyFrame.Subframes.BossNote.EditBox.editbox:SetScript("OnEnterPressed", function(self)
+  if not IsShiftKeyDown() then
+    self.oldText = self:GetText()
+    if self.doOnUpdate then
+      self.OnUpdate(self.tableType,self.Row,self.Column, self:GetText(),self)
+    end
+    self:ClearFocus()		
+  else
+    self:SetText(self:GetText().."\n")
+  end
+end)
+
 
 local function CreateGenericButton (name, parent, point, anchor, anchorPoint, width, type, text,row, boss)
   local btn = ZN.CreateGenericButton(name, parent, point, anchor, anchorPoint, width, ZN.PlayerTableRows.row, 0, 0, 0, -12 ,12, ZN.Colors.INACTIVE, ZN.Colors.ROWBG, nil, text, "CENTER", false)

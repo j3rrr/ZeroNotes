@@ -400,7 +400,7 @@ function ZN.MultiLineEditBox(name, parent, point, anchorFrame, anchorPoint, widt
 	e:SetScript("OnEnterPressed", function(self)
 		self.oldText = self:GetText()
 		if self.doOnUpdate then
-			self.OnUpdate(self.tableType,self.Row,self.Column, self:GetText())
+			self.OnUpdate(self.tableType,self.Row,self.Column, self:GetText(),self)
 		end
 		self:ClearFocus()		
 	end)
@@ -480,7 +480,7 @@ ZNBodyFrame.Subframes.BossSpellHead = ZN.createSubFrame("ZNBodyBossSpellHead", Z
 ZNBodyFrame.Subframes.BossSpells = ZN.createScrollFrame("ZNBodyBossSpellContent", ZNBodyFrame, 942, 300, nil, 1, "TOP","HIGH", true)
 ZNBodyFrame.Subframes.BossTrennerHead = ZN.createSubFrame("ZNBodyBossTrennerHead", ZNBodyFrame, 460, 30, nil, 1, "TOP","HIGH", true, 0, 0)
 ZNBodyFrame.Subframes.BossTrenner = ZN.createScrollFrame("ZNBodyBossTrennerContent", ZNBodyFrame, 470, 170, nil, 1, "TOP","HIGH", true)
-ZNBodyFrame.Subframes.BossNote = ZN.createSubFrame("ZNBodyBossNote", ZNBodyFrame, 460, 200, ZN.Colors.shaman, 1, "TOP","HIGH", true, 0, 0)
+ZNBodyFrame.Subframes.BossNote = ZN.createSubFrame("ZNBodyBossNote", ZNBodyFrame, 460, 200, nil, 1, "TOP","HIGH", true, 0, 0)
 ZNBodyFrame.Subframes.PlayerHead = ZN.createSubFrame("ZNBodyPlayerHead", ZNBodyFrame, 930, 30, nil, 1, "TOP","HIGH", true, 0, 0)
 ZNBodyFrame.Subframes.Player = ZN.createScrollFrame("ZNBodyPlayerContent", ZNBodyFrame, 942, 500, nil, 1, "TOP","HIGH", true)
 -- Boss Preview Frame

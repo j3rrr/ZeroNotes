@@ -350,6 +350,10 @@ function ZN:PrintNote(boss, inclMissing)
     end
   end  
 
+  if ZNotes.BossTemplates[boss].NoteEnd then
+    rtNote = rtNote .. "\n\n" .. ZNotes.BossTemplates[boss].NoteEnd
+  end
+
   if  inclMissing == true then
     rtNote = rtNote .. "\n\n\n" .. missingNote
   end
