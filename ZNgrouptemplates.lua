@@ -7,8 +7,8 @@ function ZN:createGroupTemplateFrames()
   GroupTemplateSelectButtonHead.doOnUpdate = true
   GroupTemplateSelectButtonHead.OnUpdate = function(_,_,_,newValue) 
       ZN.selectedGroupTemplate = newValue 
-      print(ZN.selectedGroupTemplate)
       ZNotes.lastTemplates.lastGroupTemplate = newValue
+      ZN:BuildGroupTemplateSortArray()
       ZN:updateGroupView()
   end
   GroupTemplateSelectButtonHead:SetScript("OnClick", function(self) ZN:CreateDropdown(self, ZN:getTableKeys(ZNotes.GroupTemplates), ZN:getTableOrder(ZNotes.GroupTemplates), 240, ZN.Colors.BG, "LEFT", 10, nil, "TOOLTIP") end)
@@ -22,13 +22,54 @@ function ZN:createGroupTemplateFrames()
   GroupTemplates.btnEditTemplate:SetFrameStrata("DIALOG")
 
   GroupTemplates.btnNewTemplate:SetScript("OnClick", function(self) ZN:createNewGroupTemplate() end)
-  GroupTemplates.btnEditTemplate:SetScript("OnClick", function(self) print("Edit Template") end)
 
-  ZNnewGroupFrame = ZN.createSubFrame("ZNnewGroupFrame",ZNFrame, 300, 200, ZN.Colors.HD, 1, 'CENTER', 'TOOLTIP', true)
-  ZNnewGroupFrame.btnClose = ZN.CreateIconButton(ZNnewGroupFrame, "TOPRIGHT", ZNnewGroupFrame, "TOPRIGHT", 16, 16, -10, -10, "Interface\\AddOns\\ZeroNotes\\Media\\Texture\\x_big_active", ZN.Colors.ACTIVE, ZN.Colors.INACTIVE, false)
-  ZNnewGroupFrame.Message = ZN.CreateText(ZNnewGroupFrame, "TOP", ZNnewGroupFrame, "TOP", 250, 30, 0, -40, "Interface\\AddOns\\ZeroNotes\\Media\\Font\\ZNReg.ttf", 12, ZN.Colors.ACTIVE, "Template Name", "LEFT")
+  -- Edit Group Popup
+  ZNeditGroupFrame = ZN.createSubFrame("ZNeditGroupFrame",ZNFrame, 302, 202, ZN.Colors.HD, 1, 'CENTER', 'TOOLTIP', true)
+  ZNeditGroupFrame:SetBackdrop({bgFile = "Interface/Tooltips/UI-Tooltip-Background", 
+    edgeFile = [[Interface\Buttons\WHITE8x8]],
+    edgeSize = 1,
+  });
+  ZNeditGroupFrame:SetBackdropColor(tonumber("0x"..ZN.Colors.HD:sub(1,2))/255, tonumber("0x"..ZN.Colors.HD:sub(3,4))/255, tonumber("0x"..ZN.Colors.HD:sub(5,6))/255, 1);
+  ZNeditGroupFrame:SetBackdropBorderColor(tonumber("0x"..ZN.Colors.INACTIVE:sub(1,2))/255, tonumber("0x"..ZN.Colors.INACTIVE:sub(3,4))/255, tonumber("0x"..ZN.Colors.INACTIVE:sub(5,6))/255, 1);
+  ZNeditGroupFrame.btnClose = ZN.CreateIconButton(ZNeditGroupFrame, "TOPRIGHT", ZNeditGroupFrame, "TOPRIGHT", 16, 16, -11, -11, "Interface\\AddOns\\ZeroNotes\\Media\\Texture\\x_big_active", ZN.Colors.ACTIVE, ZN.Colors.INACTIVE, false)
+  ZNeditGroupFrame.Message = ZN.CreateText(ZNeditGroupFrame, "TOP", ZNeditGroupFrame, "TOP", 250, 30, 0, -41, "Interface\\AddOns\\ZeroNotes\\Media\\Font\\ZNReg.ttf", 12, ZN.Colors.ACTIVE, "Edit Template Name", "LEFT")
+  ZNeditGroupFrame.newGroupName = ZN.SingleLineEditBox("newGroupName", ZNeditGroupFrame, "TOP", ZNeditGroupFrame.Message, "BOTTOM", 250, 30, 0, -10, 20, 0 ,12, ZN.Colors.ACTIVE, ZN.Colors.SBButtonBG, nil, "", "LEFT")
+  ZNeditGroupFrame.ConfirmButton = ZN.CreateGenericButton("ZNnewGroupConfirmButton", ZNeditGroupFrame, "BOTTOMLEFT", ZNeditGroupFrame, "BOTTOMLEFT", 125, 30, 20, 20,0,0, 12, ZN.Colors.ACTIVE, ZN.Colors.SBButtonBG, nil, "Create", "CENTER",true, ZN.Colors.BG )
+  ZNeditGroupFrame.CancelButton = ZN.CreateGenericButton("ZNnewGroupCancelButton", ZNeditGroupFrame, "BOTTOMRIGHT", ZNeditGroupFrame, "BOTTOMRIGHT", 125, 30, -20, 20,0,0, 12, ZN.Colors.ACTIVE, ZN.Colors.SBButtonBG, nil, "Cancel", "CENTER",true, ZN.Colors.BG )
+
+  ZNeditGroupFrame.ConfirmButton:SetScript("OnClick", function(self)
+    local name = ZNeditGroupFrame.newGroupName:GetText()
+    ZNotes.GroupTemplates[name] = ZNotes.GroupTemplates[ZN.selectedGroupTemplate]
+    ZNotes.GroupTemplates[ZN.selectedGroupTemplate] = nil
+    ZN:Print("Renamed "..ZN.selectedGroupTemplate.."to "..name)
+    
+    ZN.selectedGroupTemplate = name
+    
+    ZNotes.lastTemplates.lastGroupTemplate = ZN.selectedGroupTemplate
+    GroupTemplateSelectButtonHead.ZNText:SetText(ZN.selectedGroupTemplate:upper())
+    ZN:BuildGroupTemplateSortArray()
+    ZN:updateGroupView()
+    ZNeditGroupFrame:Hide()    
+  end)
+  ZNeditGroupFrame.btnClose:SetScript("OnClick", function(self) ZNeditGroupFrame:Hide() end)
+  ZNeditGroupFrame.CancelButton:SetScript("OnClick", function(self) ZNeditGroupFrame:Hide() end)
+
+  GroupTemplates.btnEditTemplate:SetScript("OnClick", function(self)    
+    ZNeditGroupFrame:Show() 
+    ZNeditGroupFrame.newGroupName:SetText(ZN.selectedGroupTemplate)
+  end)
+
+  -- New Group Popup
+  ZNnewGroupFrame = ZN.createSubFrame("ZNnewGroupFrame",ZNFrame, 302, 202, ZN.Colors.HD, 1, 'CENTER', 'TOOLTIP', true)
+  ZNnewGroupFrame:SetBackdrop({bgFile = "Interface/Tooltips/UI-Tooltip-Background", 
+    edgeFile = [[Interface\Buttons\WHITE8x8]],
+    edgeSize = 1,
+  });
+  ZNnewGroupFrame:SetBackdropColor(tonumber("0x"..ZN.Colors.HD:sub(1,2))/255, tonumber("0x"..ZN.Colors.HD:sub(3,4))/255, tonumber("0x"..ZN.Colors.HD:sub(5,6))/255, 1);
+  ZNnewGroupFrame:SetBackdropBorderColor(tonumber("0x"..ZN.Colors.INACTIVE:sub(1,2))/255, tonumber("0x"..ZN.Colors.INACTIVE:sub(3,4))/255, tonumber("0x"..ZN.Colors.INACTIVE:sub(5,6))/255, 1);
+  ZNnewGroupFrame.btnClose = ZN.CreateIconButton(ZNnewGroupFrame, "TOPRIGHT", ZNnewGroupFrame, "TOPRIGHT", 16, 16, -11, -11, "Interface\\AddOns\\ZeroNotes\\Media\\Texture\\x_big_active", ZN.Colors.ACTIVE, ZN.Colors.INACTIVE, false)
+  ZNnewGroupFrame.Message = ZN.CreateText(ZNnewGroupFrame, "TOP", ZNnewGroupFrame, "TOP", 250, 30, 0, -41, "Interface\\AddOns\\ZeroNotes\\Media\\Font\\ZNReg.ttf", 12, ZN.Colors.ACTIVE, "Template Name", "LEFT")
   ZNnewGroupFrame.newGroupName = ZN.SingleLineEditBox("newGroupName", ZNnewGroupFrame, "TOP", ZNnewGroupFrame.Message, "BOTTOM", 250, 30, 0, -10, 20, 0 ,12, ZN.Colors.ACTIVE, ZN.Colors.SBButtonBG, nil, "", "LEFT")
-  ZNnewGroupFrame.ReloadMessage = ZN.CreateText(ZNnewGroupFrame, "TOP", ZNnewGroupFrame.newGroupName, "TOP", 250, 20, 0, -20, "Interface\\AddOns\\ZeroNotes\\Media\\Font\\ZNVers.ttf", 10, ZN.Colors.ACTIVE, "'Create' will reload your ui", "LEFT")
   ZNnewGroupFrame.ConfirmButton = ZN.CreateGenericButton("ZNnewGroupConfirmButton", ZNnewGroupFrame, "BOTTOMLEFT", ZNnewGroupFrame, "BOTTOMLEFT", 125, 30, 20, 20,0,0, 12, ZN.Colors.ACTIVE, ZN.Colors.SBButtonBG, nil, "Create", "CENTER",true, ZN.Colors.BG )
   ZNnewGroupFrame.CancelButton = ZN.CreateGenericButton("ZNnewGroupCancelButton", ZNnewGroupFrame, "BOTTOMRIGHT", ZNnewGroupFrame, "BOTTOMRIGHT", 125, 30, -20, 20,0,0, 12, ZN.Colors.ACTIVE, ZN.Colors.SBButtonBG, nil, "Cancel", "CENTER",true, ZN.Colors.BG )
 
@@ -41,7 +82,7 @@ function ZN:createGroupTemplateFrames()
         for i = 1, 30 do
           ZNotes.GroupTemplates[name][i] = {
             ["name"] = "Name",
-            ["class"] = "none",
+            ["class"] = "zzz",
             ["spec"] = "empty",
           }
         end
@@ -56,8 +97,54 @@ function ZN:createGroupTemplateFrames()
   ZNnewGroupFrame.btnClose:SetScript("OnClick", function(self) ZNnewGroupFrame:Hide() end)
   ZNnewGroupFrame.CancelButton:SetScript("OnClick", function(self) ZNnewGroupFrame:Hide() end)
 
+  -- Delete Group Popup
+  ZNdeleteGroupFrame = ZN.createSubFrame("ZNdeleteGroupFrame",ZNFrame, 302, 202, ZN.Colors.HD, 1, 'CENTER', 'TOOLTIP', true)
+  ZNdeleteGroupFrame:SetBackdrop({bgFile = "Interface/Tooltips/UI-Tooltip-Background", 
+    edgeFile = [[Interface\Buttons\WHITE8x8]],
+    edgeSize = 1,
+  });
+  ZNdeleteGroupFrame:SetBackdropColor(tonumber("0x"..ZN.Colors.HD:sub(1,2))/255, tonumber("0x"..ZN.Colors.HD:sub(3,4))/255, tonumber("0x"..ZN.Colors.HD:sub(5,6))/255, 1);
+  ZNdeleteGroupFrame:SetBackdropBorderColor(tonumber("0x"..ZN.Colors.INACTIVE:sub(1,2))/255, tonumber("0x"..ZN.Colors.INACTIVE:sub(3,4))/255, tonumber("0x"..ZN.Colors.INACTIVE:sub(5,6))/255, 1);
+  ZNdeleteGroupFrame.btnClose = ZN.CreateIconButton(ZNdeleteGroupFrame, "TOPRIGHT", ZNdeleteGroupFrame, "TOPRIGHT", 16, 16, -11, -11, "Interface\\AddOns\\ZeroNotes\\Media\\Texture\\x_big_active", ZN.Colors.ACTIVE, ZN.Colors.INACTIVE, false)
+  ZNdeleteGroupFrame.Message = ZN.CreateText(ZNdeleteGroupFrame, "TOP", ZNdeleteGroupFrame, "TOP", 250, 60, 0, -41, "Interface\\AddOns\\ZeroNotes\\Media\\Font\\ZNReg.ttf", 12, ZN.Colors.ACTIVE, "", "CENTER")
+  ZNdeleteGroupFrame.ConfirmButton = ZN.CreateGenericButton("ZNnewGroupConfirmButton", ZNdeleteGroupFrame, "BOTTOMLEFT", ZNdeleteGroupFrame, "BOTTOMLEFT", 125, 30, 20, 20,0,0, 12, ZN.Colors.ACTIVE, ZN.Colors.SBButtonBG, nil, "Delete", "CENTER",true, ZN.Colors.BG )
+  ZNdeleteGroupFrame.CancelButton = ZN.CreateGenericButton("ZNnewGroupCancelButton", ZNdeleteGroupFrame, "BOTTOMRIGHT", ZNdeleteGroupFrame, "BOTTOMRIGHT", 125, 30, -20, 20,0,0, 12, ZN.Colors.ACTIVE, ZN.Colors.SBButtonBG, nil, "Cancel", "CENTER",true, ZN.Colors.BG )
+
+  ZNdeleteGroupFrame.ConfirmButton:SetScript("OnClick", function(self)
+    ZNotes.GroupTemplates[ZN.selectedGroupTemplate] = nil
+    ZN:Print("Deleted "..ZN.selectedGroupTemplate)
+    for k,v in pairs(ZNotes.GroupTemplates) do
+      ZN.selectedGroupTemplate = k
+    end
+    ZNotes.lastTemplates.lastGroupTemplate = ZN.selectedGroupTemplate
+    GroupTemplateSelectButtonHead.ZNText:SetText(ZN.selectedGroupTemplate:upper())
+    ZN:BuildGroupTemplateSortArray()
+    ZN:updateGroupView()
+    ZNdeleteGroupFrame:Hide()    
+  end)
+  ZNdeleteGroupFrame.btnClose:SetScript("OnClick", function(self) ZNdeleteGroupFrame:Hide() end)
+  ZNdeleteGroupFrame.CancelButton:SetScript("OnClick", function(self) ZNdeleteGroupFrame:Hide() end)
+
   ZNSidebarFrame.btnDeleteGroupTemplate = ZN.CreateIconButton(ZNSidebarFrame, "BOTTOMRIGHT", ZNSidebarFrame, "BOTTOMRIGHT", 20, 20, -14, 20, "Interface\\AddOns\\ZeroNotes\\Media\\Texture\\delete2", ZN.Colors.ACTIVE, ZN.Colors.INACTIVE, false, nil, true, "Delete Template", ZN.Colors.ACTIVE)
-	ZNSidebarFrame.btnDeleteGroupTemplate:SetShown(false)
+  ZNSidebarFrame.btnDeleteGroupTemplate:SetShown(false)
+
+  ZNSidebarFrame.btnReloadGroupTemplate = ZN.CreateIconButton(ZNSidebarFrame, "BOTTOM", ZNSidebarFrame.btnDeleteGroupTemplate, "TOP", 20, 20, 0, 20, "Interface\\AddOns\\ZeroNotes\\Media\\Texture\\update", ZN.Colors.ACTIVE, ZN.Colors.INACTIVE, false, nil, true, "Reload Template", ZN.Colors.ACTIVE)
+  ZNSidebarFrame.btnReloadGroupTemplate:SetShown(false)
+
+  ZNSidebarFrame.btnDeleteGroupTemplate:SetScript("OnClick", function(self)
+    -- ZN.selectedGroupTemplate = GroupTemplateSelectButtonHead.ZNText:GetText()
+    ZNdeleteGroupFrame.Message:SetText("This will delete "..ZN.selectedGroupTemplate.."\nAre you sure?")
+    ZNdeleteGroupFrame:Show()
+    print(ZN.selectedGroupTemplate)
+  end)
+
+  ZNSidebarFrame.btnReloadGroupTemplate:SetScript("OnClick", function(self)
+    ZN:BuildGroupTemplateSortArray()
+    ZN:updateGroupView()
+  end)
+
+
+
 end
 
 ZN.GroupMemberRows = {}
@@ -102,7 +189,7 @@ function ZN:CreateGroupMemberRow(index, anchorFrame, template)
   if not ZNotes.GroupTemplates[ZN.selectedGroupTemplate][index] then
     ZNotes.GroupTemplates[ZN.selectedGroupTemplate][index] = {
       ["name"] = "Name",
-      ["class"] = "none",
+      ["class"] = "zzz",
       ["spec"] = "empty",
     }
   end
@@ -161,11 +248,11 @@ function ZN:updateGroupView()
   for i = 1, 30 do
     local dummy = {
       ["name"] = "Name",
-      ["class"] = "none",
+      ["class"] = "zzz",
       ["spec"] = "empty",
     }
-    if template[i] then
-      dummy = template[i]
+    if template[ZN.GroupTemplateSortArray[i]] then
+      dummy = template[ZN.GroupTemplateSortArray[i]]
     end
     if i > #ZN.GroupMemberRows then
       ZN.GroupMemberRows[i] = ZN:CreateGroupMemberRow(i, anchor, dummy)
@@ -180,4 +267,27 @@ function ZN:updateGroupView()
     end
     anchor = ZN.GroupMemberRows[i]
   end
+end
+
+ZN.GroupTemplateSortArray={}
+function ZN:BuildGroupTemplateSortArray()
+  ZN.GroupTemplateSortArray={}
+  local template = ZNotes.GroupTemplates[ZN.selectedGroupTemplate]
+  for i=1, #template do
+    ZN.GroupTemplateSortArray[i]=i
+  end
+
+  for k=1,#template do
+    for i=1,#template do
+      local pivot = template[ZN.GroupTemplateSortArray[i]]["class"]
+      for j=i+1,#template do
+        local comp = template[ZN.GroupTemplateSortArray[j]]["class"]
+        if comp<pivot then
+          local saveUnit = ZN.GroupTemplateSortArray[i]
+          ZN.GroupTemplateSortArray[i] = ZN.GroupTemplateSortArray[j]
+          ZN.GroupTemplateSortArray[j] = saveUnit
+        end
+      end 
+    end 
+  end 
 end

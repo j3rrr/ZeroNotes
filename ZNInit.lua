@@ -784,7 +784,7 @@ ZN.SpecNames = {
 }
 
 ZN.Specs = {
-  ["none"] = {
+  ["zzz"] = {
     ["empty"] = ""
   },
   ["dk"] = {
@@ -1157,7 +1157,7 @@ ZN.RaidIconsList = {
 }
 
 ZN.ClassIconsList = {
-  ["none"] = CreateTextureMarkup("Interface\\Addons\\ZeroNotes\\Media\\Texture\\x_active", 0, 0, 24, 24, 0, 0, 0, 0, 0, 0),
+  ["zzz"] = CreateTextureMarkup("Interface\\Addons\\ZeroNotes\\Media\\Texture\\x_active", 0, 0, 24, 24, 0, 0, 0, 0, 0, 0),
   ["dh"] = CreateTextureMarkup("Interface\\Addons\\ZeroNotes\\Media\\Texture\\class\\dh", 0, 0, 24, 24, 0, 0, 0, 0, 0, 0),
   ["dk"] = CreateTextureMarkup("Interface\\Addons\\ZeroNotes\\Media\\Texture\\class\\dk", 0, 0, 24, 24, 0, 0, 0, 0, 0, 0),
   ["druid"] = CreateTextureMarkup("Interface\\Addons\\ZeroNotes\\Media\\Texture\\class\\druid", 0, 0, 24, 24, 0, 0, 0, 0, 0, 0),
@@ -1173,7 +1173,7 @@ ZN.ClassIconsList = {
 }
 
 ZN.ClassIconsListOrder = {
-  "none",
+  "zzz",
   "dk",
   "dh",
   "druid",
