@@ -54,6 +54,7 @@ members = {}
 
 function ZN:libInspectRemove(event, GUID)
   if not IsInGroup() then return end
+  if not GUID then return end
   local member = self.members[GUID]
   if not member then
       return
@@ -171,6 +172,7 @@ function ZN:getAvailableSpells()
             tmp = spell
             tmp["color"] = ZN.Colors[player.class]
             tmp["player"] = {}
+            tmp.baseRating = tmp.rating
             table.insert(tmp["player"], {["name"]= player["name"]})
             seen[spell["name"]] = true
           end
@@ -271,6 +273,8 @@ function ZN:createRawNote(boss)
       table.insert(prioNote["lines"], spell)
     else
       for _,needs in ipairs(spell["need"]) do
+        ZN:ShiftSpellRatings(needs,sortedAvailableSpells)
+        table.sort(sortedAvailableSpells, function(a,b) return a.rating > b.rating end)
         local spellSet = false
         for _,playerSpell in ipairs(sortedAvailableSpells) do
           for i = 1, table.getn(playerSpell["player"]) do
@@ -317,6 +321,24 @@ function ZN:createRawNote(boss)
   
   table.sort(prioNote["lines"], function(a,b) return a.time < b.time end)
   return prioNote
+end
+
+function ZN:ShiftSpellRatings(needs,sortedAvailableSpells)
+  local role = needs.role and needs.role or nil
+  local class = needs.class and needs.class or nil
+  local value = needs.value and needs.value or nil
+
+  if role == "all" then role = nil end
+  if class == "all" then class = nil end 
+  if value == 0 then value = nil end 
+
+  for i,spell in pairs(sortedAvailableSpells) do 
+    if value and ((role and not class and spell.role==role) or (class and not role and spell.class==class) or (class and role and spell.class==class and spell.role==role)) then
+      spell.rating= spell.baseRating+value
+    else
+      spell.rating= spell.baseRating
+    end
+  end
 end
 
 function ZN:PrintNote(boss, inclMissing)

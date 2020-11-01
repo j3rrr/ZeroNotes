@@ -212,8 +212,8 @@ end)
 
 ZNBodyFrame.Subframes.PrioDropdown = ZN.createSubFrame("ZNBossPrioDropDown", ZNFrame, 372, 202, ZN.Colors.BG, 1, "CENTER", "DIALOG", true)
 ZNBodyFrame.Subframes.PrioDropdown:SetBackdrop({bgFile = "Interface/Tooltips/UI-Tooltip-Background", 
-edgeFile = [[Interface\Buttons\WHITE8x8]],
-edgeSize = 1,
+  edgeFile = [[Interface\Buttons\WHITE8x8]],
+  edgeSize = 1,
 });
 ZNBodyFrame.Subframes.PrioDropdown:SetBackdropColor(tonumber("0x"..ZN.Colors.BG:sub(1,2))/255, tonumber("0x"..ZN.Colors.BG:sub(3,4))/255, tonumber("0x"..ZN.Colors.BG:sub(5,6))/255, 1);
 ZNBodyFrame.Subframes.PrioDropdown:SetBackdropBorderColor(tonumber("0x"..ZN.Colors.INACTIVE:sub(1,2))/255, tonumber("0x"..ZN.Colors.INACTIVE:sub(3,4))/255, tonumber("0x"..ZN.Colors.INACTIVE:sub(5,6))/255, 1);
@@ -250,6 +250,7 @@ local function CreateGenericButton (name, parent, point, anchor, anchorPoint, wi
      ZN:showPreview(ZN:printPreviewNote(selectedTemplate), ZNBodyFrame.Subframes.PreviewTemplateContent.ScrollNote.scrollChild,selectedTemplate)
   end
   btn.doOnUpdate=true
+  
   return btn
 end
 
