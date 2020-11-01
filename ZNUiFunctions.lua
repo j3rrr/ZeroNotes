@@ -211,6 +211,7 @@ function ZN:ClickGroupTemplates(ZNHeaderFrame, ZNSidebarFrame, ZNBodyFrame)
 		ZNSidebarFrame.btnReloadBossTrenner:SetShown(false)
 	end
 	ZN:ClickCollapse(nil, ZNHeaderFrame, ZNSidebarFrame, true, false)
+	ZN:updateGroupView()
 end
 
 function ZN:ClickCollapse(ZNFrame, ZNHeaderFrame, ZNSidebarFrame, collapse, expand)

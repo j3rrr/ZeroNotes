@@ -709,12 +709,12 @@ ZNotes.GroupTemplates = ZNotes.GroupTemplates or {
     {
       ["name"] = "Player 1",
       ["class"] = "warrior",
-      ["role"] = "melee",
+      ["spec"] = "arms",
     },
     {
       ["name"] = "Player 2",
       ["class"] = "hunter",
-      ["role"] = "range",
+      ["spec"] = "bm",
     },
   }
 }
@@ -776,77 +776,80 @@ ZN.SpecNames = {
 }
 
 ZN.Specs = {
-  dk = {
+  ["none"] = {
+    ["empty"] = ""
+  },
+  ["dk"] = {
     -- Death Knight
-    [250] = 'Blood',
-    [251] = 'Frost',
-    [252] = 'Unholy',
+    ["blood"] = 'Blood',
+    ["frost"] = 'Frost',
+    ["unholy"] = 'Unholy',
   },
-  dh = {
+  ["dh"] = {
     -- Demon Hunter
-    [577] = 'Havoc',
-    [581] = 'Vengeance',
+    ["havoc"] = 'Havoc',
+    ["Vengeance"] = 'Veng',
   },
-  druid = {
+  ["druid"] = {
     -- Druid 
-    [102] = 'Balance',
-    [103] = 'Feral',
-    [104] = 'Guardian',
-    [105] = 'Restoration',
+    ["balance"] = 'Balance',
+    ["feral"] = 'Feral',
+    ["guardian"] = 'Guardian',
+    ["resto"] = 'Resto',
   },
-  hunter = {
+  ["hunter"] = {
     -- Hunter 
-    [253] = 'Beast Mastery',
-    [254] = 'Marksmanship',
-    [255] = 'Survival',
+    ["bm"] = 'BM',
+    ["mm"] = 'MM',
+    ["survial"] = 'Surv',
   },
-  mage = {
+  ["mage"] = {
     -- Mage 
-    [62] = 'Arcane',
-    [63] = 'Fire',
-    [64] = 'Frost',
+    ["arcane"] = 'Arcane',
+    ["fire"] = 'Fire',
+    ["frost"] = 'Frost',
   },
-  monk = {
+  ["monk"] = {
     -- Monk 
-    [268] = 'Brewmaster',
-    [269] = 'Windwalker',
-    [270] = 'Mistweaver',
+    ["bm"] = 'BM',
+    ["ww"] = 'WW',
+    ["mw"] = 'MW',
   },
-  paladin = {
+  ["paladin"] = {
     -- Paladin 
-    [65] = 'Holy',
-    [66] = 'Protection',
-    [70] = 'Retribution',
+    ["holy"] = 'Holy',
+    ["prot"] = 'Prot',
+    ["ret"] = 'Ret',
   },
-  priest = {
+  ["priest"] = {
     -- Priest
-    [256] = 'Discipline',
-    [257] = 'Holy',
-    [258] = 'Shadow',
+    ["diszi"] = 'Disc',
+    ["holy"] = 'Holy',
+    ["shadow"] = 'Shadow',
   },
-  rogue = {
+  ["rogue"] = {
     -- Rogue 
-    [259] = 'Assassination',
-    [260] = 'Outlaw',
-    [261] = 'Subtlety',
+    ["assa"] = 'Assa',
+    ["outlaw"] = 'Outlaw',
+    ["sub"] = 'Sub',
   },
-  shaman = {
+  ["shaman"] = {
     -- Shaman 
-    [262] = 'Elemental',
-    [263] = 'Enhancement',
-    [264] = 'Restoration',
+    ["ele"] = 'Ele',
+    ["enh"] = 'Enh',
+    ["resto"] = 'Resto',
   },
-  warlock = {
+  ["warlock"] = {
     -- Warlock 
-    [265] = 'Affliction',
-    [266] = 'Demonology',
-    [267] = 'Destruction',
+    ["affli"] = 'Affli',
+    ["demo"] = 'Demo',
+    ["destru"] = 'Destru',
   },
-  warrior = {
+  ["warrior"] = {
     -- Warrior 
-    [71] = 'Arms',
-    [72] = 'Fury',
-    [73] = 'Protection'
+    ["arms"] = 'Arms',
+    ["fury"] = 'Fury',
+    ["prot"] = 'Prot'
   },
 }
 
@@ -1146,6 +1149,7 @@ ZN.RaidIconsList = {
 }
 
 ZN.ClassIconsList = {
+  ["none"] = CreateTextureMarkup("Interface\\Addons\\ZeroNotes\\Media\\Texture\\x_active", 0, 0, 24, 24, 0, 0, 0, 0, 0, 0),
   ["dh"] = CreateTextureMarkup("Interface\\Addons\\ZeroNotes\\Media\\Texture\\class\\dh", 0, 0, 24, 24, 0, 0, 0, 0, 0, 0),
   ["dk"] = CreateTextureMarkup("Interface\\Addons\\ZeroNotes\\Media\\Texture\\class\\dk", 0, 0, 24, 24, 0, 0, 0, 0, 0, 0),
   ["druid"] = CreateTextureMarkup("Interface\\Addons\\ZeroNotes\\Media\\Texture\\class\\druid", 0, 0, 24, 24, 0, 0, 0, 0, 0, 0),
@@ -1161,6 +1165,7 @@ ZN.ClassIconsList = {
 }
 
 ZN.ClassIconsListOrder = {
+  "none",
   "dk",
   "dh",
   "druid",
