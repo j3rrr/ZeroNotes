@@ -8,6 +8,7 @@ GroupTemplateSelectButtonHead.doOnUpdate = true
 GroupTemplateSelectButtonHead.OnUpdate = function(_,_,_,newValue) 
     selectedGroupTemplate = newValue 
     print(selectedGroupTemplate)
+    --savedvariable
     ZN:updateGroupView()
 end
 GroupTemplateSelectButtonHead:SetScript("OnClick", function(self) ZN:CreateDropdown(self, ZN:getTableKeys(ZNotes.GroupTemplates), ZN:getTableOrder(ZNotes.GroupTemplates), 240, ZN.Colors.BG, "LEFT", 10, nil, "TOOLTIP") end)

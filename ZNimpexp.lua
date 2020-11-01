@@ -130,7 +130,7 @@ BossTemplateSubframe.TemplateImportButton:SetScript("OnClick", function(self)
 
   ZNotes.BossTemplates[newTemplateName] = loadstring(decstr)()
 
-  BossTemplateSubframe.ImportEditBox.editbox:SetText("|cff"..ZN.Colors.itemUncommon.."Template successfully imported as|r |cff"..ZN.Colors.chatInstance.."'"..newTemplateName.."'|r\n|cff"..ZN.Colors.chatGeneral.."Please run|r |cff"..ZN.Colors.chatParty.."/reload|r |cff"..ZN.Colors.chatGeneral.."to finish.|r")
+  BossTemplateSubframe.ImportEditBox.editbox:SetText("|cff"..ZN.Colors.itemUncommon.."Template successfully imported as|r |cff"..ZN.Colors.chatInstance.."'"..newTemplateName.."'|r")
 end)
 
 --##############################################################################
