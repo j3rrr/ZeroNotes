@@ -229,6 +229,14 @@ function ZN.initMinimapButton()
       }
 end
 
+function ZN.initLastTemplates()
+  ZNotes.lastTemplates = ZNotes.lastTemplates or {
+    ["lastGroupTemplate"] = "Sample Group",
+    ["lastBossTemplate"] = "SampleBoss",
+  }
+  ZN.selectedGroupTemplate = ZNotes.lastTemplates.lastGroupTemplate
+end
+
 ZN.DefaultPlayerSpells={
   {
     ["type"] = "heal",

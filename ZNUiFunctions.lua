@@ -41,6 +41,9 @@ function ZN:ClickHome(ZNHeaderFrame, ZNSidebarFrame, ZNBodyFrame)
 	ZNSidebarFrame.Subframes["Home"]:SetShown(true)
 	ZNSidebarFrame.Subframes["Home"].visible=true
 	ZNSidebarFrame.btnCollapseSidebar:SetShown(false)
+	if ZNSidebarFrame.btnDeleteGroupTemplate then
+		ZNSidebarFrame.btnDeleteGroupTemplate:SetShown(false)
+	end
 	if ZNSidebarFrame.btnReloadPlayer then
 		ZNSidebarFrame.btnReloadPlayer:SetShown(false)
 		ZNSidebarFrame.btnAddPlayer:SetShown(false)
@@ -90,6 +93,9 @@ function ZN:ClickImpExp(ZNHeaderFrame, ZNSidebarFrame, ZNBodyFrame)
 	ImpExpContent.PlayerDbSubframe:Hide()
 	ImpExpContent.BossTemplateSubframe:Hide()
 	ImpExpContent.WeakaurasSubframe:Hide()
+	if ZNSidebarFrame.btnDeleteGroupTemplate then
+		ZNSidebarFrame.btnDeleteGroupTemplate:SetShown(false)
+	end
 end
 
 function ZN:ClickBoss(ZNHeaderFrame, ZNSidebarFrame, ZNBodyFrame)
@@ -133,6 +139,9 @@ function ZN:ClickBoss(ZNHeaderFrame, ZNSidebarFrame, ZNBodyFrame)
 	ZNSidebarFrame.btnReloadBossSpell:SetShown(true)
 	ZNSidebarFrame.btnAddBossTrenner:SetShown(true)
 	ZNSidebarFrame.btnReloadBossTrenner:SetShown(true)
+	if ZNSidebarFrame.btnDeleteGroupTemplate then
+		ZNSidebarFrame.btnDeleteGroupTemplate:SetShown(false)
+	end
 	ZN:ClickCollapse(nil, ZNHeaderFrame, ZNSidebarFrame, true, false)
 end
 
@@ -172,6 +181,9 @@ function ZN:ClickPlayer(ZNHeaderFrame, ZNSidebarFrame, ZNBodyFrame)
 	ZNSidebarFrame.btnAddBossTrenner:SetShown(false)
 	ZNSidebarFrame.btnReloadBossTrenner:SetShown(false)
 	ZNSidebarFrame.btnCollapseSidebar:SetShown(true)
+	if ZNSidebarFrame.btnDeleteGroupTemplate then
+		ZNSidebarFrame.btnDeleteGroupTemplate:SetShown(false)
+	end
 	ZN:ClickCollapse(nil, ZNHeaderFrame, ZNSidebarFrame, true, false)
 end
 
@@ -198,6 +210,7 @@ function ZN:ClickGroupTemplates(ZNHeaderFrame, ZNSidebarFrame, ZNBodyFrame)
 	ZNSidebarFrame.Subframes["GroupTemplates"]:SetShown(true)
 	ZNSidebarFrame.Subframes["GroupTemplates"].visible=true
 	ZNSidebarFrame.btnCollapseSidebar:SetShown(false)
+	ZNSidebarFrame.btnDeleteGroupTemplate:SetShown(true)
 	if ZNSidebarFrame.btnReloadPlayer then
 		ZNSidebarFrame.btnReloadPlayer:SetShown(false)
 		ZNSidebarFrame.btnAddPlayer:SetShown(false)
