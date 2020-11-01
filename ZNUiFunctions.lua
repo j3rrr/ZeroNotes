@@ -46,6 +46,7 @@ function ZN:ClickHome(ZNHeaderFrame, ZNSidebarFrame, ZNBodyFrame)
 	ZNSidebarFrame.btnCollapseSidebar:SetShown(false)
 	if ZNSidebarFrame.btnDeleteGroupTemplate then
 		ZNSidebarFrame.btnDeleteGroupTemplate:SetShown(false)
+    ZNSidebarFrame.btnReloadGroupTemplate:SetShown(false)
 	end
 	if ZNSidebarFrame.btnReloadPlayer then
 		ZNSidebarFrame.btnReloadPlayer:SetShown(false)
@@ -101,6 +102,7 @@ function ZN:ClickImpExp(ZNHeaderFrame, ZNSidebarFrame, ZNBodyFrame)
 	ImpExpContent.WeakaurasSubframe:Hide()
 	if ZNSidebarFrame.btnDeleteGroupTemplate then
 		ZNSidebarFrame.btnDeleteGroupTemplate:SetShown(false)
+		ZNSidebarFrame.btnReloadGroupTemplate:SetShown(false)
 	end
 end
 
@@ -150,6 +152,7 @@ function ZN:ClickBoss(ZNHeaderFrame, ZNSidebarFrame, ZNBodyFrame)
 	ZNSidebarFrame.btnReloadBossTrenner:SetShown(true)
 	if ZNSidebarFrame.btnDeleteGroupTemplate then
 		ZNSidebarFrame.btnDeleteGroupTemplate:SetShown(false)
+		ZNSidebarFrame.btnReloadGroupTemplate:SetShown(false)
 	end
 	ZN:ClickCollapse(nil, ZNHeaderFrame, ZNSidebarFrame, true, false)
 end
@@ -195,6 +198,7 @@ function ZN:ClickPlayer(ZNHeaderFrame, ZNSidebarFrame, ZNBodyFrame)
 	ZNSidebarFrame.btnCollapseSidebar:SetShown(true)
 	if ZNSidebarFrame.btnDeleteGroupTemplate then
 		ZNSidebarFrame.btnDeleteGroupTemplate:SetShown(false)
+		ZNSidebarFrame.btnReloadGroupTemplate:SetShown(false)
 	end
 	ZN:ClickCollapse(nil, ZNHeaderFrame, ZNSidebarFrame, true, false)
 end
@@ -226,6 +230,7 @@ function ZN:ClickGroupTemplates(ZNHeaderFrame, ZNSidebarFrame, ZNBodyFrame)
 	ZNSidebarFrame.Subframes["GroupTemplates"].visible=true
 	ZNSidebarFrame.btnCollapseSidebar:SetShown(false)
 	ZNSidebarFrame.btnDeleteGroupTemplate:SetShown(true)
+	ZNSidebarFrame.btnReloadGroupTemplate:SetShown(true)
 	if ZNSidebarFrame.btnReloadPlayer then
 		ZNSidebarFrame.btnReloadPlayer:SetShown(false)
 		ZNSidebarFrame.btnAddPlayer:SetShown(false)
@@ -239,6 +244,7 @@ function ZN:ClickGroupTemplates(ZNHeaderFrame, ZNSidebarFrame, ZNBodyFrame)
 		ZNSidebarFrame.btnReloadBossTrenner:SetShown(false)
 	end
 	ZN:ClickCollapse(nil, ZNHeaderFrame, ZNSidebarFrame, true, false)
+	ZN:BuildGroupTemplateSortArray()
 	ZN:updateGroupView()
 end
 
