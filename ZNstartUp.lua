@@ -3,7 +3,7 @@ local function onUILoad(text)
     if text=="ZeroNotes" or IsAddOnLoaded("ZeroNotes") then
       ZNLoaded = true
     end
-  
+    
     if ZNLoaded then
       ZNotes = ZNotes or {}
       ZN.initMinimapButton()
@@ -12,7 +12,7 @@ local function onUILoad(text)
       end
       if not ZNotes.DebugMode then
         ZNotes.DebugMode = false
-      end
+      end      
       ZN.initBossTemplates()
       ZN.initGroupTemplates()
       ZN.initLastTemplates()
@@ -25,5 +25,11 @@ local function onUILoad(text)
       if ZNotes.DebugMode then ZNFrame:Show() end
     end
 end
+
+local function enterWorld()
+  ZN:getEncounterIDs()
+  ZNEventHandler:Unregister('PLAYER_ENTERING_WORLD', 'enterWorld')
+end
 ZNEventHandler:Register('ADDON_LOADED', onUILoad, 'onUILoad')
+ZNEventHandler:Register('PLAYER_ENTERING_WORLD', enterWorld, 'enterWorld')
 ZNEventHandler:Register('PLAYER_LOGIN', onUILoad, 'onUILoad')
