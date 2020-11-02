@@ -28,6 +28,7 @@ BossFrame.btnDeleteTemplate = ZN.CreateIconButton(BossFrame, "LEFT", BossFrame.b
 BossFrame.btnEditTemplate:SetFrameStrata("DIALOG")
 
 local ZNDeleteBossFrame = ZN.createSubFrame("ZNDeleteBossFrame",ZNFrame, 302, 202, ZN.Colors.HD, 1, 'CENTER', 'TOOLTIP', true)
+ZNDeleteBossFrame:SetScript("OnMouseDown", function(self, button)end)
 ZNDeleteBossFrame:SetBackdrop({bgFile = "Interface/Tooltips/UI-Tooltip-Background", 
   edgeFile = [[Interface\Buttons\WHITE8x8]],
   edgeSize = 1,
@@ -75,7 +76,8 @@ ZNTemperBossFrame.CancelButton = ZN.CreateGenericButton("ZNnewGroupCancelButton"
 ZNTemperBossFrame.ErrorMessage:Hide()
 ZNTemperBossFrame.btnClose:SetScript("OnClick", function(self) ZNTemperBossFrame:Hide() end)
 ZNTemperBossFrame.CancelButton:SetScript("OnClick", function(self) ZNTemperBossFrame:Hide() end)
-
+ZNTemperBossFrame:SetScript("OnMouseDown", function(self, button)end)
+ZNTemperBossFrame.BossidTitle.button:SetScript("OnMouseDown", function(self, button)end)
 table.insert(ZN.DropDownsEdit,ZNTemperBossFrame)
 
 ZNTemperBossFrame.newBossName:SetScript("OnEditFocusLost", function(self)
