@@ -1,4 +1,5 @@
 local _, ZN, L = ...
+--boss id tooltip: true, ZN:getEncounterIDs(), ZN.Colors.ACTIVE, "ANCHOR_BOTTOMRIGHT"
 
 local selectedTemplate = nil
 

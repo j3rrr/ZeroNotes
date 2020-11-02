@@ -141,7 +141,7 @@ function ZN.createScrollFrame(name, parent, width, height, color, a, anchor,stra
 	return NewFrame
 end
 
-function ZN.CreateText(parent, point, anchorFrame, anchorPoint, width, height, xOffset, yOffset, font, fontSize, color, text, justifyH, justifyV, spacing)
+function ZN.CreateText(parent, point, anchorFrame, anchorPoint, width, height, xOffset, yOffset, font, fontSize, color, text, justifyH, justifyV, spacing, tooltip, tooltipText, tooltipColor, tooltipAnchor)
 		local newText = parent:CreateFontString()
 		newText.Text = text
 		newText:SetPoint(point, anchorFrame, anchorPoint, xOffset, yOffset)
@@ -152,6 +152,30 @@ function ZN.CreateText(parent, point, anchorFrame, anchorPoint, width, height, x
 		newText:SetJustifyV(justifyV and justifyV or "BOTTOM")
 		newText:SetText(text)
 		newText:SetSpacing(spacing and spacing or fontSize)
+		
+		if tooltip then
+			newText.buttonWidth = 16+width
+			newText.buttonHeight = fontSize+4
+			local tooltipButton = ZN.createSubFrame(nil, parent, newText.buttonWidth, newText.buttonHeight, nil, 1, "TOP", nil, false, 0, 0, newText, "TOP", false)
+			newText.button = tooltipButton
+			--newText:EnableMouse(true)
+			newText.button:SetScript('OnEnter', function(self)
+				if tooltip then 
+					ZN:ShowToolTip(tooltipText, tooltipColor, self, tooltipAnchor)
+				end
+			end)
+			newText.button:SetScript('OnLeave', function(self)
+				if tooltip then
+					GameTooltip:Hide()
+				end
+			end)
+			-- GameTooltip:SetOwner(_G[newText],"ANCHOR_TOP" , 0, 5)
+			-- GameTooltip:AddLine(tooltipText, tonumber("0x"..tooltipColor:sub(1,2))/255, tonumber("0x"..tooltipColor:sub(3,4))/255, tonumber("0x"..tooltipColor:sub(5,6))/255, 1)
+			-- GameTooltip:Show()
+		end
+		
+		
+		
 		return newText
 end
 
@@ -177,19 +201,19 @@ function ZN.CreateIconButton(parent, point, anchorFrame, anchorPoint, width, hei
 	if activeColor and inactiveColor then
 		btn:GetNormalTexture():SetVertexColor(tonumber("0x"..btn.btnColor:sub(1,2))/255, tonumber("0x"..btn.btnColor:sub(3,4))/255, tonumber("0x"..btn.btnColor:sub(5,6))/255, 1)
 		btn:SetScript('OnEnter', function(self)
-			if self.highlightColor then
-				self.btnColor = self.highlightColor
-			else
-				self.btnColor = self.inactiveColor
-				if not self.active then
-					self.btnColor = self.activeColor
-				end
+		if self.highlightColor then
+			self.btnColor = self.highlightColor
+		else
+			self.btnColor = self.inactiveColor
+			if not self.active then
+				self.btnColor = self.activeColor
 			end
-			self:GetNormalTexture():SetVertexColor(tonumber("0x"..self.btnColor:sub(1,2))/255, tonumber("0x"..self.btnColor:sub(3,4))/255, tonumber("0x"..self.btnColor:sub(5,6))/255, 1)
-			if tooltip then 
-				ZN:ShowToolTip(tooltipText, tooltipColor, self)
-			end
-		end)
+		end
+		self:GetNormalTexture():SetVertexColor(tonumber("0x"..self.btnColor:sub(1,2))/255, tonumber("0x"..self.btnColor:sub(3,4))/255, tonumber("0x"..self.btnColor:sub(5,6))/255, 1)
+		if tooltip then 
+			ZN:ShowToolTip(tooltipText, tooltipColor, self)
+		end
+	end)
 		btn:SetScript('OnLeave', function(self)
 			self.btnColor = self.activeColor
 			if not self.active then

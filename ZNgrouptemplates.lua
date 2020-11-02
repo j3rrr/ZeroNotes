@@ -228,7 +228,7 @@ function ZN:createGroupTemplateFrames()
   ZNcopyGroupFrame.Message = ZN.CreateText(ZNcopyGroupFrame, "TOP", ZNcopyGroupFrame, "TOP", 250, 30, 0, -41, "Interface\\AddOns\\ZeroNotes\\Media\\Font\\ZNReg.ttf", 12, ZN.Colors.ACTIVE, "New Template Name", "LEFT")
   ZNcopyGroupFrame.newGroupName = ZN.SingleLineEditBox("newGroupName", ZNcopyGroupFrame, "TOP", ZNcopyGroupFrame.Message, "BOTTOM", 250, 30, 0, -10, 20, 0 ,12, ZN.Colors.ACTIVE, ZN.Colors.SBButtonBG, nil, "", "LEFT")
   ZNcopyGroupFrame.ErrorMessage = ZN.CreateText(ZNcopyGroupFrame, "TOP", ZNcopyGroupFrame.newGroupName, "BOTTOM", 250, 20, 0, 0, "Interface\\AddOns\\ZeroNotes\\Media\\Font\\ZNVers.ttf", 10, ZN.Colors.chatYell, "", "CENTER")
-  ZNcopyGroupFrame.ConfirmButton = ZN.CreateGenericButton("ZNnewGroupConfirmButton", ZNcopyGroupFrame, "BOTTOMLEFT", ZNcopyGroupFrame, "BOTTOMLEFT", 125, 30, 20, 20,0,0, 12, ZN.Colors.ACTIVE, ZN.Colors.SBButtonBG, nil, "Rename", "CENTER",true, ZN.Colors.BG )
+  ZNcopyGroupFrame.ConfirmButton = ZN.CreateGenericButton("ZNnewGroupConfirmButton", ZNcopyGroupFrame, "BOTTOMLEFT", ZNcopyGroupFrame, "BOTTOMLEFT", 125, 30, 20, 20,0,0, 12, ZN.Colors.ACTIVE, ZN.Colors.SBButtonBG, nil, "Copy", "CENTER",true, ZN.Colors.BG )
   ZNcopyGroupFrame.CancelButton = ZN.CreateGenericButton("ZNnewGroupCancelButton", ZNcopyGroupFrame, "BOTTOMRIGHT", ZNcopyGroupFrame, "BOTTOMRIGHT", 125, 30, -20, 20,0,0, 12, ZN.Colors.ACTIVE, ZN.Colors.SBButtonBG, nil, "Cancel", "CENTER",true, ZN.Colors.BG )
   ZNcopyGroupFrame.ErrorMessage:Hide()
   ZNcopyGroupFrame.newGroupName.doOnUpdate = true

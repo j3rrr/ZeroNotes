@@ -18,8 +18,8 @@ function ZN:ToggleInfo(self)
 	ZNInfoFrame:SetShown(not ZNInfoFrame:IsShown());
 end
 
-function ZN:ShowToolTip(text, color, parent)
-	GameTooltip:SetOwner(parent,"ANCHOR_TOP" , 0, 5)
+function ZN:ShowToolTip(text, color, parent, anchor)
+	GameTooltip:SetOwner(parent, anchor and anchor or "ANCHOR_TOP" , 0, 5)
 	GameTooltip:AddLine(text, tonumber("0x"..color:sub(1,2))/255, tonumber("0x"..color:sub(3,4))/255, tonumber("0x"..color:sub(5,6))/255, 1)
 	GameTooltip:Show()
 end

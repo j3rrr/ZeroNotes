@@ -90,6 +90,75 @@ function ZN:SecondsToClock(seconds)
   end
 end
 
+
+ZN.encounter_list = ""
+ZN.zoneId_list = ""
+ZN.zoneGroupId_list = ""
+
+function ZN:getEncounterIDs()
+  if ZN.encounter_list ~= "" then
+    return ZN.encounter_list
+  end
+
+  EJ_SelectTier(EJ_GetCurrentTier())
+
+  for _, inRaid in ipairs({false, true}) do
+    local instance_index = 1
+    local instance_id = EJ_GetInstanceByIndex(instance_index, inRaid)
+    local title = inRaid and "Raids" or "Dungeons"
+    ZN.zoneId_list = ("%s|cffffd200%s|r\n"):format(ZN.zoneId_list, title)
+    ZN.zoneGroupId_list = ("%s|cffffd200%s|r\n"):format(ZN.zoneGroupId_list, title)
+
+    while instance_id do
+      EJ_SelectInstance(instance_id)
+      local instance_name, _, _, _, _, _, dungeonAreaMapID = EJ_GetInstanceInfo(instance_id)
+      local ej_index = 1
+      local boss, _, _, _, _, _, encounter_id = EJ_GetEncounterInfoByIndex(ej_index, instance_id)
+
+      -- zone ids and zone group ids
+      if dungeonAreaMapID and dungeonAreaMapID ~= 0 then
+        local mapGroupId = C_Map.GetMapGroupID(dungeonAreaMapID)
+        if mapGroupId then
+          ZN.zoneGroupId_list = ("%s%s: %d\n"):format(ZN.zoneGroupId_list, instance_name, mapGroupId)
+          local maps = ""
+          for k, map in ipairs(C_Map.GetMapGroupMembersInfo(mapGroupId)) do
+            if map.mapID then
+              maps = maps .. map.mapID .. ", "
+            end
+          end
+          maps = maps:match "^(.*), \n?$" or "" -- trim last ", "
+          ZN.zoneId_list = ("%s%s: %s\n"):format(ZN.zoneId_list, instance_name, maps)
+        else
+          ZN.zoneId_list = ("%s%s: %d\n"):format(ZN.zoneId_list, instance_name, dungeonAreaMapID)
+        end
+      end
+
+      -- Encounter ids
+      if inRaid then
+        while boss do
+          if encounter_id then
+            if instance_name then
+              ZN.encounter_list = ("%s|cffffd200%s|r\n"):format(ZN.encounter_list, instance_name)
+              instance_name = nil -- Only add it once per section
+            end
+            ZN.encounter_list = ("%s%s: %d\n"):format(ZN.encounter_list, boss, encounter_id)
+          end
+          ej_index = ej_index + 1
+          boss, _, _, _, _, _, encounter_id = EJ_GetEncounterInfoByIndex(ej_index, instance_id)
+        end
+        ZN.encounter_list = ZN.encounter_list .. "\n"
+      end
+      instance_index = instance_index + 1
+      instance_id = EJ_GetInstanceByIndex(instance_index, inRaid)
+    end
+    ZN.zoneId_list = ZN.zoneId_list .. "\n"
+    ZN.zoneGroupId_list = ZN.zoneGroupId_list .. "\n"
+  end
+  --ZN:DebugPrint(encounter_list)
+  return ZN.encounter_list
+  
+end
+
 ZN.DropDowns = {}
 ZN.DropDownsEdit = {}
 ZN.Colors = {
