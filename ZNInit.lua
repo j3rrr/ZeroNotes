@@ -111,8 +111,14 @@ ZN.zoneId_list = ""
 ZN.zoneGroupId_list = ""
 
 function ZN:getEncounterIDs()
-  if ZN.encounter_list ~= "" then
+  --print(string.len(ZN.encounter_list))
+  if ZN.encounter_list ~= "" and string.len(ZN.encounter_list)>10 then
     return ZN.encounter_list
+  else
+    --print("else")
+    ZN.encounter_list = ""
+    ZN.zoneId_list = ""
+    ZN.zoneGroupId_list = ""
   end
 
   EJ_SelectTier(EJ_GetCurrentTier())
