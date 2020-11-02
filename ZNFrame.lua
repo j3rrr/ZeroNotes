@@ -179,7 +179,7 @@ function ZN.CreateText(parent, point, anchorFrame, anchorPoint, width, height, x
 		return newText
 end
 
-function ZN.CreateIconButton(parent, point, anchorFrame, anchorPoint, width, height, xOffset, yOffset, texture, activeColor, inactiveColor, active, highlightColor, tooltip, tooltipText, tooltipColor)
+function ZN.CreateIconButton(parent, point, anchorFrame, anchorPoint, width, height, xOffset, yOffset, texture, activeColor, inactiveColor, active, highlightColor, tooltip, tooltipText, tooltipColor, tooltipAnchor)
 	local btn = CreateFrame("Button", nil, parent)
 	btn:SetPoint(point, anchorFrame, anchorPoint, xOffset, yOffset)
 	btn:SetSize(width, height)
@@ -201,18 +201,18 @@ function ZN.CreateIconButton(parent, point, anchorFrame, anchorPoint, width, hei
 	if activeColor and inactiveColor then
 		btn:GetNormalTexture():SetVertexColor(tonumber("0x"..btn.btnColor:sub(1,2))/255, tonumber("0x"..btn.btnColor:sub(3,4))/255, tonumber("0x"..btn.btnColor:sub(5,6))/255, 1)
 		btn:SetScript('OnEnter', function(self)
-		if self.highlightColor then
-			self.btnColor = self.highlightColor
-		else
-			self.btnColor = self.inactiveColor
-			if not self.active then
-				self.btnColor = self.activeColor
+			if self.highlightColor then
+				self.btnColor = self.highlightColor
+			else
+				self.btnColor = self.inactiveColor
+				if not self.active then
+					self.btnColor = self.activeColor
+				end
 			end
-		end
-		self:GetNormalTexture():SetVertexColor(tonumber("0x"..self.btnColor:sub(1,2))/255, tonumber("0x"..self.btnColor:sub(3,4))/255, tonumber("0x"..self.btnColor:sub(5,6))/255, 1)
-		if tooltip then 
-			ZN:ShowToolTip(tooltipText, tooltipColor, self)
-		end
+			self:GetNormalTexture():SetVertexColor(tonumber("0x"..self.btnColor:sub(1,2))/255, tonumber("0x"..self.btnColor:sub(3,4))/255, tonumber("0x"..self.btnColor:sub(5,6))/255, 1)
+			if tooltip then 
+				ZN:ShowToolTip(tooltipText, tooltipColor, self, tooltipAnchor)
+			end
 	end)
 		btn:SetScript('OnLeave', function(self)
 			self.btnColor = self.activeColor
@@ -229,7 +229,7 @@ function ZN.CreateIconButton(parent, point, anchorFrame, anchorPoint, width, hei
 	return btn
 end
 
-function ZN.CreateGenericButton(name, parent, point, anchorFrame, anchorPoint, width, height, xOffset, yOffset, fontxOffset, fontyOffset ,fontSize, fontcolor, bgcolor, label, buttonText, buttonTextAlign, hover, hoverColor)
+function ZN.CreateGenericButton(name, parent, point, anchorFrame, anchorPoint, width, height, xOffset, yOffset, fontxOffset, fontyOffset ,fontSize, fontcolor, bgcolor, label, buttonText, buttonTextAlign, hover, hoverColor, tooltip, tooltipText, tooltipColor, tooltipAnchor)
 	local btn = CreateFrame("Button", nil, parent);
 	btn:SetFrameStrata(parent:GetFrameStrata())
 	btn.name = name
@@ -272,12 +272,22 @@ function ZN.CreateGenericButton(name, parent, point, anchorFrame, anchorPoint, w
 		btn.ZNLabel:SetText(label);
 	end
 
-	if hover then 
+	if hover or tooltip then 
 		btn:SetScript('OnEnter', function(self)
-			self.bg:SetColorTexture(tonumber("0x"..(hoverColor and hoverColor or ZN.Colors.ROWBG):sub(1,2))/255, tonumber("0x"..(hoverColor and hoverColor or ZN.Colors.ROWBG):sub(3,4))/255, tonumber("0x"..(hoverColor and hoverColor or ZN.Colors.ROWBG):sub(5,6))/255, 1);			
+			if tooltip then 
+				ZN:ShowToolTip(tooltipText, tooltipColor, self, tooltipAnchor)
+			end
+			if hover then
+				self.bg:SetColorTexture(tonumber("0x"..(hoverColor and hoverColor or ZN.Colors.ROWBG):sub(1,2))/255, tonumber("0x"..(hoverColor and hoverColor or ZN.Colors.ROWBG):sub(3,4))/255, tonumber("0x"..(hoverColor and hoverColor or ZN.Colors.ROWBG):sub(5,6))/255, 1);			
+			end
 		end)
 		btn:SetScript('OnLeave', function(self)
-			self.bg:SetColorTexture(tonumber("0x"..bgcolor:sub(1,2))/255, tonumber("0x"..bgcolor:sub(3,4))/255, tonumber("0x"..bgcolor:sub(5,6))/255, 1);
+			if tooltip then
+				GameTooltip:Hide()
+			end
+			if hover then
+				self.bg:SetColorTexture(tonumber("0x"..bgcolor:sub(1,2))/255, tonumber("0x"..bgcolor:sub(3,4))/255, tonumber("0x"..bgcolor:sub(5,6))/255, 1);
+			end
 		end)
 	end
 
@@ -315,7 +325,7 @@ function ZN.DropdownList(name, parent, point, anchorFrame, anchorPoint, width, h
 	return Dropdown
 end
 
-function ZN.SingleLineEditBox(name, parent, point, anchorFrame, anchorPoint, width, height, xOffset, yOffset, fontxOffset, fontyOffset ,fontSize, fontcolor, bgcolor, label, setText, setTextTextAlign)
+function ZN.SingleLineEditBox(name, parent, point, anchorFrame, anchorPoint, width, height, xOffset, yOffset, fontxOffset, fontyOffset ,fontSize, fontcolor, bgcolor, label, setText, setTextTextAlign, tooltip, tooltipText, tooltipColor, tooltipAnchor)
 	local editbox = CreateFrame("EditBox", nil, parent)
 	editbox:SetMultiLine(false)
 	editbox.name = name
@@ -368,10 +378,19 @@ function ZN.SingleLineEditBox(name, parent, point, anchorFrame, anchorPoint, wid
 		self:SetText(self.oldText)
 		self:SetTextColor(tonumber("0x"..fontcolor:sub(1,2))/255, tonumber("0x"..fontcolor:sub(3,4))/255, tonumber("0x"..fontcolor:sub(5,6))/255, 1);
 	end)
+
+	if tooltip then 
+		editbox:SetScript('OnEnter', function(self)
+			ZN:ShowToolTip(tooltipText, tooltipColor, self, tooltipAnchor)
+		end)
+		editbox:SetScript('OnLeave', function(self)
+			GameTooltip:Hide()
+		end)
+	end
 	return editbox
 end
 
-function ZN.MultiLineEditBox(name, parent, point, anchorFrame, anchorPoint, width, height, xOffset, yOffset, fontxOffset, fontyOffset ,fontSize, fontcolor, bgcolor, label, setText, setTextTextAlign)
+function ZN.MultiLineEditBox(name, parent, point, anchorFrame, anchorPoint, width, height, xOffset, yOffset, fontxOffset, fontyOffset ,fontSize, fontcolor, bgcolor, label, setText, setTextTextAlign, tooltip, tooltipText, tooltipColor, tooltipAnchor)
 	local s = CreateFrame("ScrollFrame", name, parent, "UIPanelScrollFrameTemplate,BackdropTemplate") -- or you actual parent instead
 	s:SetSize(width,height)
 	s:SetPoint(point, anchorFrame, anchorPoint, xOffset, yOffset);
@@ -450,12 +469,20 @@ function ZN.MultiLineEditBox(name, parent, point, anchorFrame, anchorPoint, widt
 			e:SetFocus()
 		end
 	end)
+	if tooltip then 
+		e:SetScript('OnEnter', function(self)
+			ZN:ShowToolTip(tooltipText, tooltipColor, self, tooltipAnchor)
+		end)
+		e:SetScript('OnLeave', function(self)
+			GameTooltip:Hide()
+		end)
+	end
 
 	return s
 end
 
-function ZN:createCheckBox(parent, point, anchor, anchorPoint, xOffset, yOffset, label, labelFontSize, labelColor, labelWidth, checked)
-  local cb = ZN.CreateIconButton(parent, point, anchor, anchorPoint, 16, 16, xOffset, yOffset, ZN.CheckBoxTextures.checked, ZN.CheckBoxTextures.checkedColor, ZN.CheckBoxTextures.uncheckedColor, true, ZN.Colors.ACTIVE)
+function ZN:createCheckBox(parent, point, anchor, anchorPoint, xOffset, yOffset, label, labelFontSize, labelColor, labelWidth, checked, tooltip, tooltipText, tooltipColor, tooltipAnchor)
+  local cb = ZN.CreateIconButton(parent, point, anchor, anchorPoint, 16, 16, xOffset, yOffset, ZN.CheckBoxTextures.checked, ZN.CheckBoxTextures.checkedColor, ZN.CheckBoxTextures.uncheckedColor, true, ZN.Colors.ACTIVE, tooltip, tooltipText, tooltipColor, tooltipAnchor)
   cb.toggleChecked = function()
     if cb.active then
       cb.active=false

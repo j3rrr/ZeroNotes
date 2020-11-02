@@ -59,7 +59,7 @@ ZNDeleteBossFrame.btnClose:SetScript("OnClick", function(self) ZNDeleteBossFrame
 ZNDeleteBossFrame.CancelButton:SetScript("OnClick", function(self) ZNDeleteBossFrame:Hide() end)
 
 
-local ZNTemperBossFrame = ZN.createSubFrame("ZNTemperBossFrame",ZNFrame, 302, 202, ZN.Colors.HD, 1, 'CENTER', 'TOOLTIP', true)
+local ZNTemperBossFrame = ZN.createSubFrame("ZNTemperBossFrame",ZNFrame, 302, 202, ZN.Colors.HD, 1, 'CENTER', 'DIALOG', true)
 ZNTemperBossFrame:SetBackdrop({bgFile = "Interface/Tooltips/UI-Tooltip-Background", 
   edgeFile = [[Interface\Buttons\WHITE8x8]],
   edgeSize = 1,
@@ -67,8 +67,8 @@ ZNTemperBossFrame:SetBackdrop({bgFile = "Interface/Tooltips/UI-Tooltip-Backgroun
 ZNTemperBossFrame:SetBackdropColor(tonumber("0x"..ZN.Colors.HD:sub(1,2))/255, tonumber("0x"..ZN.Colors.HD:sub(3,4))/255, tonumber("0x"..ZN.Colors.HD:sub(5,6))/255, 1);
 ZNTemperBossFrame:SetBackdropBorderColor(tonumber("0x"..ZN.Colors.INACTIVE:sub(1,2))/255, tonumber("0x"..ZN.Colors.INACTIVE:sub(3,4))/255, tonumber("0x"..ZN.Colors.INACTIVE:sub(5,6))/255, 1);
 ZNTemperBossFrame.btnClose = ZN.CreateIconButton(ZNTemperBossFrame, "TOPRIGHT", ZNTemperBossFrame, "TOPRIGHT", 16, 16, -11, -11, "Interface\\AddOns\\ZeroNotes\\Media\\Texture\\x_big_active", ZN.Colors.ACTIVE, ZN.Colors.INACTIVE, false)
-ZNTemperBossFrame.BossidTitle = ZN.CreateText(ZNTemperBossFrame, "TOP", ZNTemperBossFrame, "TOP", 250, 20, 0, -10, "Interface\\AddOns\\ZeroNotes\\Media\\Font\\ZNReg.ttf", 12, ZN.Colors.ACTIVE, "Boss ID", "LEFT")
-ZNTemperBossFrame.Bossid = ZN.SingleLineEditBox("newBossID", ZNTemperBossFrame, "TOP", ZNTemperBossFrame.BossidTitle, "BOTTOM", 250, 30, 0, -5, 20, 0 ,12, ZN.Colors.ACTIVE, ZN.Colors.SBButtonBG, nil, "", "LEFT")
+ZNTemperBossFrame.BossidTitle = ZN.CreateText(ZNTemperBossFrame, "TOP", ZNTemperBossFrame, "TOP", 250, 20, 0, -10, "Interface\\AddOns\\ZeroNotes\\Media\\Font\\ZNReg.ttf", 12, ZN.Colors.ACTIVE, "Boss ID", "LEFT", nil, nil, true, ZN:getEncounterIDs(), ZN.Colors.ACTIVE, "ANCHOR_BOTTOMRIGHT")
+ZNTemperBossFrame.Bossid = ZN.SingleLineEditBox("newBossID", ZNTemperBossFrame, "TOP", ZNTemperBossFrame.BossidTitle, "BOTTOM", 250, 30, 0, -5, 20, 0 ,12, ZN.Colors.ACTIVE, ZN.Colors.SBButtonBG, nil, "", "LEFT", true, ZN:getEncounterIDs(), ZN.Colors.ACTIVE, "ANCHOR_BOTTOMRIGHT")
 ZNTemperBossFrame.Message = ZN.CreateText(ZNTemperBossFrame, "TOP", ZNTemperBossFrame.Bossid, "BOTTOM", 250, 30, 0, 0, "Interface\\AddOns\\ZeroNotes\\Media\\Font\\ZNReg.ttf", 12, ZN.Colors.ACTIVE, "Template Name", "LEFT")
 ZNTemperBossFrame.newBossName = ZN.SingleLineEditBox("newBossName", ZNTemperBossFrame, "TOP", ZNTemperBossFrame.Message, "BOTTOM", 250, 30, 0, -5, 20, 0 ,12, ZN.Colors.ACTIVE, ZN.Colors.SBButtonBG, nil, "", "LEFT")
 ZNTemperBossFrame.ErrorMessage = ZN.CreateText(ZNTemperBossFrame, "TOP", ZNTemperBossFrame.newBossName, "BOTTOM", 250, 10, 0, 0, "Interface\\AddOns\\ZeroNotes\\Media\\Font\\ZNVers.ttf", 10, ZN.Colors.chatYell, "dummy", "CENTER")
