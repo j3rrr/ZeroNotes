@@ -3,20 +3,11 @@ local _, ZN, L = ...
 
 local selectedTemplate = nil
 
--- Boss Sidebar ZNHeaderFrame
-BossSidebar = ZNSidebarFrame.Subframes.Boss 
--- BossSidebar.TemplateSelectButton = ZN.CreateGenericButton("ZNBossTemplateSelectButton", BossSidebar, "TOPLEFT", BossSidebar, "TOPLEFT", 240, 30, 0, -40,10,0, 12, ZN.Colors.ACTIVE, ZN.Colors.SBButtonBG, "Select Template", "Select Template..", "LEFT",true )
--- BossSidebar.TemplateSelectButton.doOnUpdate = true
--- BossSidebar.TemplateSelectButton.OnUpdate = function(_,_,_,newValue) 
---     selectedTemplate = newValue 
---     ZN:ReloadBossSpellTable(newValue)
--- end
---BossSidebar.TemplatePreviewButton = ZN.CreateGenericButton("ZNBossTemplatePreviewButton", BossSidebar, "TOPLEFT", BossSidebar.TemplateSelectButton, "BOTTOMLEFT", 240, 30, 0, -20,0,0, 12, ZN.Colors.ACTIVE, ZN.Colors.SBButtonBG, nil, "Preview Note", "CENTER",true )
---
---BossSidebar.TemplatePreviewFrame = ZN.createSubFrame("ZNBossTemplatePreviewFrame", BossSidebar, 232, 350, nil, 1, "BOTTOMLEFT", "DIALOG", false, 0, 50)
---BossSidebar.TemplatePreviewFrame.Scroll = ZN.createScrollFrame("ZNBossTemplatePreviewScrollFrame", BossSidebar.TemplatePreviewFrame, 232, 350, nil, 1, "CENTER","DIALOG", false, false, ZN.Colors.SBButtonBG)
 
-BossTemplateSelectButtonHead = ZN.CreateGenericButton("ZNBossTemplateSelectButton", ZNBodyFrame.Subframes.BossSpellHead, "LEFT", ZNHeaderFrame.Version, "LEFT", 240, 30, 50, 0,10,0, 12, ZN.Colors.ACTIVE, ZN.Colors.SBButtonBG, nil, "Select Template..", "LEFT",true )
+local BossSidebar = ZNSidebarFrame.Subframes.Boss 
+local BossFrame = ZNBodyFrame.Subframes["BossSpellHead"]
+
+local BossTemplateSelectButtonHead = ZN.CreateGenericButton("ZNBossTemplateSelectButton", ZNBodyFrame.Subframes.BossSpellHead, "LEFT", ZNHeaderFrame.Version, "LEFT", 240, 30, 50, 0,10,0, 12, ZN.Colors.ACTIVE, ZN.Colors.SBButtonBG, nil, "Select Template..", "LEFT",true )
 BossTemplateSelectButtonHead.doOnUpdate = true
 BossTemplateSelectButtonHead.OnUpdate = function(_,_,_,newValue) 
     selectedTemplate = newValue 
@@ -28,18 +19,197 @@ BossTemplateSelectButtonHead.OnUpdate = function(_,_,_,newValue)
 
     ZN:showPreview(ZN:printPreviewNote(selectedTemplate), ZNBodyFrame.Subframes.PreviewTemplateContent.ScrollNote.scrollChild,selectedTemplate)
 end
-
--- Boss Sidebar Functions
 BossTemplateSelectButtonHead:SetScript("OnClick", function(self) ZN:CreateDropdown(self, ZN:getTableKeys(ZNotes.BossTemplates), ZN:getTableOrder(ZNotes.BossTemplates), 240, ZN.Colors.BG, "LEFT", 10, nil, "TOOLTIP") end)
--- BossSidebar.TemplatePreviewButton:SetScript("OnClick", function(self) 
---   if selectedTemplate == nil or selectedTemplate == "Select Template.." then
---     ZN:Print("You need to select a Boss Template")
---     return
---   end
---   ZN:showPreview(ZN:printPreviewNote(selectedTemplate), BossSidebar.TemplatePreviewFrame.Scroll.scrollChild)
---  end)
 
--- Boss Sidebar Buttons
+
+BossFrame.btnNewTemplate = ZN.CreateIconButton(BossFrame, "LEFT", BossTemplateSelectButtonHead, "RIGHT", 18, 18, 8, 0, "Interface\\AddOns\\ZeroNotes\\Media\\Texture\\newtempl", ZN.Colors.ACTIVE, ZN.Colors.INACTIVE, false, ZN.Colors.ACTIVE, true, "Create New Template", ZN.Colors.ACTIVE)
+BossFrame.btnCopyTemplate = ZN.CreateIconButton(BossFrame, "LEFT", BossFrame.btnNewTemplate, "RIGHT", 18, 18, 8, 0, "Interface\\AddOns\\ZeroNotes\\Media\\Texture\\square", ZN.Colors.ACTIVE, ZN.Colors.INACTIVE, false, ZN.Colors.ACTIVE, true, "Copy selected Template", ZN.Colors.ACTIVE)
+BossFrame.btnEditTemplate = ZN.CreateIconButton(BossFrame, "RIGHT", BossTemplateSelectButtonHead, "RIGHT", 16, 16, -8, 0, "Interface\\AddOns\\ZeroNotes\\Media\\Texture\\edit", ZN.Colors.ACTIVE, ZN.Colors.INACTIVE, false, ZN.Colors.ACTIVE, true, "Edit Template", ZN.Colors.ACTIVE)
+BossFrame.btnDeleteTemplate = ZN.CreateIconButton(BossFrame, "LEFT", BossFrame.btnCopyTemplate, "RIGHT", 18, 18, 8, 0, "Interface\\AddOns\\ZeroNotes\\Media\\Texture\\delete2", ZN.Colors.ACTIVE, ZN.Colors.INACTIVE, false, ZN.Colors.ACTIVE, true, "Delete selected Template", ZN.Colors.ACTIVE)
+BossFrame.btnEditTemplate:SetFrameStrata("DIALOG")
+
+
+local ZNDeleteBossFrame = ZN.createSubFrame("ZNDeleteBossFrame",ZNFrame, 302, 202, ZN.Colors.HD, 1, 'CENTER', 'TOOLTIP', true)
+ZNDeleteBossFrame:SetBackdrop({bgFile = "Interface/Tooltips/UI-Tooltip-Background", 
+  edgeFile = [[Interface\Buttons\WHITE8x8]],
+  edgeSize = 1,
+});
+ZNDeleteBossFrame:SetBackdropColor(tonumber("0x"..ZN.Colors.HD:sub(1,2))/255, tonumber("0x"..ZN.Colors.HD:sub(3,4))/255, tonumber("0x"..ZN.Colors.HD:sub(5,6))/255, 1);
+ZNDeleteBossFrame:SetBackdropBorderColor(tonumber("0x"..ZN.Colors.INACTIVE:sub(1,2))/255, tonumber("0x"..ZN.Colors.INACTIVE:sub(3,4))/255, tonumber("0x"..ZN.Colors.INACTIVE:sub(5,6))/255, 1);
+ZNDeleteBossFrame.btnClose = ZN.CreateIconButton(ZNDeleteBossFrame, "TOPRIGHT", ZNDeleteBossFrame, "TOPRIGHT", 16, 16, -11, -11, "Interface\\AddOns\\ZeroNotes\\Media\\Texture\\x_big_active", ZN.Colors.ACTIVE, ZN.Colors.INACTIVE, false)
+ZNDeleteBossFrame.Message = ZN.CreateText(ZNDeleteBossFrame, "TOP", ZNDeleteBossFrame, "TOP", 250, 60, 0, -41, "Interface\\AddOns\\ZeroNotes\\Media\\Font\\ZNReg.ttf", 12, ZN.Colors.ACTIVE, "", "CENTER")
+ZNDeleteBossFrame.ConfirmButton = ZN.CreateGenericButton("ZNnewGroupConfirmButton", ZNDeleteBossFrame, "BOTTOMLEFT", ZNDeleteBossFrame, "BOTTOMLEFT", 125, 30, 20, 20,0,0, 12, ZN.Colors.ACTIVE, ZN.Colors.SBButtonBG, nil, "Delete", "CENTER",true, ZN.Colors.BG )
+ZNDeleteBossFrame.CancelButton = ZN.CreateGenericButton("ZNnewGroupCancelButton", ZNDeleteBossFrame, "BOTTOMRIGHT", ZNDeleteBossFrame, "BOTTOMRIGHT", 125, 30, -20, 20,0,0, 12, ZN.Colors.ACTIVE, ZN.Colors.SBButtonBG, nil, "Cancel", "CENTER",true, ZN.Colors.BG )
+
+ZNDeleteBossFrame.ConfirmButton:SetScript("OnClick", function(self)
+  ZNotes.BossTemplates[selectedTemplate] = nil
+  ZN:Print("Deleted "..selectedTemplate)
+  for k,v in pairs(ZNotes.BossTemplates) do
+    selectedTemplate = k
+  end
+  ZNotes.lastTemplates.lastBossTemplate = selectedTemplate
+  BossTemplateSelectButtonHead.ZNText:SetText(selectedTemplate:upper())
+  ZN:ReloadBossSpellTable(selectedTemplate)
+  ZN:ReloadBossTrennerTable(selectedTemplate)
+  ZNDeleteBossFrame:Hide()    
+end)
+ZNDeleteBossFrame.btnClose:SetScript("OnClick", function(self) ZNDeleteBossFrame:Hide() end)
+ZNDeleteBossFrame.CancelButton:SetScript("OnClick", function(self) ZNDeleteBossFrame:Hide() end)
+
+
+local ZNTemperBossFrame = ZN.createSubFrame("ZNTemperBossFrame",ZNFrame, 302, 202, ZN.Colors.HD, 1, 'CENTER', 'TOOLTIP', true)
+ZNTemperBossFrame:SetBackdrop({bgFile = "Interface/Tooltips/UI-Tooltip-Background", 
+  edgeFile = [[Interface\Buttons\WHITE8x8]],
+  edgeSize = 1,
+});
+ZNTemperBossFrame:SetBackdropColor(tonumber("0x"..ZN.Colors.HD:sub(1,2))/255, tonumber("0x"..ZN.Colors.HD:sub(3,4))/255, tonumber("0x"..ZN.Colors.HD:sub(5,6))/255, 1);
+ZNTemperBossFrame:SetBackdropBorderColor(tonumber("0x"..ZN.Colors.INACTIVE:sub(1,2))/255, tonumber("0x"..ZN.Colors.INACTIVE:sub(3,4))/255, tonumber("0x"..ZN.Colors.INACTIVE:sub(5,6))/255, 1);
+ZNTemperBossFrame.btnClose = ZN.CreateIconButton(ZNTemperBossFrame, "TOPRIGHT", ZNTemperBossFrame, "TOPRIGHT", 16, 16, -11, -11, "Interface\\AddOns\\ZeroNotes\\Media\\Texture\\x_big_active", ZN.Colors.ACTIVE, ZN.Colors.INACTIVE, false)
+ZNTemperBossFrame.BossidTitle = ZN.CreateText(ZNTemperBossFrame, "TOP", ZNTemperBossFrame, "TOP", 250, 20, 0, -10, "Interface\\AddOns\\ZeroNotes\\Media\\Font\\ZNReg.ttf", 12, ZN.Colors.ACTIVE, "Boss ID", "LEFT")
+ZNTemperBossFrame.Bossid = ZN.SingleLineEditBox("newBossID", ZNTemperBossFrame, "TOP", ZNTemperBossFrame.BossidTitle, "BOTTOM", 250, 30, 0, -5, 20, 0 ,12, ZN.Colors.ACTIVE, ZN.Colors.SBButtonBG, nil, "", "LEFT")
+ZNTemperBossFrame.Message = ZN.CreateText(ZNTemperBossFrame, "TOP", ZNTemperBossFrame.Bossid, "BOTTOM", 250, 30, 0, 0, "Interface\\AddOns\\ZeroNotes\\Media\\Font\\ZNReg.ttf", 12, ZN.Colors.ACTIVE, "Template Name", "LEFT")
+ZNTemperBossFrame.newBossName = ZN.SingleLineEditBox("newBossName", ZNTemperBossFrame, "TOP", ZNTemperBossFrame.Message, "BOTTOM", 250, 30, 0, -5, 20, 0 ,12, ZN.Colors.ACTIVE, ZN.Colors.SBButtonBG, nil, "", "LEFT")
+ZNTemperBossFrame.ErrorMessage = ZN.CreateText(ZNTemperBossFrame, "TOP", ZNTemperBossFrame.newBossName, "BOTTOM", 250, 10, 0, 0, "Interface\\AddOns\\ZeroNotes\\Media\\Font\\ZNVers.ttf", 10, ZN.Colors.chatYell, "dummy", "CENTER")
+ZNTemperBossFrame.ConfirmButton = ZN.CreateGenericButton("ZNnewGroupConfirmButton", ZNTemperBossFrame, "BOTTOMLEFT", ZNTemperBossFrame, "BOTTOMLEFT", 125, 30, 20, 20,0,0, 12, ZN.Colors.ACTIVE, ZN.Colors.SBButtonBG, nil, "Create", "CENTER",true, ZN.Colors.BG )
+ZNTemperBossFrame.CancelButton = ZN.CreateGenericButton("ZNnewGroupCancelButton", ZNTemperBossFrame, "BOTTOMRIGHT", ZNTemperBossFrame, "BOTTOMRIGHT", 125, 30, -20, 20,0,0, 12, ZN.Colors.ACTIVE, ZN.Colors.SBButtonBG, nil, "Cancel", "CENTER",true, ZN.Colors.BG )
+ZNTemperBossFrame.ErrorMessage:Hide()
+ZNTemperBossFrame.btnClose:SetScript("OnClick", function(self) ZNTemperBossFrame:Hide() end)
+ZNTemperBossFrame.CancelButton:SetScript("OnClick", function(self) ZNTemperBossFrame:Hide() end)
+
+ZNTemperBossFrame.newBossName:SetScript("OnEditFocusLost", function(self)
+  self:ClearFocus()
+end)
+ZNTemperBossFrame.Bossid:SetScript("OnEditFocusLost", function(self)
+  self:ClearFocus()
+end)
+
+BossFrame.btnDeleteTemplate:SetScript("OnClick", function(self)
+  if not selectedTemplate then
+    ZN:Print("Please select a template first.")
+    UIErrorsFrame:AddMessage("Please select a template first.", 0.8, 0.07, 0.2, 5.0)
+  else
+    ZNDeleteBossFrame.Message:SetText("This will delete "..selectedTemplate.."\nAre you sure?")
+    local countTemplates = 0
+
+    for k,v in pairs(ZNotes.BossTemplates) do
+      countTemplates = countTemplates +1
+    end
+    if countTemplates == 1 then
+      ZN:Print("You can't delete your last Template.")
+      UIErrorsFrame:AddMessage("You can't delete your last Template.", 0.8, 0.07, 0.2, 5.0)
+    else
+      ZNDeleteBossFrame:Show()
+    end
+  end
+end)
+
+local function checkNameIsLegit(name, sameAllowed)
+  if ZNotes.BossTemplates[name] and not sameAllowed then
+    ZNTemperBossFrame.ErrorMessage:SetText("Name already exists") 
+    ZNTemperBossFrame.ErrorMessage:Show()
+    C_Timer.After(3, function() ZNTemperBossFrame.ErrorMessage:Hide() end)
+    return false
+  end
+  -- Check if Name is empty
+  if name == nil or name == "" then
+    ZNTemperBossFrame.ErrorMessage:SetText("Please enter a name for your Template")
+    ZNTemperBossFrame.ErrorMessage:Show()
+    C_Timer.After(3, function() ZNTemperBossFrame.ErrorMessage:Hide() end)
+    return false
+  end
+  return true
+end
+
+local function checkBossIDIsLegit(bossid)
+  local numericBossid = tonumber(bossid)
+
+  if bossid and not numericBossid then
+    ZNTemperBossFrame.ErrorMessage:SetText("BossID has to be a number")
+    ZNTemperBossFrame.ErrorMessage:Show()
+    C_Timer.After(3, function() ZNTemperBossFrame.ErrorMessage:Hide() end)
+    return false
+  end
+  return true
+end
+
+BossFrame.btnNewTemplate:SetScript("OnClick", function(self)
+  ZNTemperBossFrame.ConfirmButton:SetScript("OnClick", function(self)
+    local name = ZNTemperBossFrame.newBossName:GetText():lower():match("^%s*(.-)%s*$")
+    local bossid = ZNTemperBossFrame.Bossid:GetText()
+     if checkBossIDIsLegit(bossid) and checkNameIsLegit(name) then
+      bossid=tonumber(bossid)
+      ZNotes.BossTemplates[name] = {}
+      selectedTemplate=name
+      ZNotes.BossTemplates[selectedTemplate].bossid=bossid
+      ZNotes.lastTemplates.lastBossTemplate = selectedTemplate
+      BossTemplateSelectButtonHead.ZNText:SetText(selectedTemplate:upper())
+      ZN:ReloadBossSpellTable(selectedTemplate)
+      ZN:ReloadBossTrennerTable(selectedTemplate)
+      ZNTemperBossFrame:Hide()    
+    end
+  end)
+  ZNTemperBossFrame.Bossid:SetText("")
+  ZNTemperBossFrame.newBossName:SetText("")
+  ZNTemperBossFrame.ConfirmButton.ZNText:SetText("Create")
+  ZNTemperBossFrame:Show()
+end)
+
+BossFrame.btnEditTemplate:SetScript("OnClick", function(self)
+  ZNTemperBossFrame.ConfirmButton:SetScript("OnClick", function(self)
+    local name = ZNTemperBossFrame.newBossName:GetText():lower():match("^%s*(.-)%s*$")
+    local bossid = ZNTemperBossFrame.Bossid:GetText()
+    if checkBossIDIsLegit(bossid) and checkNameIsLegit(name, true) then
+      bossid=tonumber(bossid)
+      if name~=selectedTemplate then
+        ZNotes.BossTemplates[name] = ZNotes.BossTemplates[selectedTemplate]
+        ZNotes.BossTemplates[selectedTemplate]=nil
+        selectedTemplate=name
+      end
+      ZNotes.BossTemplates[selectedTemplate].bossid=bossid
+      ZNotes.lastTemplates.lastBossTemplate = selectedTemplate
+      BossTemplateSelectButtonHead.ZNText:SetText(selectedTemplate:upper())
+      ZN:ReloadBossSpellTable(selectedTemplate)
+      ZN:ReloadBossTrennerTable(selectedTemplate)
+      ZNTemperBossFrame:Hide()    
+    end
+  end)
+  if not selectedTemplate then
+    ZN:Print("Please select a template first.")
+    UIErrorsFrame:AddMessage("Please select a template first.", 0.8, 0.07, 0.2, 5.0)
+  else
+    ZNTemperBossFrame.newBossName:SetText(selectedTemplate)
+    ZNTemperBossFrame.Bossid:SetText(ZNotes.BossTemplates[selectedTemplate].bossid and ZNotes.BossTemplates[selectedTemplate].bossid or "")
+    ZNTemperBossFrame.ConfirmButton.ZNText:SetText("Save")
+    ZNTemperBossFrame:Show()
+  end
+end)
+
+BossFrame.btnCopyTemplate:SetScript("OnClick", function(self)
+  ZNTemperBossFrame.ConfirmButton:SetScript("OnClick", function(self)
+    local name = ZNTemperBossFrame.newBossName:GetText():lower():match("^%s*(.-)%s*$")
+    local bossid = ZNTemperBossFrame.Bossid:GetText()
+    if checkBossIDIsLegit(bossid) and checkNameIsLegit(name) then
+     bossid=tonumber(bossid)
+      ZNotes.BossTemplates[name] = table.deepcopy(ZNotes.BossTemplates[selectedTemplate])
+      selectedTemplate=name
+      ZNotes.BossTemplates[selectedTemplate].bossid=bossid
+      ZNotes.lastTemplates.lastBossTemplate = selectedTemplate
+      BossTemplateSelectButtonHead.ZNText:SetText(selectedTemplate:upper())
+      ZN:ReloadBossSpellTable(selectedTemplate)
+      ZN:ReloadBossTrennerTable(selectedTemplate)
+      ZNTemperBossFrame:Hide()    
+    end
+  end)
+  if not selectedTemplate then
+    ZN:Print("Please select a template first.")
+    UIErrorsFrame:AddMessage("Please select a template first.", 0.8, 0.07, 0.2, 5.0)
+  else
+    ZNTemperBossFrame.Bossid:SetText(ZNotes.BossTemplates[selectedTemplate].bossid and ZNotes.BossTemplates[selectedTemplate].bossid or "")
+    ZNTemperBossFrame.newBossName:SetText(selectedTemplate.."2")
+    ZNTemperBossFrame.ConfirmButton.ZNText:SetText("Copy")
+    ZNTemperBossFrame:Show()
+  end
+end)
 
 ZN.BossTableRows = {
   ["title"] = 30,
