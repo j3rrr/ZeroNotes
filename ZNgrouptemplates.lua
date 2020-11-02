@@ -94,8 +94,16 @@ function ZN:createGroupTemplateFrames()
   -- Check if Name exists 
   ZNnewGroupFrame.newGroupName.doOnUpdate = true
   ZNnewGroupFrame.newGroupName.OnUpdate = function(_,_,_,newValue) 
+    -- Check if Name exists 
     if ZNotes.GroupTemplates[newValue] then 
       ZNnewGroupFrame.ErrorMessage:SetText("Name already exists") 
+      ZNnewGroupFrame.ErrorMessage:Show()
+      C_Timer.After(3, function() ZNnewGroupFrame.ErrorMessage:Hide() end)
+      return
+    end
+    -- Check if Name is empty
+     if newValue == nil or newValue == "" then 
+      ZNnewGroupFrame.ErrorMessage:SetText("Please enter a name for your Template") 
       ZNnewGroupFrame.ErrorMessage:Show()
       C_Timer.After(3, function() ZNnewGroupFrame.ErrorMessage:Hide() end)
       return

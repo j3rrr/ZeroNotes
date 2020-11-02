@@ -4,6 +4,12 @@ function ZN:Print(msg)
 	print("|cff00ffffZero|rNotes: |cffff7e40"..msg.."|r")
 end
 
+function ZN:DebugPrint(msg)
+	if ZNotes.DebugMode then
+		print("|cff00ffffDEBUG|: |cffff7e40"..msg.."|r")
+	end
+end
+
 function ZN:Toggle(self)
 	ZNFrame:SetShown(not ZNFrame:IsShown());
 end
