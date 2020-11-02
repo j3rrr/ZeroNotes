@@ -28,7 +28,7 @@ function ZN.createMainFrame(name, width, height, color, a, strata)
 	NewFrame:EnableKeyboard(true)
 	NewFrame:SetPropagateKeyboardInput(true)
 	NewFrame:SetClampedToScreen(true)
-	--NewFrame:Hide()
+	NewFrame:Hide()
 	NewFrame.updateDelay = 0
 	NewFrame.background = NewFrame:CreateTexture(nil, 'BACKGROUND')
 	NewFrame.background:SetAllPoints(NewFrame)
@@ -434,6 +434,32 @@ function ZN.MultiLineEditBox(name, parent, point, anchorFrame, anchorPoint, widt
 	return s
 end
 
+function ZN:createCheckBox(parent, point, anchor, anchorPoint, xOffset, yOffset, label, labelFontSize, labelColor, labelWidth, checked)
+  local cb = ZN.CreateIconButton(parent, point, anchor, anchorPoint, 16, 16, xOffset, yOffset, ZN.CheckBoxTextures.checked, ZN.CheckBoxTextures.checkedColor, ZN.CheckBoxTextures.uncheckedColor, true, ZN.Colors.ACTIVE)
+  cb.toggleChecked = function()
+    if cb.active then
+      cb.active=false
+      cb:SetNormalTexture(ZN.CheckBoxTextures.unchecked)
+      cb:GetNormalTexture():SetVertexColor(tonumber("0x"..ZN.CheckBoxTextures.uncheckedColor:sub(1,2))/255, tonumber("0x"..ZN.CheckBoxTextures.uncheckedColor:sub(3,4))/255, tonumber("0x"..ZN.CheckBoxTextures.uncheckedColor:sub(5,6))/255, 1)
+    else
+      cb.active=true
+      cb:SetNormalTexture(ZN.CheckBoxTextures.checked)
+      cb:GetNormalTexture():SetVertexColor(tonumber("0x"..ZN.CheckBoxTextures.checkedColor:sub(1,2))/255, tonumber("0x"..ZN.CheckBoxTextures.checkedColor:sub(3,4))/255, tonumber("0x"..ZN.CheckBoxTextures.checkedColor:sub(5,6))/255, 1)
+    end
+  end
+  if not checked then
+    cb.toggleChecked()
+    cb:GetNormalTexture():SetVertexColor(tonumber("0x"..ZN.CheckBoxTextures.uncheckedColor:sub(1,2))/255, tonumber("0x"..ZN.CheckBoxTextures.uncheckedColor:sub(3,4))/255, tonumber("0x"..ZN.CheckBoxTextures.uncheckedColor:sub(5,6))/255, 1)
+	end
+	local cbLabel = ZN.CreateText(parent, "LEFT", cb, "RIGHT", labelWidth , 16,labelFontSize, 0, "Interface\\AddOns\\ZeroNotes\\Media\\Font\\ZNReg.ttf", labelFontSize, labelColor, label, "LEFT", "MIDDLE", 0)
+	cb.label = cbLabel
+	cb.buttonWidth = 16+labelWidth
+	cb.buttonHeight = labelFontSize+4
+	local cbButton = ZN.createSubFrame(nil, parent, cb.buttonWidth, cb.buttonHeight, nil, 1, "LEFT", nil, false, 0, 0, cb, "LEFT", false)
+	cb.button = cbButton
+	return cb
+end
+
 -- Templates End
 --##############################################################################
 
@@ -445,7 +471,7 @@ ZNSidebarFrame = ZN.createSubFrame("ZNSideBar", ZNFrame, 300, 540, ZN.Colors.HD,
 ZNSidebarFrame.collapsed = false
 ZNSidebarFrame:EnableMouse(true)
 ZNBodyFrame = ZN.createSubFrame("ZNBody", ZNFrame, 950, 540, ZN.Colors.BG, 1, "BOTTOMRIGHT", "HIGH")
-ZNInfoFrame = ZN.createSubFrame("ZNInfoFrame",ZNFrame, 300, 200, ZN.Colors.ROWBG, 1, 'CENTER', 'TOOLTIP', true)
+ZNInfoFrame = ZN.createSubFrame("ZNInfoFrame",ZNFrame, 302, 202, ZN.Colors.ROWBG, 1, 'CENTER', 'TOOLTIP', true)
 --##############################################################################
 -- Header
 ZNHeaderFrame.btnLogo = ZN.CreateIconButton(ZNHeaderFrame, "LEFT", ZNHeaderFrame, "LEFT", 32, 32, 30, 0, "Interface\\AddOns\\ZeroNotes\\Media\\Texture\\zero_logo", ZN.Colors.INACTIVE, ZN.Colors.ACTIVE, false)

@@ -19,3 +19,4 @@ ZNgrouptemplates.lua
 ZNpreviewFunctions.lua
 ZNhome.lua
 ZNimpexp.lua
+ZNconfig.lua

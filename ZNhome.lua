@@ -48,12 +48,16 @@ end)
 
 
 if IsAddOnLoaded("ExRT") then
-  HomeSidebar.SendToExRTButton = ZN.CreateGenericButton("SendToExRTButton", HomeSidebar, "BOTTOMLEFT", HomeSidebar, "BOTTOMLEFT", 240, 30, 0, 80,0,0, 12, ZN.Colors.ACTIVE, ZN.Colors.SBButtonBG, nil, "Send Note to ExRT", "CENTER",true )
+  HomeSidebar.SendToExRTButton = ZN.CreateGenericButton("SendToExRTButton", HomeSidebar, "BOTTOMLEFT", HomeSidebar, "BOTTOMLEFT", 240, 30, 0, 100,0,0, 12, ZN.Colors.ACTIVE, ZN.Colors.SBButtonBG, nil, "Send Note to ExRT", "CENTER",true )
 else
-  HomeSidebar.SendToExRTButton = ZN.CreateGenericButton("SendToExRTButton", HomeSidebar, "BOTTOMLEFT", HomeSidebar, "BOTTOMLEFT", 240, 30, 0, 80,0,0, 12, ZN.Colors.chatYell, ZN.Colors.SBButtonBG, nil, "ExRT not found", "CENTER",false )
+  HomeSidebar.SendToExRTButton = ZN.CreateGenericButton("SendToExRTButton", HomeSidebar, "BOTTOMLEFT", HomeSidebar, "BOTTOMLEFT", 240, 30, 0, 100,0,0, 12, ZN.Colors.chatYell, ZN.Colors.SBButtonBG, nil, "ExRT not found", "CENTER",false )
 end
 
 HomeSidebar.ShowNoteInEditorButton = ZN.CreateGenericButton("ShowNoteInEditorButton", HomeSidebar, "TOPLEFT", HomeSidebar.SendToExRTButton, "BOTTOMLEFT", 240, 30, 0, -10,0,0, 12, ZN.Colors.ACTIVE, ZN.Colors.SBButtonBG, nil, "Show Note", "CENTER",true )
+
+HomeSidebar.btnConfig = ZN.CreateIconButton(HomeSidebar, "BOTTOMLEFT", HomeSidebar, "BOTTOMLEFT", 24, 24, 0, 17, "Interface\\AddOns\\ZeroNotes\\Media\\Texture\\config", ZN.Colors.ACTIVE, ZN.Colors.INACTIVE, false, nil, true, "Open Config", ZN.Colors.ACTIVE)
+
+HomeSidebar.btnConfig:SetScript("OnClick", function(self) HomeContent.ConfigFrame:SetShown(not HomeContent.ConfigFrame:IsShown()); end)
 
 -- Home Sidebar Functions
 HomeSidebar.TemplateSelectButton:SetScript("OnClick", function(self) ZN:CreateDropdown(self, ZN:getTableKeys(ZNotes.BossTemplates), ZN:getTableOrder(ZNotes.BossTemplates), 240, ZN.Colors.BG, "LEFT", 10, nil, "TOOLTIP") end)

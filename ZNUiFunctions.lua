@@ -417,6 +417,16 @@ function ZN:getTemplateTableOrder(arr)
 	return tmp
 end
 
+function ZN:getTemplateTableWithoutCurrentOrder(arr) 
+	local tmp = {}
+	for k,v in pairs(arr) do
+		if k ~= "Use Current Group" then
+			table.insert(tmp, k)
+		end
+	end	
+	return tmp
+end
+
 function ZN:getTableKeys(arr) 
 	local tmp = {}
 	for k,v in pairs(arr) do
@@ -425,28 +435,3 @@ function ZN:getTableKeys(arr)
 	return tmp
 end
 
-function ZN:createCheckBox(parent, point, anchor, anchorPoint, xOffset, yOffset, label, labelFontSize, labelColor, labelWidth, checked)
-  local cb = ZN.CreateIconButton(parent, point, anchor, anchorPoint, 16, 16, xOffset, yOffset, ZN.CheckBoxTextures.checked, ZN.CheckBoxTextures.checkedColor, ZN.CheckBoxTextures.uncheckedColor, true, ZN.Colors.ACTIVE)
-  cb.toggleChecked = function()
-    if cb.active then
-      cb.active=false
-      cb:SetNormalTexture(ZN.CheckBoxTextures.unchecked)
-      cb:GetNormalTexture():SetVertexColor(tonumber("0x"..ZN.CheckBoxTextures.uncheckedColor:sub(1,2))/255, tonumber("0x"..ZN.CheckBoxTextures.uncheckedColor:sub(3,4))/255, tonumber("0x"..ZN.CheckBoxTextures.uncheckedColor:sub(5,6))/255, 1)
-    else
-      cb.active=true
-      cb:SetNormalTexture(ZN.CheckBoxTextures.checked)
-      cb:GetNormalTexture():SetVertexColor(tonumber("0x"..ZN.CheckBoxTextures.checkedColor:sub(1,2))/255, tonumber("0x"..ZN.CheckBoxTextures.checkedColor:sub(3,4))/255, tonumber("0x"..ZN.CheckBoxTextures.checkedColor:sub(5,6))/255, 1)
-    end
-  end
-  if not checked then
-    cb.toggleChecked()
-    cb:GetNormalTexture():SetVertexColor(tonumber("0x"..ZN.CheckBoxTextures.uncheckedColor:sub(1,2))/255, tonumber("0x"..ZN.CheckBoxTextures.uncheckedColor:sub(3,4))/255, tonumber("0x"..ZN.CheckBoxTextures.uncheckedColor:sub(5,6))/255, 1)
-	end
-	local cbLabel = ZN.CreateText(parent, "LEFT", cb, "RIGHT", labelWidth , 16,labelFontSize, 0, "Interface\\AddOns\\ZeroNotes\\Media\\Font\\ZNReg.ttf", labelFontSize, labelColor, label, "LEFT", "MIDDLE", 0)
-	cb.label = cbLabel
-	cb.buttonWidth = 16+labelWidth
-	cb.buttonHeight = labelFontSize+4
-	local cbButton = ZN.createSubFrame(nil, parent, cb.buttonWidth, cb.buttonHeight, nil, 1, "LEFT", nil, false, 0, 0, cb, "LEFT", false)
-	cb.button = cbButton
-	return cb
-end
