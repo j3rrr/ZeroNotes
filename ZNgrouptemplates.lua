@@ -18,6 +18,7 @@ function ZN:createGroupTemplateFrames()
   GroupTemplates.GroupTemplatesRight = ZN.createSubFrame("GroupTemplatesRight", GroupTemplates, 300, 530, ZN.Colors.BG, 1, "TOPLEFT", "HIGH", false, 10, 0, GroupTemplates.GroupTemplatesMiddle, "TOPRIGHT")
 
   GroupTemplates.btnNewTemplate = ZN.CreateIconButton(GroupTemplates, "LEFT", GroupTemplateSelectButtonHead, "RIGHT", 18, 18, 8, 0, "Interface\\AddOns\\ZeroNotes\\Media\\Texture\\newtempl", ZN.Colors.ACTIVE, ZN.Colors.INACTIVE, false, ZN.Colors.ACTIVE, true, "Create New Template", ZN.Colors.ACTIVE)
+  GroupTemplates.btnCopyTemplate  = ZN.CreateIconButton(GroupTemplates, "LEFT", GroupTemplates.btnNewTemplate, "RIGHT", 18, 18, 8, 0, "Interface\\AddOns\\ZeroNotes\\Media\\Texture\\copy", ZN.Colors.ACTIVE, ZN.Colors.INACTIVE, false, ZN.Colors.ACTIVE, true, "Copy Template", ZN.Colors.ACTIVE)
   GroupTemplates.btnEditTemplate = ZN.CreateIconButton(GroupTemplates, "RIGHT", GroupTemplateSelectButtonHead, "RIGHT", 16, 16, -8, 0, "Interface\\AddOns\\ZeroNotes\\Media\\Texture\\edit", ZN.Colors.ACTIVE, ZN.Colors.INACTIVE, false, ZN.Colors.ACTIVE, true, "Edit Template", ZN.Colors.ACTIVE)
   GroupTemplates.btnEditTemplate:SetFrameStrata("DIALOG")
 
@@ -25,6 +26,7 @@ function ZN:createGroupTemplateFrames()
 
   -- Edit Group Popup
   ZNeditGroupFrame = ZN.createSubFrame("ZNeditGroupFrame",ZNFrame, 302, 202, ZN.Colors.HD, 1, 'CENTER', 'TOOLTIP', true)
+  table.insert(ZN.DropDownsEdit, ZNeditGroupFrame)
   ZNeditGroupFrame:SetBackdrop({bgFile = "Interface/Tooltips/UI-Tooltip-Background", 
     edgeFile = [[Interface\Buttons\WHITE8x8]],
     edgeSize = 1,
@@ -34,23 +36,42 @@ function ZN:createGroupTemplateFrames()
   ZNeditGroupFrame.btnClose = ZN.CreateIconButton(ZNeditGroupFrame, "TOPRIGHT", ZNeditGroupFrame, "TOPRIGHT", 16, 16, -11, -11, "Interface\\AddOns\\ZeroNotes\\Media\\Texture\\x_big_active", ZN.Colors.ACTIVE, ZN.Colors.INACTIVE, false)
   ZNeditGroupFrame.Message = ZN.CreateText(ZNeditGroupFrame, "TOP", ZNeditGroupFrame, "TOP", 250, 30, 0, -41, "Interface\\AddOns\\ZeroNotes\\Media\\Font\\ZNReg.ttf", 12, ZN.Colors.ACTIVE, "Edit Template Name", "LEFT")
   ZNeditGroupFrame.newGroupName = ZN.SingleLineEditBox("newGroupName", ZNeditGroupFrame, "TOP", ZNeditGroupFrame.Message, "BOTTOM", 250, 30, 0, -10, 20, 0 ,12, ZN.Colors.ACTIVE, ZN.Colors.SBButtonBG, nil, "", "LEFT")
-  ZNeditGroupFrame.ErrorMessage = ZN.CreateText(ZNeditGroupFrame, "TOP", ZNeditGroupFrame.newGroupName, "BOTTOM", 250, 20, 0, 0, "Interface\\AddOns\\ZeroNotes\\Media\\Font\\ZNVers.ttf", 10, ZN.Colors.chatYell, "Name already exists", "CENTER")
+  ZNeditGroupFrame.ErrorMessage = ZN.CreateText(ZNeditGroupFrame, "TOP", ZNeditGroupFrame.newGroupName, "BOTTOM", 250, 20, 0, 0, "Interface\\AddOns\\ZeroNotes\\Media\\Font\\ZNVers.ttf", 10, ZN.Colors.chatYell, "", "CENTER")
   ZNeditGroupFrame.ConfirmButton = ZN.CreateGenericButton("ZNnewGroupConfirmButton", ZNeditGroupFrame, "BOTTOMLEFT", ZNeditGroupFrame, "BOTTOMLEFT", 125, 30, 20, 20,0,0, 12, ZN.Colors.ACTIVE, ZN.Colors.SBButtonBG, nil, "Rename", "CENTER",true, ZN.Colors.BG )
   ZNeditGroupFrame.CancelButton = ZN.CreateGenericButton("ZNnewGroupCancelButton", ZNeditGroupFrame, "BOTTOMRIGHT", ZNeditGroupFrame, "BOTTOMRIGHT", 125, 30, -20, 20,0,0, 12, ZN.Colors.ACTIVE, ZN.Colors.SBButtonBG, nil, "Cancel", "CENTER",true, ZN.Colors.BG )
   ZNeditGroupFrame.ErrorMessage:Hide()
-  -- Check if Name exists 
   ZNeditGroupFrame.newGroupName.doOnUpdate = true
-  ZNeditGroupFrame.newGroupName.OnUpdate = function(_,_,_,newValue) 
-    if ZNotes.GroupTemplates[newValue] then 
+  ZNeditGroupFrame.newGroupName.OnUpdate = function(_,_,_,newValue)     
+    -- Check if Name exists 
+    if ZNotes.GroupTemplates[newValue:lower():match("^%s*(.-)%s*$")] then 
+      ZNeditGroupFrame.ErrorMessage:SetText("Name already exists") 
       ZNeditGroupFrame.ErrorMessage:Show()
       C_Timer.After(3, function() ZNeditGroupFrame.ErrorMessage:Hide() end)
       return
     end
-  end  
+    -- Check if Name is empty
+    if newValue == nil or newValue == "" then 
+      ZNeditGroupFrame.ErrorMessage:SetText("Please enter a name for your Template") 
+      ZNeditGroupFrame.ErrorMessage:Show()
+      C_Timer.After(3, function() ZNeditGroupFrame.ErrorMessage:Hide() end)
+      return
+    end 
+  end 
+  ZNeditGroupFrame.newGroupName:SetScript("OnEditFocusLost", function(self)
+		self:ClearFocus()
+	end) 
   ZNeditGroupFrame.ConfirmButton:SetScript("OnClick", function(self)
-    local name = ZNeditGroupFrame.newGroupName:GetText()
+    local name = ZNeditGroupFrame.newGroupName:GetText():lower():match("^%s*(.-)%s*$") 
+    -- Check if Name is empty
+    if name == nil or name == "" then 
+      ZNeditGroupFrame.ErrorMessage:SetText("Please enter a name for your Template") 
+      ZNeditGroupFrame.ErrorMessage:Show()
+      C_Timer.After(3, function() ZNeditGroupFrame.ErrorMessage:Hide() end)
+      return
+    end 
     -- Check if Name exists 
     if ZNotes.GroupTemplates[name] then 
+      ZNeditGroupFrame.ErrorMessage:SetText("Name already exists") 
       ZNeditGroupFrame.ErrorMessage:Show()
       C_Timer.After(3, function() ZNeditGroupFrame.ErrorMessage:Hide() end)
       return
@@ -58,8 +79,8 @@ function ZN:createGroupTemplateFrames()
     -- If Name does not exist, copy template, delete old
     ZNotes.GroupTemplates[name] = ZNotes.GroupTemplates[ZN.selectedGroupTemplate]
     ZNotes.GroupTemplates[ZN.selectedGroupTemplate] = nil
-    ZN:Print("Renamed "..ZN.selectedGroupTemplate.." to "..name)
-    
+    ZN:Print("Renamed "..ZN.selectedGroupTemplate.." to "..name) 
+    ZN:Print("Please /reload before creating / editing a new Template")   
     ZN.selectedGroupTemplate = name
     -- Reset Button / SavedVariables / Rebuild Frames
     ZNotes.lastTemplates.lastGroupTemplate = ZN.selectedGroupTemplate
@@ -78,6 +99,7 @@ function ZN:createGroupTemplateFrames()
 
   -- New Group Popup
   ZNnewGroupFrame = ZN.createSubFrame("ZNnewGroupFrame",ZNFrame, 302, 202, ZN.Colors.HD, 1, 'CENTER', 'TOOLTIP', true)
+  table.insert(ZN.DropDownsEdit, ZNnewGroupFrame)
   ZNnewGroupFrame:SetBackdrop({bgFile = "Interface/Tooltips/UI-Tooltip-Background", 
     edgeFile = [[Interface\Buttons\WHITE8x8]],
     edgeSize = 1,
@@ -85,6 +107,15 @@ function ZN:createGroupTemplateFrames()
   ZNnewGroupFrame:SetBackdropColor(tonumber("0x"..ZN.Colors.HD:sub(1,2))/255, tonumber("0x"..ZN.Colors.HD:sub(3,4))/255, tonumber("0x"..ZN.Colors.HD:sub(5,6))/255, 1);
   ZNnewGroupFrame:SetBackdropBorderColor(tonumber("0x"..ZN.Colors.INACTIVE:sub(1,2))/255, tonumber("0x"..ZN.Colors.INACTIVE:sub(3,4))/255, tonumber("0x"..ZN.Colors.INACTIVE:sub(5,6))/255, 1);
   ZNnewGroupFrame.btnClose = ZN.CreateIconButton(ZNnewGroupFrame, "TOPRIGHT", ZNnewGroupFrame, "TOPRIGHT", 16, 16, -11, -11, "Interface\\AddOns\\ZeroNotes\\Media\\Texture\\x_big_active", ZN.Colors.ACTIVE, ZN.Colors.INACTIVE, false)
+  ZNnewGroupFrame.ZeroTemplate = ZN:createCheckBox(ZNnewGroupFrame, "TOPLEFT", ZNnewGroupFrame, "TOPLEFT", 20, -20, "Zero Template", 12, ZN.Colors.ACTIVE, 200, false) 
+  ZNnewGroupFrame.ZeroTemplate:SetScript("OnClick",function(self)
+    self.toggleChecked()
+  end)
+  local guildName,_,_ = GetGuildInfo("player")
+  if (IsInGuild() and not guildName == "Zero") or not IsInGuild() then
+    ZNnewGroupFrame.ZeroTemplate:Hide()
+    ZNnewGroupFrame.ZeroTemplate.label:Hide()
+  end
   ZNnewGroupFrame.Message = ZN.CreateText(ZNnewGroupFrame, "TOP", ZNnewGroupFrame, "TOP", 250, 30, 0, -41, "Interface\\AddOns\\ZeroNotes\\Media\\Font\\ZNReg.ttf", 12, ZN.Colors.ACTIVE, "Template Name", "LEFT")
   ZNnewGroupFrame.newGroupName = ZN.SingleLineEditBox("newGroupName", ZNnewGroupFrame, "TOP", ZNnewGroupFrame.Message, "BOTTOM", 250, 30, 0, -10, 20, 0 ,12, ZN.Colors.ACTIVE, ZN.Colors.SBButtonBG, nil, "", "LEFT")
   ZNnewGroupFrame.ErrorMessage = ZN.CreateText(ZNnewGroupFrame, "TOP", ZNnewGroupFrame.newGroupName, "BOTTOM", 250, 20, 0, 0, "Interface\\AddOns\\ZeroNotes\\Media\\Font\\ZNVers.ttf", 10, ZN.Colors.chatYell, "", "CENTER")
@@ -95,7 +126,7 @@ function ZN:createGroupTemplateFrames()
   ZNnewGroupFrame.newGroupName.doOnUpdate = true
   ZNnewGroupFrame.newGroupName.OnUpdate = function(_,_,_,newValue) 
     -- Check if Name exists 
-    if ZNotes.GroupTemplates[newValue] then 
+    if ZNotes.GroupTemplates[newValue:lower():match("^%s*(.-)%s*$")] then 
       ZNnewGroupFrame.ErrorMessage:SetText("Name already exists") 
       ZNnewGroupFrame.ErrorMessage:Show()
       C_Timer.After(3, function() ZNnewGroupFrame.ErrorMessage:Hide() end)
@@ -109,8 +140,11 @@ function ZN:createGroupTemplateFrames()
       return
     end
   end  
+  ZNnewGroupFrame.newGroupName:SetScript("OnEditFocusLost", function(self)
+		self:ClearFocus()
+	end) 
   ZNnewGroupFrame.ConfirmButton:SetScript("OnClick", function(self)
-    local name = ZNnewGroupFrame.newGroupName:GetText()
+    local name = ZNnewGroupFrame.newGroupName:GetText():lower():match("^%s*(.-)%s*$")
      -- Check if Name exists 
     if ZNotes.GroupTemplates[name] then
       ZNnewGroupFrame.ErrorMessage:SetText("Name already exists") 
@@ -123,24 +157,29 @@ function ZN:createGroupTemplateFrames()
       ZNnewGroupFrame.ErrorMessage:SetText("Please enter a name for your Template")
       ZNnewGroupFrame.ErrorMessage:Show()
       C_Timer.After(3, function() ZNnewGroupFrame.ErrorMessage:Hide() end)
-      --ZN:Print("Please enter a name for your Template")
     -- If Name does not exist, create new template
     else
-      ZNotes.GroupTemplates[name] = {}
-      for i = 1, 30 do
-        ZNotes.GroupTemplates[name][i] = {
-          ["name"] = "Name",
-          ["class"] = "zzz",
-          ["spec"] = "empty",
-        }
+      if ZNnewGroupFrame.ZeroTemplate.active then
+        ZNotes.GroupTemplates[name] = ZN.ZeroGroupTemplate
+      else
+        ZNotes.GroupTemplates[name] = {}
+        for i = 1, 30 do
+          ZNotes.GroupTemplates[name][i] = {
+            ["name"] = "Name",
+            ["class"] = "zzz",
+            ["spec"] = "empty",
+          }
+        end
       end
       -- Reset Button / SavedVariables / Rebuild Frames
       ZNotes.lastTemplates.lastGroupTemplate = name
       ZN.selectedGroupTemplate = name
+      ZN:Print("Created new Template: "..ZN.selectedGroupTemplate) 
+      ZN:Print("Please /reload before creating / editing a new Template") 
       GroupTemplateSelectButtonHead.ZNText:SetText(ZN.selectedGroupTemplate:upper())
       ZNnewGroupFrame:Hide()
       ZN:updateGroupView()
-      --ReloadUI()
+      --ReloadUI()      
     end
   end)
   ZNnewGroupFrame.btnClose:SetScript("OnClick", function(self) ZNnewGroupFrame:Hide() end)
@@ -148,6 +187,7 @@ function ZN:createGroupTemplateFrames()
 
   -- Delete Group Popup
   ZNdeleteGroupFrame = ZN.createSubFrame("ZNdeleteGroupFrame",ZNFrame, 302, 202, ZN.Colors.HD, 1, 'CENTER', 'TOOLTIP', true)
+  table.insert(ZN.DropDownsEdit, ZNdeleteGroupFrame)
   ZNdeleteGroupFrame:SetBackdrop({bgFile = "Interface/Tooltips/UI-Tooltip-Background", 
     edgeFile = [[Interface\Buttons\WHITE8x8]],
     edgeSize = 1,
@@ -162,6 +202,7 @@ function ZN:createGroupTemplateFrames()
   ZNdeleteGroupFrame.ConfirmButton:SetScript("OnClick", function(self)
     ZNotes.GroupTemplates[ZN.selectedGroupTemplate] = nil
     ZN:Print("Deleted "..ZN.selectedGroupTemplate)
+    ZN:Print("Please /reload before creating / editing a new Template")
     for k,v in pairs(ZNotes.GroupTemplates) do
       ZN.selectedGroupTemplate = k
     end
@@ -174,6 +215,78 @@ function ZN:createGroupTemplateFrames()
   ZNdeleteGroupFrame.btnClose:SetScript("OnClick", function(self) ZNdeleteGroupFrame:Hide() end)
   ZNdeleteGroupFrame.CancelButton:SetScript("OnClick", function(self) ZNdeleteGroupFrame:Hide() end)
 
+  -- Copy Group Popup
+  ZNcopyGroupFrame = ZN.createSubFrame("ZNcopyGroupFrame",ZNFrame, 302, 202, ZN.Colors.HD, 1, 'CENTER', 'TOOLTIP', true)
+  table.insert(ZN.DropDownsEdit, ZNcopyGroupFrame)
+  ZNcopyGroupFrame:SetBackdrop({bgFile = "Interface/Tooltips/UI-Tooltip-Background", 
+    edgeFile = [[Interface\Buttons\WHITE8x8]],
+    edgeSize = 1,
+  });
+  ZNcopyGroupFrame:SetBackdropColor(tonumber("0x"..ZN.Colors.HD:sub(1,2))/255, tonumber("0x"..ZN.Colors.HD:sub(3,4))/255, tonumber("0x"..ZN.Colors.HD:sub(5,6))/255, 1);
+  ZNcopyGroupFrame:SetBackdropBorderColor(tonumber("0x"..ZN.Colors.INACTIVE:sub(1,2))/255, tonumber("0x"..ZN.Colors.INACTIVE:sub(3,4))/255, tonumber("0x"..ZN.Colors.INACTIVE:sub(5,6))/255, 1);
+  ZNcopyGroupFrame.btnClose = ZN.CreateIconButton(ZNcopyGroupFrame, "TOPRIGHT", ZNcopyGroupFrame, "TOPRIGHT", 16, 16, -11, -11, "Interface\\AddOns\\ZeroNotes\\Media\\Texture\\x_big_active", ZN.Colors.ACTIVE, ZN.Colors.INACTIVE, false)
+  ZNcopyGroupFrame.Message = ZN.CreateText(ZNcopyGroupFrame, "TOP", ZNcopyGroupFrame, "TOP", 250, 30, 0, -41, "Interface\\AddOns\\ZeroNotes\\Media\\Font\\ZNReg.ttf", 12, ZN.Colors.ACTIVE, "New Template Name", "LEFT")
+  ZNcopyGroupFrame.newGroupName = ZN.SingleLineEditBox("newGroupName", ZNcopyGroupFrame, "TOP", ZNcopyGroupFrame.Message, "BOTTOM", 250, 30, 0, -10, 20, 0 ,12, ZN.Colors.ACTIVE, ZN.Colors.SBButtonBG, nil, "", "LEFT")
+  ZNcopyGroupFrame.ErrorMessage = ZN.CreateText(ZNcopyGroupFrame, "TOP", ZNcopyGroupFrame.newGroupName, "BOTTOM", 250, 20, 0, 0, "Interface\\AddOns\\ZeroNotes\\Media\\Font\\ZNVers.ttf", 10, ZN.Colors.chatYell, "", "CENTER")
+  ZNcopyGroupFrame.ConfirmButton = ZN.CreateGenericButton("ZNnewGroupConfirmButton", ZNcopyGroupFrame, "BOTTOMLEFT", ZNcopyGroupFrame, "BOTTOMLEFT", 125, 30, 20, 20,0,0, 12, ZN.Colors.ACTIVE, ZN.Colors.SBButtonBG, nil, "Rename", "CENTER",true, ZN.Colors.BG )
+  ZNcopyGroupFrame.CancelButton = ZN.CreateGenericButton("ZNnewGroupCancelButton", ZNcopyGroupFrame, "BOTTOMRIGHT", ZNcopyGroupFrame, "BOTTOMRIGHT", 125, 30, -20, 20,0,0, 12, ZN.Colors.ACTIVE, ZN.Colors.SBButtonBG, nil, "Cancel", "CENTER",true, ZN.Colors.BG )
+  ZNcopyGroupFrame.ErrorMessage:Hide()
+  ZNcopyGroupFrame.newGroupName.doOnUpdate = true
+  ZNcopyGroupFrame.newGroupName.OnUpdate = function(_,_,_,newValue)     
+    -- Check if Name exists 
+    if ZNotes.GroupTemplates[newValue:lower():match("^%s*(.-)%s*$")] then 
+      ZNcopyGroupFrame.ErrorMessage:SetText("Name already exists") 
+      ZNcopyGroupFrame.ErrorMessage:Show()
+      C_Timer.After(3, function() ZNcopyGroupFrame.ErrorMessage:Hide() end)
+      return
+    end
+    -- Check if Name is empty
+    if newValue == nil or newValue == "" then 
+      ZNcopyGroupFrame.ErrorMessage:SetText("Please enter a name for your Template") 
+      ZNcopyGroupFrame.ErrorMessage:Show()
+      C_Timer.After(3, function() ZNcopyGroupFrame.ErrorMessage:Hide() end)
+      return
+    end 
+  end 
+  ZNcopyGroupFrame.newGroupName:SetScript("OnEditFocusLost", function(self)
+		self:ClearFocus()
+	end) 
+  ZNcopyGroupFrame.ConfirmButton:SetScript("OnClick", function(self)
+    local name = ZNcopyGroupFrame.newGroupName:GetText():lower():match("^%s*(.-)%s*$") 
+    -- Check if Name is empty
+    if name == nil or name == "" then 
+      ZNcopyGroupFrame.ErrorMessage:SetText("Please enter a name for your Template") 
+      ZNcopyGroupFrame.ErrorMessage:Show()
+      C_Timer.After(3, function() ZNcopyGroupFrame.ErrorMessage:Hide() end)
+      return
+    end 
+    -- Check if Name exists 
+    if ZNotes.GroupTemplates[name] then 
+      ZNcopyGroupFrame.ErrorMessage:SetText("Name already exists") 
+      ZNcopyGroupFrame.ErrorMessage:Show()
+      C_Timer.After(3, function() ZNcopyGroupFrame.ErrorMessage:Hide() end)
+      return
+    end
+    -- If Name does not exist, copy template, delete old
+    ZNotes.GroupTemplates[name] = ZNotes.GroupTemplates[ZN.selectedGroupTemplate]
+    ZN:Print("Copied "..ZN.selectedGroupTemplate.." to "..name) 
+    ZN:Print("Please /reload before creating / editing a new Template")   
+    ZN.selectedGroupTemplate = name
+    -- Reset Button / SavedVariables / Rebuild Frames
+    ZNotes.lastTemplates.lastGroupTemplate = ZN.selectedGroupTemplate
+    GroupTemplateSelectButtonHead.ZNText:SetText(ZN.selectedGroupTemplate:upper())
+    ZN:BuildGroupTemplateSortArray()
+    ZN:updateGroupView()
+    ZNcopyGroupFrame:Hide()    
+  end)
+  ZNcopyGroupFrame.btnClose:SetScript("OnClick", function(self) ZNcopyGroupFrame:Hide() end)
+  ZNcopyGroupFrame.CancelButton:SetScript("OnClick", function(self) ZNcopyGroupFrame:Hide() end)
+
+  GroupTemplates.btnCopyTemplate:SetScript("OnClick", function(self)    
+    ZNcopyGroupFrame:Show() 
+    ZNcopyGroupFrame.newGroupName:SetText(ZN.selectedGroupTemplate)
+  end)
+
   -- Sidebar
   ZNSidebarFrame.btnDeleteGroupTemplate = ZN.CreateIconButton(ZNSidebarFrame, "BOTTOMRIGHT", ZNSidebarFrame, "BOTTOMRIGHT", 20, 20, -14, 20, "Interface\\AddOns\\ZeroNotes\\Media\\Texture\\delete2", ZN.Colors.ACTIVE, ZN.Colors.INACTIVE, false, nil, true, "Delete Template", ZN.Colors.ACTIVE)
   ZNSidebarFrame.btnDeleteGroupTemplate:SetShown(false)
@@ -185,7 +298,6 @@ function ZN:createGroupTemplateFrames()
     -- ZN.selectedGroupTemplate = GroupTemplateSelectButtonHead.ZNText:GetText()
     ZNdeleteGroupFrame.Message:SetText("This will delete "..ZN.selectedGroupTemplate.."\nAre you sure?")
     ZNdeleteGroupFrame:Show()
-    print(ZN.selectedGroupTemplate)
   end)
 
   ZNSidebarFrame.btnReloadGroupTemplate:SetScript("OnClick", function(self)
@@ -251,7 +363,6 @@ function ZN:CreateGroupMemberRow(index, anchorFrame, template)
     else
       MemberRow.Spec.ZNText:SetText("SPEC")
     end
-    print(ZN.GroupMemberRowsSelectedClass[index])
     ZNotes.GroupTemplates[ZN.selectedGroupTemplate][ZN.GroupTemplateSortArray[row]]["class"] = newValue
   end  
   MemberRow.Spec.doOnUpdate = true
