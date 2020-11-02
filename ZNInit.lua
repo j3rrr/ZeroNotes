@@ -729,7 +729,7 @@ end
 function ZN.initGroupTemplates()
 ZNotes.GroupTemplates = ZNotes.GroupTemplates or {
   ["Use Current Group"] = {}, 
-  ["Sample Group"] = {
+  ["sample group"] = {
     {
       ["name"] = "Player 1",
       ["class"] = "warrior",
@@ -739,6 +739,26 @@ ZNotes.GroupTemplates = ZNotes.GroupTemplates or {
       ["name"] = "Player 2",
       ["class"] = "hunter",
       ["spec"] = "bm",
+    },
+    {
+      ["name"] = "Player 3",
+      ["class"] = "monk",
+      ["spec"] = "bm",
+    },
+    {
+      ["name"] = "Player 4",
+      ["class"] = "priest",
+      ["spec"] = "shadow",
+    },
+    {
+      ["name"] = "Player 5",
+      ["class"] = "warlock",
+      ["spec"] = "affli",
+    },
+    {
+      ["name"] = "Player 6",
+      ["class"] = "rogue",
+      ["spec"] = "assa",
     },
   }
 }
@@ -1301,4 +1321,157 @@ ZN.TrennerIconsListOrder = {
   "{rt6}",
   "{rt7}",
   "{rt8}",
+}
+
+ZN.ZeroGroupTemplate = {
+  {
+    ["class"] = "dh",
+    ["name"] = "Fabi",
+    ["spec"] = "havoc",
+  }, -- [1]
+  {
+    ["class"] = "paladin",
+    ["name"] = "Yabbaaaaa",
+    ["spec"] = "holy",
+  }, -- [2]
+  {
+    ["class"] = "shaman",
+    ["name"] = "Markus",
+    ["spec"] = "resto",
+  }, -- [3]
+  {
+    ["class"] = "druid",
+    ["name"] = "Talli",
+    ["spec"] = "resto",
+  }, -- [4]
+  {
+    ["class"] = "dk",
+    ["name"] = "Max",
+    ["spec"] = "unholy",
+  }, -- [5]
+  {
+    ["class"] = "druid",
+    ["name"] = "Tobi",
+    ["spec"] = "feral",
+  }, -- [6]
+  {
+    ["class"] = "priest",
+    ["name"] = "Freddy",
+    ["spec"] = "diszi",
+  }, -- [7]
+  {
+    ["class"] = "priest",
+    ["name"] = "Mara",
+    ["spec"] = "holy",
+  }, -- [8]
+  {
+    ["class"] = "monk",
+    ["name"] = "Jörg",
+    ["spec"] = "bm",
+  }, -- [9]
+  {
+    ["class"] = "paladin",
+    ["name"] = "Micha",
+    ["spec"] = "prot",
+  }, -- [10]
+  {
+    ["class"] = "dk",
+    ["name"] = "Marcel",
+    ["spec"] = "frost",
+  }, -- [11]
+  {
+    ["class"] = "paladin",
+    ["name"] = "Stefan",
+    ["spec"] = "ret",
+  }, -- [12]
+  {
+    ["class"] = "rogue",
+    ["name"] = "Gubin",
+    ["spec"] = "assa",
+  }, -- [13]
+  {
+    ["class"] = "shaman",
+    ["name"] = "Oli",
+    ["spec"] = "enh",
+  }, -- [14]
+  {
+    ["class"] = "warrior",
+    ["name"] = "Ike",
+    ["spec"] = "fury",
+  }, -- [15]
+  {
+    ["class"] = "warrior",
+    ["name"] = "Paddy",
+    ["spec"] = "arms",
+  }, -- [16]
+  {
+    ["class"] = "hunter",
+    ["name"] = "Manager",
+    ["spec"] = "bm",
+  }, -- [17]
+  {
+    ["class"] = "hunter",
+    ["name"] = "Nici",
+    ["spec"] = "bm",
+  }, -- [18]
+  {
+    ["class"] = "hunter",
+    ["name"] = "Jens",
+    ["spec"] = "bm",
+  }, -- [19]
+  {
+    ["class"] = "hunter",
+    ["name"] = "Max",
+    ["spec"] = "bm",
+  }, -- [20]
+  {
+    ["class"] = "mage",
+    ["name"] = "Nils",
+    ["spec"] = "frost",
+  }, -- [21]
+  {
+    ["class"] = "mage",
+    ["name"] = "Martin",
+    ["spec"] = "frost",
+  }, -- [22]
+  {
+    ["class"] = "shaman",
+    ["name"] = "Mario",
+    ["spec"] = "ele",
+  }, -- [23]
+  {
+    ["class"] = "warlock",
+    ["name"] = "Basti",
+    ["spec"] = "affli",
+  }, -- [24]
+  {
+    ["class"] = "warlock",
+    ["name"] = "Chris",
+    ["spec"] = "affli",
+  }, -- [25]
+  {
+    ["class"] = "warlock",
+    ["name"] = "Andi",
+    ["spec"] = "demo",
+  }, -- [26]
+  {
+    ["class"] = "zzz",
+    ["name"] = "Name",
+    ["spec"] = "empty",
+  }, -- [27]
+  {
+    ["class"] = "zzz",
+    ["name"] = "Name",
+    ["spec"] = "empty",
+  }, -- [28]
+  {
+    ["class"] = "zzz",
+    ["name"] = "Name",
+    ["spec"] = "empty",
+  }, -- [29]
+  {
+    ["class"] = "zzz",
+    ["name"] = "Name",
+    ["spec"] = "empty",
+  }, -- [30]
 }

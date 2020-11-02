@@ -329,8 +329,7 @@ function ZN.SingleLineEditBox(name, parent, point, anchorFrame, anchorPoint, wid
 		self:ClearFocus()
 		if self.doOnUpdate then
 			self.OnUpdate(self.tableType,self.Row,self.Column, self:GetText(), self)
-		end
-				
+		end				
 	end)
 	editbox:SetScript("OnEscapePressed", function(self)
 		self:ClearFocus()
@@ -345,9 +344,6 @@ function ZN.SingleLineEditBox(name, parent, point, anchorFrame, anchorPoint, wid
 		self:SetText(self.oldText)
 		self:SetTextColor(tonumber("0x"..fontcolor:sub(1,2))/255, tonumber("0x"..fontcolor:sub(3,4))/255, tonumber("0x"..fontcolor:sub(5,6))/255, 1);
 	end)
-	
-
-
 	return editbox
 end
 
