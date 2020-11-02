@@ -26,7 +26,7 @@ function ZN:Config()
     ZN:DebugModeToggle()
   end)
   ZNDebugMode = {}
-  ZNDebugMode.btnReload = ZN.CreateGenericButton("ZNDebugReloadButton", ZNFrame, "BOTTOMRIGHT", ZNFrame, "TOPRIGHT", 240, 30, 0,20,0,0, 12, ZN.Colors.black, ZN.Colors.chatGeneral, nil, "/reload", "CENTER",true, ZN.Colors.SBButtonBG )
+  ZNDebugMode.btnReload = ZN.CreateGenericButton("ZNDebugReloadButton", ZNFrame, "BOTTOMRIGHT", ZNFrame, "TOPRIGHT", 240, 30, 0,30,0,0, 12, ZN.Colors.black, ZN.Colors.chatGeneral, nil, "/reload", "CENTER",true, ZN.Colors.SBButtonBG )
   ZNDebugMode.btnReload:SetScript("OnClick", function() ReloadUI() end)
 
   if not ConfigFrame.DebugModeCheckBox.active then
