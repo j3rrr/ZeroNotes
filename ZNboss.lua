@@ -40,6 +40,8 @@ ZNDeleteBossFrame.Message = ZN.CreateText(ZNDeleteBossFrame, "TOP", ZNDeleteBoss
 ZNDeleteBossFrame.ConfirmButton = ZN.CreateGenericButton("ZNnewGroupConfirmButton", ZNDeleteBossFrame, "BOTTOMLEFT", ZNDeleteBossFrame, "BOTTOMLEFT", 125, 30, 20, 20,0,0, 12, ZN.Colors.ACTIVE, ZN.Colors.SBButtonBG, nil, "Delete", "CENTER",true, ZN.Colors.BG )
 ZNDeleteBossFrame.CancelButton = ZN.CreateGenericButton("ZNnewGroupCancelButton", ZNDeleteBossFrame, "BOTTOMRIGHT", ZNDeleteBossFrame, "BOTTOMRIGHT", 125, 30, -20, 20,0,0, 12, ZN.Colors.ACTIVE, ZN.Colors.SBButtonBG, nil, "Cancel", "CENTER",true, ZN.Colors.BG )
 
+table.insert(ZN.DropDownsEdit,ZNDeleteBossFrame)
+
 ZNDeleteBossFrame.ConfirmButton:SetScript("OnClick", function(self)
   ZNotes.BossTemplates[selectedTemplate] = nil
   ZN:Print("Deleted "..selectedTemplate)
@@ -74,6 +76,8 @@ ZNTemperBossFrame.CancelButton = ZN.CreateGenericButton("ZNnewGroupCancelButton"
 ZNTemperBossFrame.ErrorMessage:Hide()
 ZNTemperBossFrame.btnClose:SetScript("OnClick", function(self) ZNTemperBossFrame:Hide() end)
 ZNTemperBossFrame.CancelButton:SetScript("OnClick", function(self) ZNTemperBossFrame:Hide() end)
+
+table.insert(ZN.DropDownsEdit,ZNTemperBossFrame)
 
 ZNTemperBossFrame.newBossName:SetScript("OnEditFocusLost", function(self)
   self:ClearFocus()
