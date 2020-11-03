@@ -463,7 +463,7 @@ function ZN:CreateGroupMemberRow(index, anchorFrame, template)
   end  
 
   MemberRow.Class:SetScript("OnClick", function(self)
-    ZN:CreateDropdown(self, ZN.ClassIconsList, ZN.ClassIconsListOrder, 40, ZN.Colors.SBButtonBG, "CENTER", 0, ZN.Colors.HD, nil, 40, -8)
+    ZN:CreateIconDropdown(self, ZN.ClassIconsList, ZN.ClassIconsListOrder, 40, ZN.Colors.SBButtonBG, "CENTER", 0, ZN.Colors.HD, nil, 40, -8)
   end)
   MemberRow.Spec:SetScript("OnClick", function(self)
     if MemberRow.specList == nil then
