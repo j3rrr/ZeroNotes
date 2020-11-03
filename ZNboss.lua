@@ -834,6 +834,11 @@ function ZN:InitBoss()
       selectedTemplate=ZNotes.lastTemplates.lastBossTemplate
       ZN:ReloadBossTrennerTable(selectedTemplate)
       ZN:ReloadBossSpellTable(selectedTemplate)
+      ZNBodyFrame.Subframes.BossNote.EditBox:SetShown(true)
+      ZNBodyFrame.Subframes.BossNote.EditBox.editbox.boss=selectedTemplate
+      ZNBodyFrame.Subframes.BossNote.EditBox.editbox:SetText(ZNotes.BossTemplates[selectedTemplate].NoteEnd and ZNotes.BossTemplates[selectedTemplate].NoteEnd or "")
+  
+      ZN:showPreview(ZN:printPreviewNote(selectedTemplate), ZNBodyFrame.Subframes.PreviewTemplateContent.ScrollNote.scrollChild,selectedTemplate)
     end
 end
 
