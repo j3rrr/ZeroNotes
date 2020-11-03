@@ -358,7 +358,7 @@ ZN.BossPrioTableColumnHeaders = {
 ZN.BossPrioTableColumns = {
   ["type"] = 75,
   ["role"] = 75,
-  ["class"] = 150,
+  ["class"] = 100,
   ["playername"]=150,
   ["value"] = 60,
   }
@@ -429,14 +429,14 @@ ZNBodyFrame.Subframes.BossNote.EditBox.editbox:SetScript("OnEnterPressed", funct
   end
 end)
 
-ZNBodyFrame.Subframes.PrioDropdown = ZN.createSubFrame("ZNBossPrioDropDown", ZNFrame, 522, 202, ZN.Colors.BG, 1, "CENTER", "DIALOG", true)
+ZNBodyFrame.Subframes.PrioDropdown = ZN.createSubFrame("ZNBossPrioDropDown", ZNFrame, 472, 202, ZN.Colors.BG, 1, "CENTER", "DIALOG", true)
 ZNBodyFrame.Subframes.PrioDropdown:SetBackdrop({bgFile = "Interface/Tooltips/UI-Tooltip-Background", 
   edgeFile = [[Interface\Buttons\WHITE8x8]],
   edgeSize = 1,
 });
 ZNBodyFrame.Subframes.PrioDropdown:SetBackdropColor(tonumber("0x"..ZN.Colors.BG:sub(1,2))/255, tonumber("0x"..ZN.Colors.BG:sub(3,4))/255, tonumber("0x"..ZN.Colors.BG:sub(5,6))/255, 1);
 ZNBodyFrame.Subframes.PrioDropdown:SetBackdropBorderColor(tonumber("0x"..ZN.Colors.INACTIVE:sub(1,2))/255, tonumber("0x"..ZN.Colors.INACTIVE:sub(3,4))/255, tonumber("0x"..ZN.Colors.INACTIVE:sub(5,6))/255, 1);
-ZNBodyFrame.Subframes.PrioDropdown.ScrollFrame = ZN.createScrollFrame("ZNBossPrioContent", ZNBodyFrame.Subframes.PrioDropdown, 520, 170, nil, 1, "TOP","DIALOG", false)
+ZNBodyFrame.Subframes.PrioDropdown.ScrollFrame = ZN.createScrollFrame("ZNBossPrioContent", ZNBodyFrame.Subframes.PrioDropdown, 470, 170, nil, 1, "TOP","DIALOG", false)
 ZNBodyFrame.Subframes.PrioDropdown.ScrollFrame:SetPoint("TOPLEFT", ZNBodyFrame.Subframes.PrioDropdown, "TOPLEFT",1,-31)
 ZNBodyFrame.Subframes.PrioDropdown.ScrollFrame.ScrollBar:SetPoint("TOPRIGHT", ZNBodyFrame.Subframes.PrioDropdown.ScrollFrame, "TOPRIGHT", 0, 0);
 ZNBodyFrame.Subframes.PrioDropdown.ScrollFrame.ScrollBar:SetPoint("BOTTOMRIGHT", ZNBodyFrame.Subframes.PrioDropdown.ScrollFrame, "BOTTOMRIGHT", 0, 0);
