@@ -243,7 +243,7 @@ BossFrame.btnCopyTemplate:SetScript("OnClick", function(self)
       ZN:showPreview(ZN:printPreviewNote(selectedTemplate), ZNBodyFrame.Subframes.PreviewTemplateContent.ScrollNote.scrollChild,selectedTemplate)   
     end
   end)
-  if not selectedTemplate then
+  if not selectedTemplate or selectedTemplate=="" then
     ZN:Print("Please select a template first.")
     UIErrorsFrame:AddMessage("Please select a template first.", 0.8, 0.07, 0.2, 5.0)
   else
