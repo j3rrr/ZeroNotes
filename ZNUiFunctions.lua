@@ -413,19 +413,43 @@ function ZN:CreateDropdown(parentObj, list, order, width, dropDownBgColor, butto
 	parentObj.dropdown:SetShown(not wasShown);
 end
 
-function ZN:CreateIconDropdown(parentObj, list, order, width, dropDownBgColor, buttonAlign, buttonTextXOffset, hoverColor, strata, listItemHeight, buttonTextYOffset)
-
+function ZN:CreateIconDropdown(parentObj, list, order, width, dropDownBgColor, buttonAlign, buttonTextXOffset, hoverColor, strata, listItemHeight, buttonTextYOffset, rows, perRow, singleFirst)
+-- (self, ZN.ClassIconsList, ZN.ClassIconsListOrder, 40, ZN.Colors.SBButtonBG, "CENTER", 0, ZN.Colors.HD, nil, 40, -8, 2, 6, true)
+--ZN.DropdownList(name, parent, point, anchorFrame, anchorPoint, width, height, color, a, anchor, hide, contents, strata)
 	if not parentObj.dropdownInit then
 		parentObj.dropdownInit = true
-		local parentName = parentObj.name
-		local dropdown = ZN.DropdownList(parentName.."Dropdown", ZNFrame, "TOPLEFT", parentObj, "BOTTOMLEFT" , width, listItemHeight and listItemHeight or 30, dropDownBgColor, 1, "CENTER", true, #order, "TOOLTIP")
+		local parentName = parentObj.name	
+		local dropdownWidth = width*perRow		
+		if singleFirst then 
+			rows = rows+1			
+		end
+		local dropdown = ZN.DropdownList(parentName.."Dropdown", ZNFrame, "TOPLEFT", parentObj, "BOTTOMLEFT" , dropdownWidth, listItemHeight, dropDownBgColor, 1, "CENTER", true, rows, "TOOLTIP")
 		parentObj.dropdown = dropdown
 		dropdown.dropdownItems = {}
 		
+		local point = "TOPLEFT"
+		local anchorPoint = "TOPLEFT"
+		local anchor = dropdown
 		for i = 1, #order do
+			if i > 1 then 
+				anchor = dropdown.dropdownItems[i-1]
+				anchorPoint = "TOPRIGHT"
+			end
+			local buttonOffset = 0
+			if singleFirst then
+				buttonOffset = 1
+				if i == 2 then
+					anchor = dropdown.dropdownItems[i-1]
+					anchorPoint = "BOTTOMLEFT"
+				end
+			end
+			if i > 2 and ((i-1)-buttonOffset)%perRow == 0 then 
+				anchor = dropdown.dropdownItems[i-perRow]
+				anchorPoint = "BOTTOMLEFT"
+			end
 			local text = list[order[i]]:upper()
 			text = text:gsub("(:%d+|)T", "%1t")
-			local dropdownItem = ZN.CreateGenericButton(nil, dropdown, "TOPLEFT", dropdown, "TOPLEFT", width, listItemHeight and listItemHeight or 30, 0,listItemHeight and (-listItemHeight*(i-1)) or (-30*(i-1)), buttonTextXOffset, buttonTextYOffset and buttonTextYOffset or 0, 12, nil, dropDownBgColor, nil, text , buttonAlign ,true, hoverColor)
+			local dropdownItem = ZN.CreateGenericButton("dropdownitem"..i, dropdown, point, anchor, anchorPoint, width, listItemHeight and listItemHeight or 30, 0,0, buttonTextXOffset, buttonTextYOffset and buttonTextYOffset or 0, 12, nil, dropDownBgColor, nil, text , buttonAlign ,true, hoverColor)
 			dropdownItem.class = order[i]
 			dropdownItem.newText = list[order[i]]:upper()
 			dropdownItem.newText = dropdownItem.newText:gsub("(:%d+|)T", "%1t") -- Fix texture paths that need to end in lowercase |t
@@ -433,37 +457,9 @@ function ZN:CreateIconDropdown(parentObj, list, order, width, dropDownBgColor, b
 			dropdownItem:SetScript("OnClick", function(self)
 				self.parentObj.ZNText:SetText(dropdownItem.newText)
 				self.parentObj.Update(dropdownItem.class)
-				self.parentObj.dropdown:SetShown(not self.parentObj.dropdown:IsShown());
+				self.parentObj.dropdown:Hide() --SetShown(not self.parentObj.dropdown:IsShown());
 			end)
 			dropdown.dropdownItems[i]=dropdownItem
-		end
-	else
-		parentObj.dropdown:SetHeight((listItemHeight and listItemHeight or 30)*#order)
-		for i=1, #parentObj.dropdown.dropdownItems do
-			parentObj.dropdown.dropdownItems[i]:SetShown(false)
-		end
-		for i = 1, #order do
-			if i> #parentObj.dropdown.dropdownItems then
-				local text = list[order[i]]:upper()
-				text = text:gsub("(:%d+|)T", "%1t")
-				local dropdownItem = ZN.CreateGenericButton(nil, parentObj.dropdown, "TOPLEFT", parentObj.dropdown, "TOPLEFT", width, listItemHeight and listItemHeight or 30, 0,listItemHeight and (-listItemHeight*(i-1)) or (-30*(i-1)), buttonTextXOffset, buttonTextYOffset and buttonTextYOffset or 0, 12, nil, dropDownBgColor, nil, text , buttonAlign ,true, hoverColor)
-				dropdownItem.class = order[i]
-				dropdownItem.newText = list[order[i]]:upper()
-				dropdownItem.newText = dropdownItem.newText:gsub("(:%d+|)T", "%1t") -- Fix texture paths that need to end in lowercase |t
-				dropdownItem.parentObj = parentObj
-				dropdownItem:SetScript("OnClick", function(self)
-					self.parentObj.ZNText:SetText(dropdownItem.newText)
-					self.parentObj.Update(dropdownItem.class)
-					self.parentObj.dropdown:SetShown(not self.parentObj.dropdown:IsShown());
-			end)
-			parentObj.dropdown.dropdownItems[i]=dropdownItem
-			else
-				parentObj.dropdown.dropdownItems[i].class = order[i]
-				parentObj.dropdown.dropdownItems[i].newText = list[order[i]]:upper()
-				parentObj.dropdown.dropdownItems[i].newText = parentObj.dropdown.dropdownItems[i].newText:gsub("(:%d+|)T", "%1t") -- Fix texture paths that need to end in lowercase |t
-				parentObj.dropdown.dropdownItems[i].ZNText:SetText(parentObj.dropdown.dropdownItems[i].newText)
-			end
-			parentObj.dropdown.dropdownItems[i]:SetShown(true)
 		end
 	end
 	local wasShown = parentObj.dropdown:IsShown();
