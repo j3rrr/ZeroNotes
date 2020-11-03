@@ -800,7 +800,7 @@ function ZN:InitBoss()
     BossSpellTable.TitleRow = CreateSpellTitleRow()
     BossTrennerTable.TitleRow = CreateTrennerTitleRow()
     ZNBodyFrame.Subframes.PrioDropdown.TitleRow = ZN:CreatePrioTitleRow()
-    
+
     ZNTemperBossFrame.BossidTitle.button:SetScript('OnEnter', function(self)
       ZN:ShowToolTip(ZN:getEncounterIDs(), ZN.Colors.ACTIVE, self, "ANCHOR_BOTTOMRIGHT")
     end)
@@ -813,6 +813,13 @@ function ZN:InitBoss()
     ZNTemperBossFrame.Bossid:SetScript('OnLeave', function(self)
       GameTooltip:Hide()
     end)
+
+    if ZNotes and ZNotes.lastTemplates and ZNotes.lastTemplates.lastBossTemplate and ZNotes.lastTemplates.lastBossTemplate~="" then
+      BossTemplateSelectButtonHead.ZNText:SetText(ZNotes.lastTemplates.lastBossTemplate:upper())
+      selectedTemplate=ZNotes.lastTemplates.lastBossTemplate
+      ZN:ReloadBossTrennerTable(selectedTemplate)
+      ZN:ReloadBossSpellTable(selectedTemplate)
+    end
 end
 
 function ZN:ReloadBossPrioTable(boss, BossSpellID, needindex)
