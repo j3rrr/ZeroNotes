@@ -345,24 +345,28 @@ ZN.BossAttributeMapping = {
   ["text"] = "text",
   ["class"] = "class",
   ["role"] = "role",
-  ["value"] = "value"
+  ["value"] = "value",
+  ["playername"]="playername"
 }
 ZN.BossPrioTableColumnHeaders = {
   "type",
   "role",
   "class",
+  "playername",
   "value",
   }
 ZN.BossPrioTableColumns = {
   ["type"] = 75,
   ["role"] = 75,
   ["class"] = 150,
+  ["playername"]=150,
   ["value"] = 60,
   }
 ZN.BossPrioTableColumnHeaderNames = {
   ["type"] = "Need Type",
   ["role"] = "Role",
   ["class"] = "Class",
+  ["playername"] = "Player Name",
   ["value"]= "+ Rating",
 }
 
@@ -425,14 +429,14 @@ ZNBodyFrame.Subframes.BossNote.EditBox.editbox:SetScript("OnEnterPressed", funct
   end
 end)
 
-ZNBodyFrame.Subframes.PrioDropdown = ZN.createSubFrame("ZNBossPrioDropDown", ZNFrame, 372, 202, ZN.Colors.BG, 1, "CENTER", "DIALOG", true)
+ZNBodyFrame.Subframes.PrioDropdown = ZN.createSubFrame("ZNBossPrioDropDown", ZNFrame, 522, 202, ZN.Colors.BG, 1, "CENTER", "DIALOG", true)
 ZNBodyFrame.Subframes.PrioDropdown:SetBackdrop({bgFile = "Interface/Tooltips/UI-Tooltip-Background", 
   edgeFile = [[Interface\Buttons\WHITE8x8]],
   edgeSize = 1,
 });
 ZNBodyFrame.Subframes.PrioDropdown:SetBackdropColor(tonumber("0x"..ZN.Colors.BG:sub(1,2))/255, tonumber("0x"..ZN.Colors.BG:sub(3,4))/255, tonumber("0x"..ZN.Colors.BG:sub(5,6))/255, 1);
 ZNBodyFrame.Subframes.PrioDropdown:SetBackdropBorderColor(tonumber("0x"..ZN.Colors.INACTIVE:sub(1,2))/255, tonumber("0x"..ZN.Colors.INACTIVE:sub(3,4))/255, tonumber("0x"..ZN.Colors.INACTIVE:sub(5,6))/255, 1);
-ZNBodyFrame.Subframes.PrioDropdown.ScrollFrame = ZN.createScrollFrame("ZNBossPrioContent", ZNBodyFrame.Subframes.PrioDropdown, 370, 170, nil, 1, "TOP","DIALOG", false)
+ZNBodyFrame.Subframes.PrioDropdown.ScrollFrame = ZN.createScrollFrame("ZNBossPrioContent", ZNBodyFrame.Subframes.PrioDropdown, 520, 170, nil, 1, "TOP","DIALOG", false)
 ZNBodyFrame.Subframes.PrioDropdown.ScrollFrame:SetPoint("TOPLEFT", ZNBodyFrame.Subframes.PrioDropdown, "TOPLEFT",1,-31)
 ZNBodyFrame.Subframes.PrioDropdown.ScrollFrame.ScrollBar:SetPoint("TOPRIGHT", ZNBodyFrame.Subframes.PrioDropdown.ScrollFrame, "TOPRIGHT", 0, 0);
 ZNBodyFrame.Subframes.PrioDropdown.ScrollFrame.ScrollBar:SetPoint("BOTTOMRIGHT", ZNBodyFrame.Subframes.PrioDropdown.ScrollFrame, "BOTTOMRIGHT", 0, 0);
@@ -683,15 +687,18 @@ local function CreateBossPrioRow(BossSpellID, BossSpell, AnchorFrame, boss, need
   local ContentRow = ZN.createSubFrame("ZNBossPrioRow"..BossSpellID, ZNBodyFrame.Subframes.PrioDropdown.ScrollFrame.scrollChild, 360, ZN.BossTableRows.row, ZN.Colors.ROWBG, 1, "TOPLEFT", "TOOLTIP", false, 0,-ZN.BossTableRows.rowgap, AnchorFrame, "BOTTOMLEFT")
   local role = ZNotes.BossTemplates[boss][BossSpellID]["need"][needindex].role and ZNotes.BossTemplates[boss][BossSpellID]["need"][needindex].role or "all"
   local class = ZNotes.BossTemplates[boss][BossSpellID]["need"][needindex].class and ZNotes.BossTemplates[boss][BossSpellID]["need"][needindex].class or "all"
+  local playername = ZNotes.BossTemplates[boss][BossSpellID]["need"][needindex].playername and ZNotes.BossTemplates[boss][BossSpellID]["need"][needindex].playername or "all"
   local value = ZNotes.BossTemplates[boss][BossSpellID]["need"][needindex].value and ZNotes.BossTemplates[boss][BossSpellID]["need"][needindex].value or "0"
   ContentRow.Type = CreateText(ContentRow, "LEFT", ContentRow, "LEFT", ZN.BossPrioTableColumns["type"], "type", ZNotes.BossTemplates[boss][BossSpellID]["need"][needindex].type:upper())
   ContentRow.Role = CreateGenericButton ("Role"..BossSpellID, ContentRow, "LEFT", ContentRow.Type, "RIGHT", ZN.BossPrioTableColumns["role"], "role", ZN.RoleSelectionColor[role],BossSpellID,boss)
   ContentRow.Class = CreateGenericButton ("Class"..BossSpellID, ContentRow, "LEFT", ContentRow.Role, "RIGHT", ZN.BossPrioTableColumns["class"], "class", ZN.PlayerClassesColored[class],BossSpellID,boss)
-  ContentRow.Value = CreateSingleLineEditBox("Value", ContentRow, "LEFT", ContentRow.Class, "RIGHT", ZN.BossPrioTableColumns["value"], "value", value, 0, BossSpellID, boss)
+  ContentRow.Playername = CreateSingleLineEditBox("playername", ContentRow, "LEFT", ContentRow.Class, "RIGHT", ZN.BossPrioTableColumns["playername"], "playername", playername, 0, BossSpellID, boss)
+  ContentRow.Value = CreateSingleLineEditBox("Value", ContentRow, "LEFT", ContentRow.Playername, "RIGHT", ZN.BossPrioTableColumns["value"], "value", value, 0, BossSpellID, boss)
 
   ContentRow.Role.needindex=needindex
   ContentRow.Class.needindex=needindex
   ContentRow.Value.needindex=needindex
+  ContentRow.Playername.needindex=needindex
 
   ContentRow.Role.OnUpdate=function(_, row, column, newvalue,self)
     ZNotes.BossTemplates[self.boss][row]["need"][self.needindex][column]=newvalue
@@ -710,6 +717,12 @@ local function CreateBossPrioRow(BossSpellID, BossSpell, AnchorFrame, boss, need
     else
       ZNotes.BossTemplates[self.boss][row]["need"][self.needindex][column]=newvalue
     end
+    ZN:showPreview(ZN:printPreviewNote(selectedTemplate), ZNBodyFrame.Subframes.PreviewTemplateContent.ScrollNote.scrollChild,selectedTemplate)
+  end
+
+  ContentRow.Playername.OnUpdate=function(_, row, column, newvalue,self)
+    
+    ZNotes.BossTemplates[self.boss][row]["need"][self.needindex][column]=newvalue
     ZN:showPreview(ZN:printPreviewNote(selectedTemplate), ZNBodyFrame.Subframes.PreviewTemplateContent.ScrollNote.scrollChild,selectedTemplate)
   end
 
@@ -772,6 +785,7 @@ local function UpdateBossPrioRow(BossSpellID, BossSpell, AnchorFrame, ContentRow
   ContentRow:SetPoint("TOP", AnchorFrame, "BOTTOM",0,-ZN.BossTableRows.rowgap)
   local role = ZNotes.BossTemplates[boss][BossSpellID]["need"][needindex].role and ZNotes.BossTemplates[boss][BossSpellID]["need"][needindex].role or "all"
   local class = ZNotes.BossTemplates[boss][BossSpellID]["need"][needindex].class and ZNotes.BossTemplates[boss][BossSpellID]["need"][needindex].class or "all"
+  local playername = ZNotes.BossTemplates[boss][BossSpellID]["need"][needindex].playername and ZNotes.BossTemplates[boss][BossSpellID]["need"][needindex].playername or "all"
   local value = ZNotes.BossTemplates[boss][BossSpellID]["need"][needindex].value and ZNotes.BossTemplates[boss][BossSpellID]["need"][needindex].value or "0"
   
   ContentRow.Type:SetText(ZNotes.BossTemplates[boss][BossSpellID]["need"][needindex].type:upper())
@@ -783,6 +797,10 @@ local function UpdateBossPrioRow(BossSpellID, BossSpell, AnchorFrame, ContentRow
   ContentRow.Class.boss=boss
   ContentRow.Class.needindex=needindex
   ContentRow.Class.ZNText:SetText(ZN.PlayerClassesColored[class]:upper())
+  ContentRow.Playername.Row=BossSpellID
+  ContentRow.Playername.boss=boss
+  ContentRow.Playername.needindex=needindex
+  ContentRow.Playername:SetText(playername)
   ContentRow.Value.Row=BossSpellID
   ContentRow.Value.boss=boss
   ContentRow.Value.needindex=needindex

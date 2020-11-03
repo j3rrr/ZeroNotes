@@ -202,9 +202,9 @@ function ZN:getAvailableSpells(group)
             --table.insert(tmp["player"], {["name"]= player["name"]})
             --seen[spell["id"]..spell["role"]] = true
           -- end
-          if tmp["name"] then 
+          --if tmp["name"] then 
             table.insert(availableSpells["spells"], tmp)
-          end
+          --end
         end
       end      
   end
@@ -363,19 +363,32 @@ function ZN:ShiftSpellRatings(needs,sortedAvailableSpells)
   local role = needs.role and needs.role or nil
   local class = needs.class and needs.class or nil
   local value = needs.value and needs.value or nil
+  local playername = needs.playername and needs.playername or nil
   local type = needs.type and needs.type or nil
 
   if role == "all" then role = nil end
   if class == "all" then class = nil end 
   if value == 0 then value = nil end 
+  if playername =="" or playername =="all" then playername = nil end
+  if playername and playername:lower()=="all" then playername = nil end
+ 
+  
 
   --print("spell type: "..type..", role: ".. (role and role or "leer")..", class: "..(class and class or "leer")..", rating: "..(value and value or "leer"))
   for i,spell in pairs(sortedAvailableSpells) do 
     --print("player type: "..spell.type..", role: "..spell.role..", class: "..spell.class)
-    if value and spell.type==type and ((role and not class and spell.role==role) or (class and not role and spell.class==class) or (class and role and spell.class==class and spell.role==role)) then
+    if value and spell.type==type and
+     (
+       (role and not class and not playername and spell.role==role) or
+       (class and not role and not playername and spell.class==class) or
+       (class and role and not playername and spell.class==class and spell.role==role) or 
+       (playername and not role and not class and spell.PlayerName==playername) or 
+       (playername and role and not class and spell.PlayerName==playername and spell.role==role) or 
+       (playername and not role and class and spell.PlayerName==playername and spell.class==class) or 
+       (playername and  role and class and spell.PlayerName==playername and spell.class==class and spell.role==role)
+    ) then
       spell.rating= spell.baseRating+value
-      
-      --print("enhanced rating: "..spell.rating)
+       --print("enhanced rating: "..spell.rating)
     else
       spell.rating= spell.baseRating
       --print("normal rating: "..spell.rating)
@@ -390,9 +403,7 @@ function ZN:PrintNote(boss, inclMissing, group)
   end
 
 
-  --[[
-    TODO: time-SPELL(neu)-type
-  --]]
+
   local rtNote = ""
   if rawNoteData.bossid then
     rtNote = "{id:"..rawNoteData.bossid.."}"
