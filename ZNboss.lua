@@ -90,6 +90,9 @@ ZNTemperBossFrame.Bossid:SetScript("OnEditFocusLost", function(self)
 end)
 
 BossFrame.btnDeleteTemplate:SetScript("OnClick", function(self)
+  for i=1, #ZN.DropDownsEdit do
+		ZN.DropDownsEdit[i]:SetShown(false)
+	end
   if not selectedTemplate then
     ZN:Print("Please select a template first.")
     UIErrorsFrame:AddMessage("Please select a template first.", 0.8, 0.07, 0.2, 5.0)
@@ -139,6 +142,9 @@ local function checkBossIDIsLegit(bossid)
 end
 
 BossFrame.btnNewTemplate:SetScript("OnClick", function(self)
+  for i=1, #ZN.DropDownsEdit do
+		ZN.DropDownsEdit[i]:SetShown(false)
+	end
   ZNTemperBossFrame.ConfirmButton:SetScript("OnClick", function(self)
     local name = ZNTemperBossFrame.newBossName:GetText():lower():match("^%s*(.-)%s*$")
     local bossid = ZNTemperBossFrame.Bossid:GetText()
@@ -161,6 +167,9 @@ BossFrame.btnNewTemplate:SetScript("OnClick", function(self)
 end)
 
 BossFrame.btnEditTemplate:SetScript("OnClick", function(self)
+  for i=1, #ZN.DropDownsEdit do
+		ZN.DropDownsEdit[i]:SetShown(false)
+	end
   ZNTemperBossFrame.ConfirmButton:SetScript("OnClick", function(self)
     local name = ZNTemperBossFrame.newBossName:GetText():lower():match("^%s*(.-)%s*$")
     local bossid = ZNTemperBossFrame.Bossid:GetText()
@@ -191,6 +200,9 @@ BossFrame.btnEditTemplate:SetScript("OnClick", function(self)
 end)
 
 BossFrame.btnCopyTemplate:SetScript("OnClick", function(self)
+  for i=1, #ZN.DropDownsEdit do
+		ZN.DropDownsEdit[i]:SetShown(false)
+	end
   ZNTemperBossFrame.ConfirmButton:SetScript("OnClick", function(self)
     local name = ZNTemperBossFrame.newBossName:GetText():lower():match("^%s*(.-)%s*$")
     local bossid = ZNTemperBossFrame.Bossid:GetText()
