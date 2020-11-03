@@ -460,7 +460,16 @@ end)
 
 local function CreateGenericButton (name, parent, point, anchor, anchorPoint, width, type, text,row, boss, fontoffset)
   local btn = ZN.CreateGenericButton(name, parent, point, anchor, anchorPoint, width, ZN.PlayerTableRows.row, 0, 0, 0, fontoffset and fontoffset or 0 ,12, ZN.Colors.INACTIVE, ZN.Colors.ROWBG, nil, text, "CENTER", false)
-  btn:SetScript("OnClick", function(self) ZN:CreateDropdown(self, ZN.BossDropdowns[type].content, ZN.BossDropdowns[type].order, width, ZN.Colors.SBButtonBG, "CENTER",0, ZN.Colors.HD ) end)
+  if type=="class" then
+    width=width+30
+  end
+  btn:SetScript("OnClick", function(self) 
+    ZN:CreateDropdown(self, ZN.BossDropdowns[type].content, ZN.BossDropdowns[type].order, width, ZN.Colors.SBButtonBG, "CENTER",0, ZN.Colors.HD ) 
+    if self.Column=="class" then
+      self.dropdown:ClearAllPoints()
+      self.dropdown:SetPoint("TOP",self,"BOTTOM")
+    end
+  end)
   btn.Row = row
   btn.boss=boss
   btn.Column = ZN.BossAttributeMapping[type]
