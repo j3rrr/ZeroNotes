@@ -322,8 +322,8 @@ end
 
 function ZN.initLastTemplates()
   ZNotes.lastTemplates = ZNotes.lastTemplates or {
-    ["lastGroupTemplate"] = "Sample Group",
-    ["lastBossTemplate"] = "SampleBoss",
+    ["lastGroupTemplate"] = "sample group",
+    ["lastBossTemplate"] = "sampleboss",
   }
   ZN.selectedGroupTemplate = ZNotes.lastTemplates.lastGroupTemplate
 end
@@ -841,7 +841,7 @@ ZNotes.GroupTemplates = ZNotes.GroupTemplates or {
 end
 
 ZN.BossTemplatesOrder = {
-  "SampleBoss",
+  "sampleboss",
 }
 
 ZN.SpecNames = {
