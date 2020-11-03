@@ -4,6 +4,7 @@ local specNames           = ZN.SpecNames
 local regionString        = ZN.RegionString
 local roleTable           = ZN.RoleTable
 local classTable          = ZN.ClassTable
+local templateClassTable  = ZN.SpecIdToTemplateClass
 
 
 --##############################################################################
@@ -100,7 +101,6 @@ function ZN:templateToRoster(group)
   end
   return tmp
 end
---znroster = {}
 
 function ZN:BuildRaidRoster(group)
   if group ~= "Use Current Group" and ZNotes.GroupTemplates[group] then
@@ -502,4 +502,60 @@ function ZN:PrintNote(boss, inclMissing, group)
     rtNote = rtNote .. "\n\n\n" .. missingNote
   end
   return rtNote
+end
+
+function ZN:BuildRaidRosterGroupTemplate()
+  if not IsInGroup() then
+    ZN:Print("You need to join a group or raid")
+    return
+  end
+  local RaidSize = GetNumGroupMembers()
+  local RaidRoster = {}
+  local unitprefix = "raid"
+
+  if IsInGroup() and not IsInRaid() then
+    unitprefix = "party"
+  end
+
+  if ZN.inspectLib then
+    if RaidSize ~= 0 then
+      local u = CreateFrame("Frame")
+      for i = 1, RaidSize do
+        unit = unitprefix..i       
+        if i == RaidSize and not IsInRaid() then 
+          unit = "player"
+        end
+        local GUID = UnitGUID(unit)
+        if GUID then
+          local info = ZN.inspectLib:GetCachedInfo(GUID)
+          if info then
+            ZN:libInspectUpdate("Init", GUID, unit, info)
+          else
+            ZN.inspectLib:Rescan(GUID)
+          end
+        end
+
+        local tmp = {}
+        if memberInfo.name then 
+          tmp["name"] = memberInfo.name
+        else
+          ZN:Print("Group Inspect Error: Try /reload or wait until all Groupmembers are online")
+          --UIErrorsFrame:AddMessage("Group Inspect not finished (names)", 0.8, 0.07, 0.2, 5.0)
+          return
+        end
+        if memberInfo.specID then 
+          tmp["class"] = classTable[memberInfo.specID]
+          tmp["spec"] = templateClassTable[memberInfo.specID]
+        else
+          ZN:Print("Group Inspect Error: Try /reload or wait until all Groupmembers are online")
+          --UIErrorsFrame:AddMessage("Group Inspect not finished (class / role))", 0.8, 0.07, 0.2, 5.0)
+          return
+        end
+        table.insert(RaidRoster, tmp)
+      end
+    end
+  else
+  ZN:Print("LibGroupInSpecT-1.1 not found")
+  end
+  return RaidRoster
 end

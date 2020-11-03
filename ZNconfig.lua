@@ -41,7 +41,7 @@ function ZN:Config()
 
   ZNDebugMode.btnRunStuff = ZN.CreateGenericButton("btnRunStuff", ConfigFrame, "TOPLEFT", ConfigFrame.DebugModeCheckBox, "BOTTOMLEFT", 240, 30, 0,-20,0,0, 12, ZN.Colors.ACTIVE, ZN.Colors.SBButtonBG, nil, "/run", "CENTER",true, ZN.Colors.HD )
   ZNDebugMode.btnRunStuff:Hide()
-  ZNDebugMode.btnRunStuff:SetScript("OnClick", function() ZN:DebugPrint(ZN:getEncounterIDs()) end)
+  ZNDebugMode.btnRunStuff:SetScript("OnClick", function() ZN:BuildRaidRosterGroupTemplate() end)
   
   if ZNotes.DebugMode then
     ZNDebugMode.btnRunStuff:Show()

@@ -182,6 +182,7 @@ end
 
 ZN.DropDowns = {}
 ZN.DropDownsEdit = {}
+ZN.GroupPopups = {}
 ZN.Colors = {
 	["BG"] = "15191C",
 	["HD"] = "292E32",
@@ -907,7 +908,7 @@ ZN.Specs = {
   ["dh"] = {
     -- Demon Hunter
     ["havoc"] = 'Havoc',
-    ["Vengeance"] = 'Veng',
+    ["vengeance"] = 'Veng',
   },
   ["druid"] = {
     -- Druid 
@@ -1048,6 +1049,57 @@ ZN.SpecsToRole = {
     ["fury"] = 'melee',
     ["prot"] = 'tank'
   },
+}
+
+ZN.SpecIdToTemplateClass = {
+  -- Death Knight
+  [250] = 'blood',
+  [251] = 'frost',
+  [252] = 'unholy',
+  -- Demon Hunter
+  [577] = 'havoc',
+  [581] = 'vengeance',
+  -- Druid 
+  [102] = 'balance',
+  [103] = 'feral',
+  [104] = 'guardian',
+  [105] = 'resto',
+  -- Hunter 
+  [253] = 'bm',
+  [254] = 'mm',
+  [255] = 'survival',
+  -- Mage 
+  [62] = 'arcane',
+  [63] = 'fire',
+  [64] = 'frost',
+  -- Monk 
+  [268] = 'bm',
+  [269] = 'ww',
+  [270] = 'mw',
+  -- Paladin 
+  [65] = 'holy',
+  [66] = 'prot',
+  [70] = 'ret',
+  -- Priest 
+  [256] = 'diszi',
+  [257] = 'holy',
+  [258] = 'shadow',
+  -- Rogue 
+  [259] = 'assa',
+  [260] = 'outlaw',
+  [261] = 'sub',
+  -- Shaman 
+  [262] = 'ele',
+  [263] = 'enh',
+  [264] = 'resto',
+  -- Warlock 
+  [265] = 'affli',
+  [266] = 'demo',
+  [267] = 'destru',
+  -- Warrior 
+  [71] = 'arms',
+  [72] = 'fury',
+  [73] = 'prot'
 }
 
 ZN.RoleTable = {
