@@ -21,13 +21,11 @@ BossTemplateSelectButtonHead.OnUpdate = function(_,_,_,newValue)
 end
 BossTemplateSelectButtonHead:SetScript("OnClick", function(self) ZN:CreateDropdown(self, ZN:getTableKeys(ZNotes.BossTemplates), ZN:getTableOrder(ZNotes.BossTemplates), 240, ZN.Colors.BG, "LEFT", 10, nil, "TOOLTIP") end)
 
-
 BossFrame.btnNewTemplate = ZN.CreateIconButton(BossFrame, "LEFT", BossTemplateSelectButtonHead, "RIGHT", 18, 18, 8, 0, "Interface\\AddOns\\ZeroNotes\\Media\\Texture\\newtempl", ZN.Colors.ACTIVE, ZN.Colors.INACTIVE, false, ZN.Colors.ACTIVE, true, "Create New Template", ZN.Colors.ACTIVE)
 BossFrame.btnCopyTemplate = ZN.CreateIconButton(BossFrame, "LEFT", BossFrame.btnNewTemplate, "RIGHT", 18, 18, 8, 0, "Interface\\AddOns\\ZeroNotes\\Media\\Texture\\copy", ZN.Colors.ACTIVE, ZN.Colors.INACTIVE, false, ZN.Colors.ACTIVE, true, "Copy selected Template", ZN.Colors.ACTIVE)
 BossFrame.btnEditTemplate = ZN.CreateIconButton(BossFrame, "RIGHT", BossTemplateSelectButtonHead, "RIGHT", 16, 16, -8, 0, "Interface\\AddOns\\ZeroNotes\\Media\\Texture\\edit", ZN.Colors.ACTIVE, ZN.Colors.INACTIVE, false, ZN.Colors.ACTIVE, true, "Edit Template", ZN.Colors.ACTIVE)
 BossFrame.btnDeleteTemplate = ZN.CreateIconButton(BossFrame, "LEFT", BossFrame.btnCopyTemplate, "RIGHT", 18, 18, 8, 0, "Interface\\AddOns\\ZeroNotes\\Media\\Texture\\delete2", ZN.Colors.ACTIVE, ZN.Colors.INACTIVE, false, ZN.Colors.ACTIVE, true, "Delete selected Template", ZN.Colors.ACTIVE)
 BossFrame.btnEditTemplate:SetFrameStrata("DIALOG")
-
 
 local ZNDeleteBossFrame = ZN.createSubFrame("ZNDeleteBossFrame",ZNFrame, 302, 202, ZN.Colors.HD, 1, 'CENTER', 'TOOLTIP', true)
 ZNDeleteBossFrame:SetScript("OnMouseDown", function(self, button)end)

@@ -15,11 +15,62 @@
 	// 	],
 	// 	"description": "Log output to console"
 	// }
+
+	//"": {
+	// 	"prefix": "",
+	// 	"body": [
+	// 		""
+	// 	],
+	// 	"description": ""
+	// },
+
+	"ZNtodo": {
+		"prefix": "ZNtodo",
+		"body": ["--[[", "  TODO: $1", "--]]"],
+		"description": "ZN TODO Comment"
+	},
+
+	"ZNcomment": {
+		"prefix": "ZNcomment",
+		"body": ["--[[", "  $1", "--]]"],
+		"description": "ZN Comment"
+	},
+
 	"ZNcreateSubFrame": {
 		"prefix": "ZNcreateSubFrame",
 		"body": [
 			"ZN.createSubFrame(${1:name}, ${2:parent}, ${3:width}, ${4:height}, ${5:color}, ${6:a}, ${7:anchor}, ${8:strata}, ${9:hide}, ${10:xOffset}, ${11:yOffset}, ${12:anchorFrame}, ${13:anchorPoint}, ${14:noMouseDown})"
 		],
 		"description": "ZN create SubFrame"
+	},
+
+	"ZNcreateScrollFrame": {
+		"prefix": "ZNcreateScrollFrame",
+		"body": [
+			"ZN.createScrollFrame(${1:name}, ${2:parent}, ${3:width}, ${4:height}, ${5:color}, ${6:a}, ${7:anchor}, ${8:strata}, ${9:hide}, ${10:noMOuseDown}, ${11:scrollColor})"
+		],
+		"description": "ZNcreateScrollFrame"
+	},
+
+	"ZNCreateText": {
+		"prefix": "ZNCreateText",
+		"body": [
+			"ZN.CreateText(${1:parent}, ${2:point}, ${3:anchorFrame}, ${4:anchorPoint}, ${5:width}, ${6:height}, ${7:xOffset}, ${8:yOffset}, ${9:font}, ${10:fontSize}, ${11:color}, ${12:text}, ${13:justifyH}, ${14:justifyV}, ${15:spacing}, ${16:tooltip}, ${17:tooltipText}, ${18:tooltipColor}, ${19:tooltipAnchor})"
+		],
+		"description": "ZNCreateText"
+	},
+	"ZNCreateIconButton": {
+		"prefix": "ZNCreateIconButton",
+		"body": [
+			"ZN.CreateIconButton(${1:parent}, ${2:point}, ${3:anchorFrame}, ${4:anchorPoint}, ${5:width}, ${6:height}, ${7:xOffset}, ${8:yOffset}, ${9:texture}, ${10:activeColor}, ${11:inactiveColor}, ${12:active}, ${13:highlightColor}, ${14:tooltip}, ${15:tooltipText}, ${16:tooltipColor}, ${17:tooltipAnchor})"
+		],
+		"description": "ZNCreateIconButton"
+	},
+	"ZNCreateGenericButton": {
+		"prefix": "ZNCreateGenericButton",
+		"body": [
+			"ZN.CreateGenericButton(${1:name}, ${2:parent}, ${3:point}, ${4:anchorFrame}, ${5:anchorPoint}, ${6:width}, ${7:height}, ${8:xOffset}, ${9:yOffset}, ${10:fontxOffset}, ${11:fontyOffset} , ${12:fontSize}, ${13:fontcolor}, ${14:bgcolor}, ${15:label}, ${16:buttonText}, ${17:buttonTextAlign}, ${18:hover}, ${19:hoverColor}, ${20:tooltip}, ${21:tooltipText}, ${22:tooltipColor}, ${23:tooltipAnchor})"
+		],
+		"description": "ZNCreateGenericButton"
 	}
 }

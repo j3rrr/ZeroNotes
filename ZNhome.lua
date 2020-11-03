@@ -40,7 +40,7 @@ HomeSidebar.GroupTemplateSelectButton = ZN.CreateGenericButton("ZNGroupTemplateS
 HomeSidebar.GroupTemplateSelectButton.doOnUpdate = true
 HomeSidebar.GroupTemplateSelectButton.OnUpdate = function(_,_,_,newValue) 
   selectedGroupTemplate = newValue
-  print(selectedGroupTemplate)
+  ZN:DebugPrint(selectedGroupTemplate)
 end
 HomeSidebar.GroupTemplateSelectButton:SetScript("OnClick", function(self)
   ZN:CreateDropdown(self, ZN:getTableKeys(ZNotes.GroupTemplates), ZN:getTemplateTableOrder(ZNotes.GroupTemplates), 240, ZN.Colors.BG, "LEFT", 10, nil, "TOOLTIP")
@@ -64,6 +64,10 @@ HomeSidebar.TemplateSelectButton:SetScript("OnClick", function(self) ZN:CreateDr
 
 if IsAddOnLoaded("ExRT") then
   HomeSidebar.SendToExRTButton:SetScript("OnClick", function(self) 
+    if not IsInGroup() and (selectedGroupTemplate == "Use Current Group" or selectedGroupTemplate == nil) then 
+      ZN:Print("You need to join a group or select a Grouptemplate")
+      return
+    end
     VExRT.Note.Text1 = ZN:PrintNote(selectedTemplate, HomeSidebar.IncludeMissingCheckBox.active, selectedGroupTemplate)
     _G["GExRT"].A["Note"].frame:Save()
   end)
