@@ -279,7 +279,8 @@ function ZN:createRawNote(boss, group)
 
   prioNote = {
     ["bossid"] = noteTemplate.bossid,
-    ["lines"] = {}
+    ["lines"] = {},
+    ["missing"]={}
   }
 
   local spellsUsed = {
@@ -295,7 +296,9 @@ function ZN:createRawNote(boss, group)
 
   for _,spell in ipairs(sortedPrioTemplate) do
     if spell["trenner"] then
-      table.insert(prioNote["lines"], spell)
+      if not prioNote["lines"][spell.time] then prioNote["lines"][spell.time]={} end
+      if not prioNote["lines"][spell.time]["trenner"] then prioNote["lines"][spell.time]["trenner"] = {} end
+      table.insert(prioNote["lines"][spell.time]["trenner"], spell)
     else
       for _,needs in ipairs(spell["need"]) do
         ZN:ShiftSpellRatings(needs,sortedAvailableSpells)
@@ -327,7 +330,9 @@ function ZN:createRawNote(boss, group)
                 tmpLine.playerSpellId = playerSpell.id
                 tmpLine.bossSpellName = spell.name
                 tmpLine.bossSpellId = spell.id
-                table.insert(prioNote["lines"], tmpLine)
+                if not prioNote["lines"][tmpLine.time] then prioNote["lines"][tmpLine.time]={} end
+                if not prioNote["lines"][tmpLine.time][playerSpell["type"]] then prioNote["lines"][tmpLine.time][playerSpell["type"]] = {} end
+                table.insert(prioNote["lines"][tmpLine.time][playerSpell["type"]], tmpLine)
                 spellSet = true
               end
             end
@@ -339,13 +344,15 @@ function ZN:createRawNote(boss, group)
           tmp.bossSpellName = spell.name
           tmp.bossSpellId = spell.id
           tmp.missing = 'Missing: '..needs.type
-          table.insert(prioNote["lines"], tmp)
+          if not prioNote["missing"][tmp.time] then prioNote["missing"][tmp.time]={} end
+          if not prioNote["missing"][tmp.time][needs.type] then prioNote["missing"][tmp.time][needs.type] = {} end
+          table.insert(prioNote["missing"][tmp.time][needs.type], tmp)
         end
       end      
     end
   end
   
-  table.sort(prioNote["lines"], function(a,b) return a.time < b.time end)
+  --table.sort(prioNote["lines"], function(a,b) return a.time < b.time end)
   return prioNote
 end
 
@@ -380,35 +387,118 @@ function ZN:PrintNote(boss, inclMissing, group)
   end
 
   local rtNote = "{id:"..rawNoteData.bossid.."}"
-  local missingNote = ""
+  local missingNote = "Missing:"
+  local linesTimes={}
+  local missingTimes={}
 
-  for k = 1, table.getn(rawNoteData["lines"]) do
-    if rawNoteData["lines"][k]["trenner"] then
-      local convertedTime = ZN:SecondsToClock(rawNoteData["lines"][k]["time"])
-      rtNote = rtNote.."\n\n{time:"..convertedTime.."} "..rawNoteData["lines"][k]["raidicon"].." ||cffff00ff"..rawNoteData["lines"][k]["text"].."||r "..rawNoteData["lines"][k]["raidicon"]
-    --goto continue
-    else
-      if rawNoteData["lines"][k]["missing"] then
-        local convertedTime = ZN:SecondsToClock(rawNoteData["lines"][k]["time"])
-        missingNote = missingNote.."\n{time:"..convertedTime.."} {spell:"..rawNoteData["lines"][k]["bossSpellId"].."} -"..rawNoteData["lines"][k]["missing"].." "
-      --goto continue
-      else
-        if (k == 1 or (k > 1 and rawNoteData["lines"][k-1]["missing"]) or ( k > 1 and (rawNoteData["lines"][k]["time"] ~= rawNoteData["lines"][k-1]["time"] or 
-        rawNoteData["lines"][k]["bossSpellId"] ~= rawNoteData["lines"][k-1]["bossSpellId"]))) then
-          local convertedTime = ZN:SecondsToClock(rawNoteData["lines"][k]["time"])
-          rtNote = rtNote.."\n{time:"..convertedTime.."} {spell:"..rawNoteData["lines"][k]["bossSpellId"].."} -"
-        end
-        rtNote = rtNote.." ||cff"..rawNoteData["lines"][k]["color"]..rawNoteData["lines"][k]["player"].."||r{spell:"..rawNoteData["lines"][k]["playerSpellId"].."}"
-        --::continue::
+  for k,v in pairs(rawNoteData["lines"]) do 
+    table.insert(linesTimes,k)
+  end
+
+  for k,v in pairs(rawNoteData["missing"]) do 
+    table.insert(missingTimes,k)
+  end
+  table.sort(linesTimes, function(a,b) return a < b end)
+  table.sort(missingTimes, function(a,b) return a < b end)
+  
+  for k=1, #linesTimes do
+    local currTime = rawNoteData["lines"][linesTimes[k]]
+    if currTime.trenner then
+      for _,trenner in ipairs(currTime.trenner) do
+        local convertedTime = ZN:SecondsToClock(trenner["time"])
+        rtNote = rtNote.."\n\n{time:"..convertedTime.."} "..trenner["raidicon"].." ||cffff00ff"..trenner["text"].."||r "..trenner["raidicon"]
       end
     end
-  end  
+    local lineInit = false
+    if currTime.heal then
+      for _,spell in ipairs(currTime.heal) do
+        if not lineInit then
+          local convertedTime = ZN:SecondsToClock(spell["time"])
+          rtNote = rtNote.."\n{time:"..convertedTime.."} {spell:"..spell["bossSpellId"].."} -"
+          lineInit=true
+        end
+        rtNote = rtNote.." ||cff"..spell["color"]..spell["player"].."||r{spell:"..spell["playerSpellId"].."}"
+      end
+    end
+    if currTime.util then
+      for _,spell in ipairs(currTime.util) do
+        if not lineInit then
+          local convertedTime = ZN:SecondsToClock(spell["time"])
+          rtNote = rtNote.."\n{time:"..convertedTime.."} {spell:"..spell["bossSpellId"].."} -"
+          lineInit=true
+        end
+        rtNote = rtNote.." ||cff"..spell["color"]..spell["player"].."||r{spell:"..spell["playerSpellId"].."}"
+      end
+    end
+    if currTime.imun then
+      for _,spell in ipairs(currTime.imun) do
+        if not lineInit then
+          local convertedTime = ZN:SecondsToClock(spell["time"])
+          rtNote = rtNote.."\n{time:"..convertedTime.."} {spell:"..spell["bossSpellId"].."} -"
+          lineInit=true
+        end
+        rtNote = rtNote.." ||cff"..spell["color"]..spell["player"].."||r{spell:"..spell["playerSpellId"].."}"
+      end
+    end
+  end
+
+  for k=1, #missingTimes do
+    local currTime = rawNoteData["missing"][missingTimes[k]]
+    local lineInit = false
+    if currTime.heal then
+      if not lineInit then
+        local convertedTime = ZN:SecondsToClock(currTime.heal[1]["time"])
+        missingNote = missingNote.."\n{time:"..convertedTime.."} {spell:"..currTime.heal[1]["bossSpellId"].."} "
+        lineInit=true
+      end
+      missingNote = missingNote.."- Heal: "..#currTime.heal.." "
+    end
+    if currTime.util then
+      if not lineInit then
+        local convertedTime = ZN:SecondsToClock(currTime.util[1]["time"])
+        missingNote = missingNote.."\n{time:"..convertedTime.."} {spell:"..currTime.util[1]["bossSpellId"].."} "
+        lineInit=true
+      end
+      missingNote = missingNote.."- Util: "..#currTime.util.." "
+    end
+    if currTime.imun then
+      if not lineInit then
+        local convertedTime = ZN:SecondsToClock(currTime.himuneal[1]["time"])
+        missingNote = missingNote.."\n{time:"..convertedTime.."} {spell:"..currTime.imun[1]["bossSpellId"].."} "
+        lineInit=true
+      end
+      missingNote = missingNote.."- Imun: "..#currTime.imun.." "
+    end
+  end
+
+  -- for k = 1, table.getn(rawNoteData["lines"]) do
+  --   if rawNoteData["lines"][k]["trenner"] then
+  --     local convertedTime = ZN:SecondsToClock(rawNoteData["lines"][k]["time"])
+  --     rtNote = rtNote.."\n\n{time:"..convertedTime.."} "..rawNoteData["lines"][k]["raidicon"].." ||cffff00ff"..rawNoteData["lines"][k]["text"].."||r "..rawNoteData["lines"][k]["raidicon"]
+  --   --goto continue
+  --   else
+  --     if rawNoteData["lines"][k]["missing"] then
+  --       local convertedTime = ZN:SecondsToClock(rawNoteData["lines"][k]["time"])
+  --       missingNote = missingNote.."\n{time:"..convertedTime.."} {spell:"..rawNoteData["lines"][k]["bossSpellId"].."} -"..rawNoteData["lines"][k]["missing"].." "
+  --     --goto continue
+  --     else
+  --       if (k == 1 or (k > 1 and rawNoteData["lines"][k-1]["missing"]) or ( k > 1 and (rawNoteData["lines"][k]["time"] ~= rawNoteData["lines"][k-1]["time"] or 
+  --       rawNoteData["lines"][k]["bossSpellId"] ~= rawNoteData["lines"][k-1]["bossSpellId"]))) then
+  --         local convertedTime = ZN:SecondsToClock(rawNoteData["lines"][k]["time"])
+  --         rtNote = rtNote.."\n{time:"..convertedTime.."} {spell:"..rawNoteData["lines"][k]["bossSpellId"].."} -"
+  --       end
+  --       rtNote = rtNote.." ||cff"..rawNoteData["lines"][k]["color"]..rawNoteData["lines"][k]["player"].."||r{spell:"..rawNoteData["lines"][k]["playerSpellId"].."}"
+  --       --::continue::
+  --     end
+  --   end
+  -- end  
 
   if ZNotes.BossTemplates[boss].NoteEnd then
     rtNote = rtNote .. "\n\n" .. ZNotes.BossTemplates[boss].NoteEnd
   end
 
   if  inclMissing == true then
+    if missingNote =="Missing:" then missingNote=missingNote.."\nNo unassigned spells!" end
     rtNote = rtNote .. "\n\n\n" .. missingNote
   end
   return rtNote

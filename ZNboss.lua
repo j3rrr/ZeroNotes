@@ -13,6 +13,7 @@ BossTemplateSelectButtonHead.OnUpdate = function(_,_,_,newValue)
     selectedTemplate = newValue 
     ZN:ReloadBossSpellTable(newValue)
     ZN:ReloadBossTrennerTable(newValue)
+    ZNotes.lastTemplates.lastBossTemplate = newValue
     ZNBodyFrame.Subframes.BossNote.EditBox:SetShown(true)
     ZNBodyFrame.Subframes.BossNote.EditBox.editbox.boss=newValue
     ZNBodyFrame.Subframes.BossNote.EditBox.editbox:SetText(ZNotes.BossTemplates[newValue].NoteEnd and ZNotes.BossTemplates[newValue].NoteEnd or "")
@@ -745,6 +746,8 @@ local function UpdateBossTrennerRow(BossSpellID, BossSpell, AnchorFrame,ContentR
   ContentRow.Icon.ZNText:SetText(ZN.TrennerIconsList[BossSpell.raidicon])
   ContentRow.Icon.boss=boss
   ContentRow.Delete.Row = BossSpellID
+  ContentRow.Delete.boss = boss
+
 
 end
 
@@ -781,7 +784,9 @@ local function UpdateBossSpellRow(BossSpellID, BossSpell, AnchorFrame,ContentRow
   ContentRow.imun:SetText(ZN:CountBossSpellNeeds(boss, BossSpellID, "imun"))
   ContentRow.imun.boss=boss
   ContentRow.edit.Row = BossSpellID
+  ContentRow.edit.boss = boss
   ContentRow.Delete.Row = BossSpellID
+  ContentRow.Delete.boss = boss
 
 end
 
