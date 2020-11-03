@@ -463,7 +463,7 @@ function ZN:PrintNote(boss, inclMissing, group)
     end
     if currTime.imun then
       if not lineInit then
-        local convertedTime = ZN:SecondsToClock(currTime.himuneal[1]["time"])
+        local convertedTime = ZN:SecondsToClock(currTime.imun[1]["time"])
         missingNote = missingNote.."\n{time:"..convertedTime.."} {spell:"..currTime.imun[1]["bossSpellId"].."} "
         lineInit=true
       end

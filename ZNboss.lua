@@ -57,9 +57,14 @@ ZNDeleteBossFrame.ConfirmButton:SetScript("OnClick", function(self)
   ZNDeleteBossFrame:Hide()    
   ZNBodyFrame.Subframes.BossNote.EditBox:SetShown(true)
   ZNBodyFrame.Subframes.BossNote.EditBox.editbox.boss=selectedTemplate
-  ZNBodyFrame.Subframes.BossNote.EditBox.editbox:SetText(ZNotes.BossTemplates[selectedTemplate].NoteEnd and ZNotes.BossTemplates[selectedTemplate].NoteEnd or "")
+  if selectedTemplate~="" then
+    ZNBodyFrame.Subframes.BossNote.EditBox.editbox:SetText(ZNotes.BossTemplates[selectedTemplate].NoteEnd and ZNotes.BossTemplates[selectedTemplate].NoteEnd or "")
+    ZN:showPreview(ZN:printPreviewNote(selectedTemplate), ZNBodyFrame.Subframes.PreviewTemplateContent.ScrollNote.scrollChild,selectedTemplate)
+  else
+    ZNBodyFrame.Subframes.BossNote.EditBox.editbox:SetText("")
+  end
 
-  ZN:showPreview(ZN:printPreviewNote(selectedTemplate), ZNBodyFrame.Subframes.PreviewTemplateContent.ScrollNote.scrollChild,selectedTemplate)
+  
 end)
 ZNDeleteBossFrame.btnClose:SetScript("OnClick", function(self) ZNDeleteBossFrame:Hide() end)
 ZNDeleteBossFrame.CancelButton:SetScript("OnClick", function(self) ZNDeleteBossFrame:Hide() end)
