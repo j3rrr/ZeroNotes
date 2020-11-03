@@ -456,7 +456,27 @@ end)
 
 local function CreateGenericButton (name, parent, point, anchor, anchorPoint, width, type, text,row, boss, fontoffset)
   local btn = ZN.CreateGenericButton(name, parent, point, anchor, anchorPoint, width, ZN.PlayerTableRows.row, 0, 0, 0, fontoffset and fontoffset or 0 ,12, ZN.Colors.INACTIVE, ZN.Colors.ROWBG, nil, text, "CENTER", false)
-  btn:SetScript("OnClick", function(self) ZN:CreateDropdown(self, ZN.BossDropdowns[type].content, ZN.BossDropdowns[type].order, width, ZN.Colors.SBButtonBG, "CENTER",0, ZN.Colors.HD) end)
+  btn:SetScript("OnClick", function(self) ZN:CreateDropdown(self, ZN.BossDropdowns[type].content, ZN.BossDropdowns[type].order, width, ZN.Colors.SBButtonBG, "CENTER",0, ZN.Colors.HD ) end)
+  btn.Row = row
+  btn.boss=boss
+  btn.Column = ZN.BossAttributeMapping[type]
+  btn.OnUpdate=function(_, row, column, newvalue)
+     ZNotes.BossTemplates[btn.boss][btn.Row][btn.Column]=newvalue
+     ZN:showPreview(ZN:printPreviewNote(selectedTemplate), ZNBodyFrame.Subframes.PreviewTemplateContent.ScrollNote.scrollChild,selectedTemplate)
+  end
+  btn.doOnUpdate=true
+  
+  return btn
+end
+
+local function CreateGenericIconDropdownButton (name, parent, point, anchor, anchorPoint, width, type, text,row, boss, fontoffset)
+  local btn = ZN.CreateGenericButton(name, parent, point, anchor, anchorPoint, width, ZN.PlayerTableRows.row, 0, 0, 0, fontoffset and fontoffset or 0 ,12, ZN.Colors.INACTIVE, ZN.Colors.ROWBG, nil, text, "CENTER", false)
+  btn:SetScript("OnClick", function(self) 
+    ZN:CreateIconDropdown(self, ZN.BossDropdowns[type].content, ZN.BossDropdowns[type].order, width, ZN.Colors.SBButtonBG, "CENTER",0, ZN.Colors.HD,nil, 30, -8, 2, 4, false ) 
+    btn.dropdown:ClearAllPoints()
+    btn.dropdown:SetPoint("TOP", btn, "BOTTOM")
+  end)
+  
   btn.Row = row
   btn.boss=boss
   btn.Column = ZN.BossAttributeMapping[type]
@@ -642,7 +662,7 @@ local function CreateBossTrennerRow(BossSpellID, BossSpell, AnchorFrame, boss)
   
   ContentRow.Text = CreateSingleLineEditBox("Text"..BossSpellID, ContentRow, "LEFT", ContentRow, "LEFT",ZN.BossTrennerTableColumns["text"], "text", BossSpell.text,0,BossSpellID, boss)
   ContentRow.Time = CreateSingleLineEditBox("Time"..BossSpellID, ContentRow, "LEFT", ContentRow.Text, "RIGHT",ZN.BossTrennerTableColumns["time"], "time", BossSpell.time,0,BossSpellID, boss)
-  ContentRow.Icon = CreateGenericButton ("Icon"..BossSpellID, ContentRow, "LEFT", ContentRow.Time, "RIGHT", ZN.BossTrennerTableColumns["raidicon"], "raidicon", ZN.TrennerIconsList[BossSpell.raidicon],BossSpellID,boss,-12)
+  ContentRow.Icon = CreateGenericIconDropdownButton("Icon"..BossSpellID, ContentRow, "LEFT", ContentRow.Time, "RIGHT", ZN.BossTrennerTableColumns["raidicon"], "raidicon", ZN.TrennerIconsList[BossSpell.raidicon],BossSpellID,boss,-12)
   ContentRow.Delete = CreateIconButton(ContentRow, "LEFT", ContentRow.Icon, "RIGHT", "delete", BossSpellID,boss,19)
 
   ContentRow.Delete:SetScript("OnClick", function(self)

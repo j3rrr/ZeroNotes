@@ -317,9 +317,9 @@ function ZN.DropdownList(name, parent, point, anchorFrame, anchorPoint, width, h
 	-- Dropdown:SetScript('OnEnter', function(self)
 	-- 	print("Test")
 	-- end)
-	Dropdown:SetScript('OnLeave', function(self)
-		self:Hide()
-	end)
+	-- Dropdown:SetScript('OnLeave', function(self)
+	-- 	self:Hide()
+	-- end)
 
 	table.insert(ZN.DropDowns,Dropdown)
 	return Dropdown
