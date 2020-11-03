@@ -55,6 +55,11 @@ ZNDeleteBossFrame.ConfirmButton:SetScript("OnClick", function(self)
   ZN:ReloadBossSpellTable(selectedTemplate)
   ZN:ReloadBossTrennerTable(selectedTemplate)
   ZNDeleteBossFrame:Hide()    
+  ZNBodyFrame.Subframes.BossNote.EditBox:SetShown(true)
+  ZNBodyFrame.Subframes.BossNote.EditBox.editbox.boss=selectedTemplate
+  ZNBodyFrame.Subframes.BossNote.EditBox.editbox:SetText(ZNotes.BossTemplates[selectedTemplate].NoteEnd and ZNotes.BossTemplates[selectedTemplate].NoteEnd or "")
+
+  ZN:showPreview(ZN:printPreviewNote(selectedTemplate), ZNBodyFrame.Subframes.PreviewTemplateContent.ScrollNote.scrollChild,selectedTemplate)
 end)
 ZNDeleteBossFrame.btnClose:SetScript("OnClick", function(self) ZNDeleteBossFrame:Hide() end)
 ZNDeleteBossFrame.CancelButton:SetScript("OnClick", function(self) ZNDeleteBossFrame:Hide() end)
@@ -158,6 +163,11 @@ BossFrame.btnNewTemplate:SetScript("OnClick", function(self)
       ZN:ReloadBossSpellTable(selectedTemplate)
       ZN:ReloadBossTrennerTable(selectedTemplate)
       ZNTemperBossFrame:Hide()    
+      ZNBodyFrame.Subframes.BossNote.EditBox:SetShown(true)
+      ZNBodyFrame.Subframes.BossNote.EditBox.editbox.boss=selectedTemplate
+      ZNBodyFrame.Subframes.BossNote.EditBox.editbox:SetText(ZNotes.BossTemplates[selectedTemplate].NoteEnd and ZNotes.BossTemplates[selectedTemplate].NoteEnd or "")
+  
+      ZN:showPreview(ZN:printPreviewNote(selectedTemplate), ZNBodyFrame.Subframes.PreviewTemplateContent.ScrollNote.scrollChild,selectedTemplate)
     end
   end)
   ZNTemperBossFrame.Bossid:SetText("")
@@ -185,6 +195,11 @@ BossFrame.btnEditTemplate:SetScript("OnClick", function(self)
       BossTemplateSelectButtonHead.ZNText:SetText(selectedTemplate:upper())
       ZN:ReloadBossSpellTable(selectedTemplate)
       ZN:ReloadBossTrennerTable(selectedTemplate)
+      ZNBodyFrame.Subframes.BossNote.EditBox:SetShown(true)
+      ZNBodyFrame.Subframes.BossNote.EditBox.editbox.boss=selectedTemplate
+      ZNBodyFrame.Subframes.BossNote.EditBox.editbox:SetText(ZNotes.BossTemplates[selectedTemplate].NoteEnd and ZNotes.BossTemplates[selectedTemplate].NoteEnd or "")
+  
+      ZN:showPreview(ZN:printPreviewNote(selectedTemplate), ZNBodyFrame.Subframes.PreviewTemplateContent.ScrollNote.scrollChild,selectedTemplate)
       ZNTemperBossFrame:Hide()    
     end
   end)
@@ -215,7 +230,12 @@ BossFrame.btnCopyTemplate:SetScript("OnClick", function(self)
       BossTemplateSelectButtonHead.ZNText:SetText(selectedTemplate:upper())
       ZN:ReloadBossSpellTable(selectedTemplate)
       ZN:ReloadBossTrennerTable(selectedTemplate)
-      ZNTemperBossFrame:Hide()    
+      ZNTemperBossFrame:Hide() 
+      ZNBodyFrame.Subframes.BossNote.EditBox:SetShown(true)
+      ZNBodyFrame.Subframes.BossNote.EditBox.editbox.boss=selectedTemplate
+      ZNBodyFrame.Subframes.BossNote.EditBox.editbox:SetText(ZNotes.BossTemplates[selectedTemplate].NoteEnd and ZNotes.BossTemplates[selectedTemplate].NoteEnd or "")
+  
+      ZN:showPreview(ZN:printPreviewNote(selectedTemplate), ZNBodyFrame.Subframes.PreviewTemplateContent.ScrollNote.scrollChild,selectedTemplate)   
     end
   end)
   if not selectedTemplate then
@@ -374,6 +394,7 @@ ZNBodyFrame.Subframes.BossNote.EditBox:SetShown(false)
 ZNBodyFrame.Subframes.BossNote.EditBox.editbox.doOnUpdate=true
 ZNBodyFrame.Subframes.BossNote.EditBox.editbox.OnUpdate = function(_,_,_,newValue,eb)
   ZNotes.BossTemplates[eb.boss].NoteEnd=newValue
+  ZN:showPreview(ZN:printPreviewNote(selectedTemplate), ZNBodyFrame.Subframes.PreviewTemplateContent.ScrollNote.scrollChild,selectedTemplate)
 end
 ZNBodyFrame.Subframes.BossNote.EditBox.editbox.hintText = ZN.CreateText(ZNBodyFrame.Subframes.BossNote.EditBox, "BOTTOMRIGHT", ZNBodyFrame.Subframes.BossNote.EditBox, "BOTTOMRIGHT", 225, 10, 0, 3, "Interface\\AddOns\\ZeroNotes\\Media\\Font\\ZNReg.ttf", 10, ZN.Colors.INACTIVE, "Press Enter to save, Shift+Enter for new line", "LEFT", "CENTER")
 ZNBodyFrame.Subframes.BossNote.EditBox.editbox.hintText:SetShown(false)
@@ -828,7 +849,7 @@ function ZN:InitBoss()
     ZNTemperBossFrame.Bossid:SetScript('OnLeave', function(self)
       GameTooltip:Hide()
     end)
-
+    ZNBodyFrame.Subframes.BossNote.EditBox:SetShown(true)
     if ZNotes and ZNotes.lastTemplates and ZNotes.lastTemplates.lastBossTemplate and ZNotes.lastTemplates.lastBossTemplate~="" then
       BossTemplateSelectButtonHead.ZNText:SetText(ZNotes.lastTemplates.lastBossTemplate:upper())
       selectedTemplate=ZNotes.lastTemplates.lastBossTemplate
