@@ -1,8 +1,14 @@
 local _, ZN, L = ...
 
+-- for i=1, #ZN.DropDownsEdit do
+-- 		ZN.DropDownsEdit[i]:SetShown(false)
+-- 	end
+
 function ZN:createGroupTemplateFrames()
   GroupTemplates = ZNBodyFrame.Subframes.GroupTemplates
 
+  --GroupTemplates.NoTemplatesMessage = ZN.CreateGenericButton("NoTemplatesMessage", GroupTemplates, "TOPLEFT", GroupTemplates, "TOPLEFT", 930, 530, 0, 0, 0, 0 , 18, ZN.Colors.INACTIVE, ZN.Colors.BG, nil, "No Templates found.\nCreate a new Template using the [BUTTON] above", "CENTER", false, nil, nil, nil, nil, nil)
+  GroupTemplates.NoTemplatesMessage = ZN.CreateText(GroupTemplates, "TOPLEFT", GroupTemplates, "TOPLEFT", 930, 530, 0, 0, "Interface\\Addons\\ZeroNotes\\Media\\Font\\ZNReg.ttf", 16, ZN.Colors.INACTIVE, "No Templates found\nCreate a new Template using the button above", "CENTER", "CENTER", 20, false, nil, nil, nil)
   GroupTemplateSelectButtonHead = ZN.CreateGenericButton("ZNGroupTemplateSelectButton", GroupTemplates, "LEFT", ZNHeaderFrame.Version, "LEFT", 240, 30, 50, 0,10,0, 12, ZN.Colors.ACTIVE, ZN.Colors.SBButtonBG, nil, ZN.selectedGroupTemplate , "LEFT",true )
   GroupTemplateSelectButtonHead.doOnUpdate = true
   GroupTemplateSelectButtonHead.OnUpdate = function(_,_,_,newValue) 
@@ -15,20 +21,22 @@ function ZN:createGroupTemplateFrames()
   end
   GroupTemplateSelectButtonHead:SetScript("OnClick", function(self) ZN:CreateDropdown(self, ZN:getTableKeys(ZNotes.GroupTemplates), ZN:getTemplateTableWithoutCurrentOrder(ZNotes.GroupTemplates), 240, ZN.Colors.BG, "LEFT", 10, nil, "TOOLTIP") end)
 
-  GroupTemplates.GroupTemplatesLeft = ZN.createSubFrame("GroupTemplatesLeft", GroupTemplates, 300, 530, ZN.Colors.BG, 1, "TOPLEFT", "HIGH", false, 0, 0)
-  GroupTemplates.GroupTemplatesMiddle = ZN.createSubFrame("GroupTemplatesMiddle", GroupTemplates, 300, 530, ZN.Colors.BG, 1, "TOPLEFT", "HIGH", false, 10, 0, GroupTemplates.GroupTemplatesLeft, "TOPRIGHT")
-  GroupTemplates.GroupTemplatesRight = ZN.createSubFrame("GroupTemplatesRight", GroupTemplates, 300, 530, ZN.Colors.BG, 1, "TOPLEFT", "HIGH", false, 10, 0, GroupTemplates.GroupTemplatesMiddle, "TOPRIGHT")
+  GroupTemplates.GroupTemplatesLeft = ZN.createSubFrame("GroupTemplatesLeft", GroupTemplates, 300, 530, nil, 1, "TOPLEFT", "HIGH", false, 0, 0)
+  GroupTemplates.GroupTemplatesMiddle = ZN.createSubFrame("GroupTemplatesMiddle", GroupTemplates, 300, 530, nil, 1, "TOPLEFT", "HIGH", false, 10, 0, GroupTemplates.GroupTemplatesLeft, "TOPRIGHT")
+  GroupTemplates.GroupTemplatesRight = ZN.createSubFrame("GroupTemplatesRight", GroupTemplates, 300, 530, nil, 1, "TOPLEFT", "HIGH", false, 10, 0, GroupTemplates.GroupTemplatesMiddle, "TOPRIGHT")
 
   GroupTemplates.btnNewTemplate = ZN.CreateIconButton(GroupTemplates, "LEFT", GroupTemplateSelectButtonHead, "RIGHT", 18, 18, 8, 0, "Interface\\AddOns\\ZeroNotes\\Media\\Texture\\newtempl", ZN.Colors.ACTIVE, ZN.Colors.INACTIVE, false, ZN.Colors.ACTIVE, true, "Create New Template", ZN.Colors.ACTIVE)
   GroupTemplates.btnCopyTemplate  = ZN.CreateIconButton(GroupTemplates, "LEFT", GroupTemplates.btnNewTemplate, "RIGHT", 18, 18, 8, 0, "Interface\\AddOns\\ZeroNotes\\Media\\Texture\\copy", ZN.Colors.ACTIVE, ZN.Colors.INACTIVE, false, ZN.Colors.ACTIVE, true, "Copy Template", ZN.Colors.ACTIVE)
   GroupTemplates.btnEditTemplate = ZN.CreateIconButton(GroupTemplates, "RIGHT", GroupTemplateSelectButtonHead, "RIGHT", 16, 16, -8, 0, "Interface\\AddOns\\ZeroNotes\\Media\\Texture\\edit", ZN.Colors.ACTIVE, ZN.Colors.INACTIVE, false, ZN.Colors.ACTIVE, true, "Edit Template", ZN.Colors.ACTIVE)
   GroupTemplates.btnEditTemplate:SetFrameStrata("DIALOG")
-
+  
   GroupTemplates.btnNewTemplate:SetScript("OnClick", function(self) ZN:createNewGroupTemplate() end)
 
   -- Edit Group Popup
   ZNeditGroupFrame = ZN.createSubFrame("ZNeditGroupFrame",ZNFrame, 302, 202, ZN.Colors.HD, 1, 'CENTER', 'TOOLTIP', true)
+  ZNeditGroupFrame:SetScript("OnMouseDown", function(self, button)end)
   table.insert(ZN.DropDownsEdit, ZNeditGroupFrame)
+  table.insert(ZN.GroupPopups, ZNeditGroupFrame)
   ZNeditGroupFrame:SetBackdrop({bgFile = "Interface/Tooltips/UI-Tooltip-Background", 
     edgeFile = [[Interface\Buttons\WHITE8x8]],
     edgeSize = 1,
@@ -105,8 +113,10 @@ function ZN:createGroupTemplateFrames()
 
   -- New Group Popup
   ZNnewGroupFrame = ZN.createSubFrame("ZNnewGroupFrame",ZNFrame, 302, 202, ZN.Colors.HD, 1, 'CENTER', 'TOOLTIP', true)
+  ZNnewGroupFrame:SetScript("OnMouseDown", function(self, button)end)
   table.insert(ZN.DropDownsEdit, ZNnewGroupFrame)
-  --ZNnewGroupFrame:SetScript("OnMouseDown", function(self, button)end)
+  table.insert(ZN.GroupPopups, ZNnewGroupFrame)
+  ZNnewGroupFrame:SetScript("OnMouseDown", function(self, button)end)
   ZNnewGroupFrame:SetBackdrop({bgFile = "Interface/Tooltips/UI-Tooltip-Background", 
     edgeFile = [[Interface\Buttons\WHITE8x8]],
     edgeSize = 1,
@@ -115,19 +125,36 @@ function ZN:createGroupTemplateFrames()
   ZNnewGroupFrame:SetBackdropColor(tonumber("0x"..ZN.Colors.HD:sub(1,2))/255, tonumber("0x"..ZN.Colors.HD:sub(3,4))/255, tonumber("0x"..ZN.Colors.HD:sub(5,6))/255, 1);
   ZNnewGroupFrame:SetBackdropBorderColor(tonumber("0x"..ZN.Colors.INACTIVE:sub(1,2))/255, tonumber("0x"..ZN.Colors.INACTIVE:sub(3,4))/255, tonumber("0x"..ZN.Colors.INACTIVE:sub(5,6))/255, 1);
   ZNnewGroupFrame.btnClose = ZN.CreateIconButton(ZNnewGroupFrame, "TOPRIGHT", ZNnewGroupFrame, "TOPRIGHT", 16, 16, -11, -11, "Interface\\AddOns\\ZeroNotes\\Media\\Texture\\x_big_active", ZN.Colors.ACTIVE, ZN.Colors.INACTIVE, false)
-  ZNnewGroupFrame.ZeroTemplate = ZN:createCheckBox(ZNnewGroupFrame, "TOPLEFT", ZNnewGroupFrame, "TOPLEFT", 20, -20, "Zero Template", 12, ZN.Colors.ACTIVE, 200, false) 
+  --Use Live Group Checkbox
+  ZNnewGroupFrame.UseLiveGroup = ZN:createCheckBox(ZNnewGroupFrame, "TOPLEFT", ZNnewGroupFrame, "TOPLEFT", 20, -20, "Use Current Group", 12, ZN.Colors.ACTIVE, 200, false) 
+  ZNnewGroupFrame.UseLiveGroup:SetScript("OnClick",function(self)
+    self.toggleChecked()
+  end)
+  ZNnewGroupFrame.UseLiveGroup.button:SetScript("OnMouseDown",function()
+    ZNnewGroupFrame.UseLiveGroup.toggleChecked()
+  end)
+  local guildName,_,_ = GetGuildInfo("player")
+  if (IsInGuild() and not guildName == "Zero") or not IsInGuild() then
+    ZNnewGroupFrame.UseLiveGroup:Hide()
+    ZNnewGroupFrame.UseLiveGroup.label:Hide()
+    ZNnewGroupFrame.UseLiveGroup.button:Hide()
+  end
+  -- Zero Template Checkbox
+  ZNnewGroupFrame.ZeroTemplate = ZN:createCheckBox(ZNnewGroupFrame, "TOPLEFT", ZNnewGroupFrame.UseLiveGroup, "BOTTOMLEFT", 130, -20, "Zero Template", 12, ZN.Colors.ACTIVE, 200, false) 
   ZNnewGroupFrame.ZeroTemplate:SetScript("OnClick",function(self)
     self.toggleChecked()
+    ZNnewGroupFrame.UseLiveGroup.toggleChecked()
   end)
   ZNnewGroupFrame.ZeroTemplate.button:SetScript("OnMouseDown",function()
     ZNnewGroupFrame.ZeroTemplate.toggleChecked()
+    ZNnewGroupFrame.UseLiveGroup.toggleChecked()
   end)
   local guildName,_,_ = GetGuildInfo("player")
   if (IsInGuild() and not guildName == "Zero") or not IsInGuild() then
     ZNnewGroupFrame.ZeroTemplate:Hide()
     ZNnewGroupFrame.ZeroTemplate.label:Hide()
     ZNnewGroupFrame.ZeroTemplate.button:Hide()
-  end
+  end  
   ZNnewGroupFrame.Message = ZN.CreateText(ZNnewGroupFrame, "TOP", ZNnewGroupFrame, "TOP", 250, 30, 0, -41, "Interface\\AddOns\\ZeroNotes\\Media\\Font\\ZNReg.ttf", 12, ZN.Colors.ACTIVE, "Template Name", "LEFT")
   ZNnewGroupFrame.newGroupName = ZN.SingleLineEditBox("newGroupName", ZNnewGroupFrame, "TOP", ZNnewGroupFrame.Message, "BOTTOM", 250, 30, 0, -10, 20, 0 ,12, ZN.Colors.ACTIVE, ZN.Colors.SBButtonBG, nil, "", "LEFT")
   ZNnewGroupFrame.ErrorMessage = ZN.CreateText(ZNnewGroupFrame, "TOP", ZNnewGroupFrame.newGroupName, "BOTTOM", 250, 20, 0, 0, "Interface\\AddOns\\ZeroNotes\\Media\\Font\\ZNVers.ttf", 10, ZN.Colors.chatYell, "", "CENTER")
@@ -171,8 +198,13 @@ function ZN:createGroupTemplateFrames()
       C_Timer.After(3, function() ZNnewGroupFrame.ErrorMessage:Hide() end)
     -- If Name does not exist, create new template
     else
-      if ZNnewGroupFrame.ZeroTemplate.active then
+      if ZNnewGroupFrame.ZeroTemplate.active and ZNnewGroupFrame.UseLiveGroup.active then
+        ZN:Print("Current Group oder Template!")
+        return
+      elseif ZNnewGroupFrame.ZeroTemplate.active then
         ZNotes.GroupTemplates[name] = ZN.ZeroGroupTemplate
+      elseif ZNnewGroupFrame.UseLiveGroup.active then
+        ZNotes.GroupTemplates[name] = ZN:BuildRaidRosterGroupTemplate()
       else
         ZNotes.GroupTemplates[name] = {}
         for i = 1, 30 do
@@ -184,15 +216,16 @@ function ZN:createGroupTemplateFrames()
         end
       end
       -- Reset Button / SavedVariables / Rebuild Frames
+      ZN:DebugPrint(ZN.selectedGroupTemplate)
       ZNotes.lastTemplates.lastGroupTemplate = name
       ZN.selectedGroupTemplate = name
+      ZN:DebugPrint(ZN.selectedGroupTemplate)
       ZN:Print("Created new Template: "..ZN.selectedGroupTemplate) 
       ZN:Print("Please /reload before creating / editing a new Template") 
       GroupTemplateSelectButtonHead.ZNText:SetText(ZN.selectedGroupTemplate:upper())
       ZNnewGroupFrame:Hide()
       ZN:BuildGroupTemplateSortArray()
       ZN:updateGroupView()
-      --ReloadUI()      
     end
   end)
   ZNnewGroupFrame.btnClose:SetScript("OnClick", function(self) ZNnewGroupFrame:Hide() end)
@@ -200,7 +233,9 @@ function ZN:createGroupTemplateFrames()
 
   -- Delete Group Popup
   ZNdeleteGroupFrame = ZN.createSubFrame("ZNdeleteGroupFrame",ZNFrame, 302, 202, ZN.Colors.HD, 1, 'CENTER', 'TOOLTIP', true)
+  ZNdeleteGroupFrame:SetScript("OnMouseDown", function(self, button)end)
   table.insert(ZN.DropDownsEdit, ZNdeleteGroupFrame)
+  table.insert(ZN.GroupPopups, ZNdeleteGroupFrame)
   ZNdeleteGroupFrame:SetBackdrop({bgFile = "Interface/Tooltips/UI-Tooltip-Background", 
     edgeFile = [[Interface\Buttons\WHITE8x8]],
     edgeSize = 1,
@@ -231,6 +266,7 @@ function ZN:createGroupTemplateFrames()
       for i = 1, #ZN.GroupMemberRows do
         ZN.GroupMemberRows[i]:Hide()
       end
+      GroupTemplates.NoTemplatesMessage:Show()
     end
     ZNdeleteGroupFrame:Hide()    
   end)
@@ -239,7 +275,9 @@ function ZN:createGroupTemplateFrames()
 
   -- Copy Group Popup
   ZNcopyGroupFrame = ZN.createSubFrame("ZNcopyGroupFrame",ZNFrame, 302, 202, ZN.Colors.HD, 1, 'CENTER', 'TOOLTIP', true)
+  ZNcopyGroupFrame:SetScript("OnMouseDown", function(self, button)end)
   table.insert(ZN.DropDownsEdit, ZNcopyGroupFrame)
+  table.insert(ZN.GroupPopups, ZNcopyGroupFrame)
   ZNcopyGroupFrame:SetBackdrop({bgFile = "Interface/Tooltips/UI-Tooltip-Background", 
     edgeFile = [[Interface\Buttons\WHITE8x8]],
     edgeSize = 1,
@@ -290,7 +328,7 @@ function ZN:createGroupTemplateFrames()
       return
     end
     -- If Name does not exist, copy template, delete old
-    ZNotes.GroupTemplates[name] = ZNotes.GroupTemplates[ZN.selectedGroupTemplate]
+    ZNotes.GroupTemplates[name] = table.copy(ZNotes.GroupTemplates[ZN.selectedGroupTemplate])
     ZN:Print("Copied "..ZN.selectedGroupTemplate.." to "..name) 
     ZN:Print("Please /reload before creating / editing a new Template")   
     ZN.selectedGroupTemplate = name
@@ -432,6 +470,7 @@ end
 local template = {}
 
 function ZN:updateGroupView()
+  ZN:DebugPrint("Update Start")
   local anchor = GroupTemplates.GroupTemplatesLeft
   if ZN.selectedGroupTemplate ~= nil then 
     template = ZNotes.GroupTemplates[ZN.selectedGroupTemplate]
@@ -458,11 +497,15 @@ function ZN:updateGroupView()
       ZN.GroupMemberRows[i]:SetPoint("TOPLEFT", parent,"TOPLEFT")
     end
     anchor = ZN.GroupMemberRows[i]
+    GroupTemplates.NoTemplatesMessage:Hide()
+    ZN.GroupMemberRows[i]:Show()
   end
+  ZN:DebugPrint("Update End")
 end
 
 ZN.GroupTemplateSortArray={}
 function ZN:BuildGroupTemplateSortArray()
+  ZN:DebugPrint("Sort Start")
   ZN.GroupTemplateSortArray={}
   local template = ZNotes.GroupTemplates[ZN.selectedGroupTemplate]
   for i=1, #template do
@@ -482,4 +525,5 @@ function ZN:BuildGroupTemplateSortArray()
       end 
     end 
   end 
+  ZN:DebugPrint("Sort End")
 end

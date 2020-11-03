@@ -502,7 +502,7 @@ function ZN:createCheckBox(parent, point, anchor, anchorPoint, xOffset, yOffset,
 	cb.label = cbLabel
 	cb.buttonWidth = 16+labelWidth
 	cb.buttonHeight = labelFontSize+4
-	local cbButton = ZN.createSubFrame(nil, parent, cb.buttonWidth, cb.buttonHeight, nil, 1, "LEFT", nil, false, 0, 0, cb, "LEFT", false)
+	local cbButton = ZN.createSubFrame(nil, parent, cb.buttonWidth, cb.buttonHeight, nil, 1, "LEFT", "TOOLTIP", false, 0, 0, cb, "LEFT", false)
 	cb.button = cbButton
 	return cb
 end
