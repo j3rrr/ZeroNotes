@@ -298,7 +298,8 @@ function ZN:createRawNote(boss, group)
     if spell["trenner"] then
       if not prioNote["lines"][spell.time] then prioNote["lines"][spell.time]={} end
       if not prioNote["lines"][spell.time]["trenner"] then prioNote["lines"][spell.time]["trenner"] = {} end
-      table.insert(prioNote["lines"][spell.time]["trenner"], spell)
+      if not prioNote["lines"][spell.time]["trenner"]["trenner"] then prioNote["lines"][spell.time]["trenner"]["trenner"] = {} end
+      table.insert(prioNote["lines"][spell.time]["trenner"]["trenner"], spell)
     else
       for _,needs in ipairs(spell["need"]) do
         ZN:ShiftSpellRatings(needs,sortedAvailableSpells)
@@ -331,8 +332,9 @@ function ZN:createRawNote(boss, group)
                 tmpLine.bossSpellName = spell.name
                 tmpLine.bossSpellId = spell.id
                 if not prioNote["lines"][tmpLine.time] then prioNote["lines"][tmpLine.time]={} end
-                if not prioNote["lines"][tmpLine.time][playerSpell["type"]] then prioNote["lines"][tmpLine.time][playerSpell["type"]] = {} end
-                table.insert(prioNote["lines"][tmpLine.time][playerSpell["type"]], tmpLine)
+                if not prioNote["lines"][tmpLine.time][spell.id] then prioNote["lines"][tmpLine.time][spell.id] = {} end
+                if not prioNote["lines"][tmpLine.time][spell.id][playerSpell["type"]] then prioNote["lines"][tmpLine.time][spell.id][playerSpell["type"]] = {} end
+                table.insert(prioNote["lines"][tmpLine.time][spell.id][playerSpell["type"]], tmpLine)
                 spellSet = true
               end
             end
@@ -345,8 +347,9 @@ function ZN:createRawNote(boss, group)
           tmp.bossSpellId = spell.id
           tmp.missing = 'Missing: '..needs.type
           if not prioNote["missing"][tmp.time] then prioNote["missing"][tmp.time]={} end
-          if not prioNote["missing"][tmp.time][needs.type] then prioNote["missing"][tmp.time][needs.type] = {} end
-          table.insert(prioNote["missing"][tmp.time][needs.type], tmp)
+          if not prioNote["missing"][tmp.time][spell.id] then prioNote["missing"][tmp.time][spell.id] = {} end
+          if not prioNote["missing"][tmp.time][spell.id][needs.type] then prioNote["missing"][tmp.time][spell.id][needs.type] = {} end
+          table.insert(prioNote["missing"][tmp.time][spell.id][needs.type], tmp)
         end
       end      
     end
@@ -386,7 +389,14 @@ function ZN:PrintNote(boss, inclMissing, group)
     return
   end
 
-  local rtNote = "{id:"..rawNoteData.bossid.."}"
+
+  --[[
+    TODO: time-SPELL(neu)-type
+  --]]
+  local rtNote = ""
+  if rawNoteData.bossid then
+    rtNote = "{id:"..rawNoteData.bossid.."}"
+  end
   local missingNote = "Missing:"
   local linesTimes={}
   local missingTimes={}
@@ -403,71 +413,75 @@ function ZN:PrintNote(boss, inclMissing, group)
   
   for k=1, #linesTimes do
     local currTime = rawNoteData["lines"][linesTimes[k]]
-    if currTime.trenner then
-      for _,trenner in ipairs(currTime.trenner) do
-        local convertedTime = ZN:SecondsToClock(trenner["time"])
-        rtNote = rtNote.."\n\n{time:"..convertedTime.."} "..trenner["raidicon"].." ||cffff00ff"..trenner["text"].."||r "..trenner["raidicon"]
-      end
-    end
-    local lineInit = false
-    if currTime.heal then
-      for _,spell in ipairs(currTime.heal) do
-        if not lineInit then
-          local convertedTime = ZN:SecondsToClock(spell["time"])
-          rtNote = rtNote.."\n{time:"..convertedTime.."} {spell:"..spell["bossSpellId"].."} -"
-          lineInit=true
+    for _,bossSpell in pairs(currTime) do
+      if bossSpell.trenner then
+        for _,trenner in ipairs(bossSpell.trenner) do
+          local convertedTime = ZN:SecondsToClock(trenner["time"])
+          rtNote = rtNote.."\n\n{time:"..convertedTime.."} "..trenner["raidicon"].." ||cffff00ff"..trenner["text"].."||r "..trenner["raidicon"]
         end
-        rtNote = rtNote.." ||cff"..spell["color"]..spell["player"].."||r{spell:"..spell["playerSpellId"].."}"
       end
-    end
-    if currTime.util then
-      for _,spell in ipairs(currTime.util) do
-        if not lineInit then
-          local convertedTime = ZN:SecondsToClock(spell["time"])
-          rtNote = rtNote.."\n{time:"..convertedTime.."} {spell:"..spell["bossSpellId"].."} -"
-          lineInit=true
+      local lineInit = false
+      if bossSpell.heal then
+        for _,spell in ipairs(bossSpell.heal) do
+          if not lineInit then
+            local convertedTime = ZN:SecondsToClock(spell["time"])
+            rtNote = rtNote.."\n{time:"..convertedTime.."} {spell:"..spell["bossSpellId"].."} -"
+            lineInit=true
+          end
+          rtNote = rtNote.." ||cff"..spell["color"]..spell["player"].."||r{spell:"..spell["playerSpellId"].."}"
         end
-        rtNote = rtNote.." ||cff"..spell["color"]..spell["player"].."||r{spell:"..spell["playerSpellId"].."}"
       end
-    end
-    if currTime.imun then
-      for _,spell in ipairs(currTime.imun) do
-        if not lineInit then
-          local convertedTime = ZN:SecondsToClock(spell["time"])
-          rtNote = rtNote.."\n{time:"..convertedTime.."} {spell:"..spell["bossSpellId"].."} -"
-          lineInit=true
+      if bossSpell.util then
+        for _,spell in ipairs(bossSpell.util) do
+          if not lineInit then
+            local convertedTime = ZN:SecondsToClock(spell["time"])
+            rtNote = rtNote.."\n{time:"..convertedTime.."} {spell:"..spell["bossSpellId"].."} -"
+            lineInit=true
+          end
+          rtNote = rtNote.." ||cff"..spell["color"]..spell["player"].."||r{spell:"..spell["playerSpellId"].."}"
         end
-        rtNote = rtNote.." ||cff"..spell["color"]..spell["player"].."||r{spell:"..spell["playerSpellId"].."}"
+      end
+      if bossSpell.imun then
+        for _,spell in ipairs(bossSpell.imun) do
+          if not lineInit then
+            local convertedTime = ZN:SecondsToClock(spell["time"])
+            rtNote = rtNote.."\n{time:"..convertedTime.."} {spell:"..spell["bossSpellId"].."} -"
+            lineInit=true
+          end
+          rtNote = rtNote.." ||cff"..spell["color"]..spell["player"].."||r{spell:"..spell["playerSpellId"].."}"
+        end
       end
     end
   end
 
   for k=1, #missingTimes do
     local currTime = rawNoteData["missing"][missingTimes[k]]
-    local lineInit = false
-    if currTime.heal then
-      if not lineInit then
-        local convertedTime = ZN:SecondsToClock(currTime.heal[1]["time"])
-        missingNote = missingNote.."\n{time:"..convertedTime.."} {spell:"..currTime.heal[1]["bossSpellId"].."} "
-        lineInit=true
+    for _,bossSpell in pairs(currTime) do
+      local lineInit = false
+      if bossSpell.heal then
+        if not lineInit then
+          local convertedTime = ZN:SecondsToClock(bossSpell.heal[1]["time"])
+          missingNote = missingNote.."\n{time:"..convertedTime.."} {spell:"..bossSpell.heal[1]["bossSpellId"].."} "
+          lineInit=true
+        end
+        missingNote = missingNote.."- Heal: "..#bossSpell.heal.." "
       end
-      missingNote = missingNote.."- Heal: "..#currTime.heal.." "
-    end
-    if currTime.util then
-      if not lineInit then
-        local convertedTime = ZN:SecondsToClock(currTime.util[1]["time"])
-        missingNote = missingNote.."\n{time:"..convertedTime.."} {spell:"..currTime.util[1]["bossSpellId"].."} "
-        lineInit=true
+      if bossSpell.util then
+        if not lineInit then
+          local convertedTime = ZN:SecondsToClock(bossSpell.util[1]["time"])
+          missingNote = missingNote.."\n{time:"..convertedTime.."} {spell:"..bossSpell.util[1]["bossSpellId"].."} "
+          lineInit=true
+        end
+        missingNote = missingNote.."- Util: "..#bossSpell.util.." "
       end
-      missingNote = missingNote.."- Util: "..#currTime.util.." "
-    end
-    if currTime.imun then
-      if not lineInit then
-        local convertedTime = ZN:SecondsToClock(currTime.imun[1]["time"])
-        missingNote = missingNote.."\n{time:"..convertedTime.."} {spell:"..currTime.imun[1]["bossSpellId"].."} "
-        lineInit=true
+      if bossSpell.imun then
+        if not lineInit then
+          local convertedTime = ZN:SecondsToClock(bossSpell.imun[1]["time"])
+          missingNote = missingNote.."\n{time:"..convertedTime.."} {spell:"..bossSpell.imun[1]["bossSpellId"].."} "
+          lineInit=true
+        end
+        missingNote = missingNote.."- Imun: "..#bossSpell.imun.." "
       end
-      missingNote = missingNote.."- Imun: "..#currTime.imun.." "
     end
   end
 
