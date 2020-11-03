@@ -413,6 +413,67 @@ function ZN:CreateDropdown(parentObj, list, order, width, dropDownBgColor, butto
 	parentObj.dropdown:SetShown(not wasShown);
 end
 
+function ZN:CreateIconDropdown(parentObj, list, order, width, dropDownBgColor, buttonAlign, buttonTextXOffset, hoverColor, strata, listItemHeight, buttonTextYOffset)
+
+	if not parentObj.dropdownInit then
+		parentObj.dropdownInit = true
+		local parentName = parentObj.name
+		local dropdown = ZN.DropdownList(parentName.."Dropdown", ZNFrame, "TOPLEFT", parentObj, "BOTTOMLEFT" , width, listItemHeight and listItemHeight or 30, dropDownBgColor, 1, "CENTER", true, #order, "TOOLTIP")
+		parentObj.dropdown = dropdown
+		dropdown.dropdownItems = {}
+		
+		for i = 1, #order do
+			local text = list[order[i]]:upper()
+			text = text:gsub("(:%d+|)T", "%1t")
+			local dropdownItem = ZN.CreateGenericButton(nil, dropdown, "TOPLEFT", dropdown, "TOPLEFT", width, listItemHeight and listItemHeight or 30, 0,listItemHeight and (-listItemHeight*(i-1)) or (-30*(i-1)), buttonTextXOffset, buttonTextYOffset and buttonTextYOffset or 0, 12, nil, dropDownBgColor, nil, text , buttonAlign ,true, hoverColor)
+			dropdownItem.class = order[i]
+			dropdownItem.newText = list[order[i]]:upper()
+			dropdownItem.newText = dropdownItem.newText:gsub("(:%d+|)T", "%1t") -- Fix texture paths that need to end in lowercase |t
+			dropdownItem.parentObj = parentObj
+			dropdownItem:SetScript("OnClick", function(self)
+				self.parentObj.ZNText:SetText(dropdownItem.newText)
+				self.parentObj.Update(dropdownItem.class)
+				self.parentObj.dropdown:SetShown(not self.parentObj.dropdown:IsShown());
+			end)
+			dropdown.dropdownItems[i]=dropdownItem
+		end
+	else
+		parentObj.dropdown:SetHeight((listItemHeight and listItemHeight or 30)*#order)
+		for i=1, #parentObj.dropdown.dropdownItems do
+			parentObj.dropdown.dropdownItems[i]:SetShown(false)
+		end
+		for i = 1, #order do
+			if i> #parentObj.dropdown.dropdownItems then
+				local text = list[order[i]]:upper()
+				text = text:gsub("(:%d+|)T", "%1t")
+				local dropdownItem = ZN.CreateGenericButton(nil, parentObj.dropdown, "TOPLEFT", parentObj.dropdown, "TOPLEFT", width, listItemHeight and listItemHeight or 30, 0,listItemHeight and (-listItemHeight*(i-1)) or (-30*(i-1)), buttonTextXOffset, buttonTextYOffset and buttonTextYOffset or 0, 12, nil, dropDownBgColor, nil, text , buttonAlign ,true, hoverColor)
+				dropdownItem.class = order[i]
+				dropdownItem.newText = list[order[i]]:upper()
+				dropdownItem.newText = dropdownItem.newText:gsub("(:%d+|)T", "%1t") -- Fix texture paths that need to end in lowercase |t
+				dropdownItem.parentObj = parentObj
+				dropdownItem:SetScript("OnClick", function(self)
+					self.parentObj.ZNText:SetText(dropdownItem.newText)
+					self.parentObj.Update(dropdownItem.class)
+					self.parentObj.dropdown:SetShown(not self.parentObj.dropdown:IsShown());
+			end)
+			parentObj.dropdown.dropdownItems[i]=dropdownItem
+			else
+				parentObj.dropdown.dropdownItems[i].class = order[i]
+				parentObj.dropdown.dropdownItems[i].newText = list[order[i]]:upper()
+				parentObj.dropdown.dropdownItems[i].newText = parentObj.dropdown.dropdownItems[i].newText:gsub("(:%d+|)T", "%1t") -- Fix texture paths that need to end in lowercase |t
+				parentObj.dropdown.dropdownItems[i].ZNText:SetText(parentObj.dropdown.dropdownItems[i].newText)
+			end
+			parentObj.dropdown.dropdownItems[i]:SetShown(true)
+		end
+	end
+	local wasShown = parentObj.dropdown:IsShown();
+	for i=1, #ZN.DropDowns do
+		ZN.DropDowns[i]:SetShown(false)
+	end
+
+	parentObj.dropdown:SetShown(not wasShown);
+end
+
 function ZN:SendToExRT(template) 
 	print(template)
 end
