@@ -110,6 +110,7 @@ function ZN:BuildRaidRoster(group)
   local RaidSize = GetNumGroupMembers()
   local RaidRoster = {}
   local unitprefix = "raid"
+  local unit = ""
 
   if IsInGroup() and not IsInRaid() then
     unitprefix = "party"
@@ -187,28 +188,26 @@ function ZN:getAvailableSpells(group)
   local seen = {}
 
   for i,player in ipairs(currentSetup) do
-    --if ( db[player["rolle"]] and db[player["rolle"]][player["klasse"]] ) then
-      for _,spell in ipairs(db) do
+    for _,spell in ipairs(db) do
         if player.role == spell.role and player.class == spell.class then
           local tmp = {}
-          if seen[spell["id"]..spell["role"]] then
-            ZN:addPlayerToSpell(player["name"], availableSpells, spell["name"])
-          else
+          -- if seen[spell["id"]..spell["role"]] then
+          --   ZN:addPlayerToSpell(player["name"], availableSpells, spell["name"])
+          -- else
             tmp = table.copy(spell)
             tmp["color"] = ZN.Colors[player.class]
-            tmp["player"] = {}
+            --tmp["player"] = {}
+            tmp["PlayerName"] = player["name"]
             tmp.baseRating = tmp.rating
-            table.insert(tmp["player"], {["name"]= player["name"]})
-            seen[spell["id"]..spell["role"]] = true
-          end
+            --table.insert(tmp["player"], {["name"]= player["name"]})
+            --seen[spell["id"]..spell["role"]] = true
+          -- end
           if tmp["name"] then 
             table.insert(availableSpells["spells"], tmp)
           end
         end
       end      
-    --end
   end
-  --znspells=availableSpells
   return availableSpells
 end
 
@@ -289,7 +288,7 @@ function ZN:createRawNote(boss, group)
 
   
   table.sort(noteTemplate["spells"], function(a,b) return a.prio > b.prio or (a.prio == b.prio and a.time < b.time) end)
-  table.sort(availableSpells["spells"], function(a,b) return a.rating > b.rating end)
+  table.sort(availableSpells["spells"], function(a,b) return a.rating > b.rating or (a.rating == b.rating and a.PlayerName > b.PlayerName)end)
 
   local sortedPrioTemplate = noteTemplate["spells"]
   local sortedAvailableSpells = availableSpells["spells"]
@@ -300,10 +299,10 @@ function ZN:createRawNote(boss, group)
     else
       for _,needs in ipairs(spell["need"]) do
         ZN:ShiftSpellRatings(needs,sortedAvailableSpells)
-        table.sort(sortedAvailableSpells, function(a,b) return a.rating > b.rating end)
+        table.sort(availableSpells["spells"], function(a,b) return a.rating > b.rating or (a.rating == b.rating and a.PlayerName > b.PlayerName)end)
         local spellSet = false
         for _,playerSpell in ipairs(sortedAvailableSpells) do
-          for i = 1, table.getn(playerSpell["player"]) do
+          --for i = 1, table.getn(playerSpell["player"]) do
             if not spellSet then
               local tmpLine = {}
               local spellUseable = false
@@ -315,13 +314,14 @@ function ZN:createRawNote(boss, group)
                 end
               end
               if spellUseable then
-                --playerSpell["id"]
-                local spellalias = playerSpell["id"].."_"..playerSpell["player"][i]["name"]
+                --local spellalias = playerSpell["id"].."_"..playerSpell["player"][i]["name"]
+                local spellalias = playerSpell["id"].."_"..playerSpell["PlayerName"]
                 spellUseable = ZN:isSpellAvailable(spellsUsed, spellalias, playerSpell["cd"], spell["time"])
               end
               if spellUseable then
                 tmpLine.time = spell.time
-                tmpLine.player = playerSpell.player[i].name
+                --tmpLine.player = playerSpell.player[i].name
+                tmpLine.player = playerSpell.PlayerName
                 tmpLine.color = playerSpell.color              
                 tmpLine.playerSpellName = playerSpell.name
                 tmpLine.playerSpellId = playerSpell.id
@@ -331,7 +331,7 @@ function ZN:createRawNote(boss, group)
                 spellSet = true
               end
             end
-          end          
+          --end          
         end   
         if not spellSet then
           local tmp = {}

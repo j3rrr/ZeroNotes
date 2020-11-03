@@ -47,6 +47,7 @@ table.insert(ZN.DropDownsEdit,ZNDeleteBossFrame)
 ZNDeleteBossFrame.ConfirmButton:SetScript("OnClick", function(self)
   ZNotes.BossTemplates[selectedTemplate] = nil
   ZN:Print("Deleted "..selectedTemplate)
+  selectedTemplate=""
   for k,v in pairs(ZNotes.BossTemplates) do
     selectedTemplate = k
   end
@@ -100,9 +101,9 @@ BossFrame.btnDeleteTemplate:SetScript("OnClick", function(self)
     for k,v in pairs(ZNotes.BossTemplates) do
       countTemplates = countTemplates +1
     end
-    if countTemplates == 1 then
-      ZN:Print("You can't delete your last Template.")
-      UIErrorsFrame:AddMessage("You can't delete your last Template.", 0.8, 0.07, 0.2, 5.0)
+    if countTemplates == 0 then
+      ZN:Print("You have no templates to delete.")
+      UIErrorsFrame:AddMessage("You have no templates to delete.", 0.8, 0.07, 0.2, 5.0)
     else
       ZNDeleteBossFrame:Show()
     end
@@ -129,7 +130,7 @@ end
 local function checkBossIDIsLegit(bossid)
   local numericBossid = tonumber(bossid)
 
-  if bossid and not numericBossid then
+  if string.len(bossid)>0 and not numericBossid then
     ZNTemperBossFrame.ErrorMessage:SetText("BossID has to be a number")
     ZNTemperBossFrame.ErrorMessage:Show()
     C_Timer.After(3, function() ZNTemperBossFrame.ErrorMessage:Hide() end)
@@ -345,14 +346,14 @@ ZNSidebarFrame.btnAddBossSpell = ZN.CreateIconButton(ZNSidebarFrame, "BOTTOM", Z
 ZNSidebarFrame.btnReloadBossSpell:SetShown(false)
 ZNSidebarFrame.btnAddBossSpell:SetShown(false)
 
-ZNSidebarFrame.btnReloadBossSpell:SetScript("OnClick",function(self) if selectedTemplate then ZN:ReloadBossSpellTable(selectedTemplate) end end)
-ZNSidebarFrame.btnAddBossSpell:SetScript("OnClick",function(self) if selectedTemplate then ZN:addNewBossSpell(selectedTemplate) end end)
+ZNSidebarFrame.btnReloadBossSpell:SetScript("OnClick",function(self)  ZN:ReloadBossSpellTable(selectedTemplate)  end)
+ZNSidebarFrame.btnAddBossSpell:SetScript("OnClick",function(self)  ZN:addNewBossSpell(selectedTemplate)  end)
 
 ZNSidebarFrame.btnReloadBossTrenner:SetShown(false)
 ZNSidebarFrame.btnAddBossTrenner:SetShown(false)
 
-ZNSidebarFrame.btnReloadBossTrenner:SetScript("OnClick",function(self) if selectedTemplate then ZN:ReloadBossTrennerTable(selectedTemplate) end end)
-ZNSidebarFrame.btnAddBossTrenner:SetScript("OnClick",function(self) if selectedTemplate then ZN:addNewBossTrenner(selectedTemplate) end end)
+ZNSidebarFrame.btnReloadBossTrenner:SetScript("OnClick",function(self)  ZN:ReloadBossTrennerTable(selectedTemplate)  end)
+ZNSidebarFrame.btnAddBossTrenner:SetScript("OnClick",function(self)   ZN:addNewBossTrenner(selectedTemplate)  end)
 
 --ZNBodyFrame.Subframes.BossNote
 ZNBodyFrame.Subframes.BossNote.TitleRow = ZN.createSubFrame("ZNBossNoteTitleRow", ZNBodyFrame.Subframes.BossNote, 460, ZN.BossTableRows.title, ZN.Colors.BG, 1, "TOP", "HIGH", false, 0,0)
@@ -667,31 +668,47 @@ local function CreateBossPrioRow(BossSpellID, BossSpell, AnchorFrame, boss, need
 end
 
 function ZN:addNewBossSpell(boss)
-  table.insert(ZNotes.BossTemplates[boss],
-  {
-    ["id"] = 0,
-    ["name"] = "",
-    ["time"] = 0,
-    ["prio"] = 0,
-    ["station"] = true,
-    ["aoe"] = true,
-    ["repeatX"] = 1,
-    ["repeatAfter"] = 0,
-    ["need"] = {}
-  })
-  ZN:ReloadBossSpellTable(boss)
+  if not boss then
+    ZN:Print("Please select a template first.")
+    UIErrorsFrame:AddMessage("Please select a template first.", 0.8, 0.07, 0.2, 5.0)
+  elseif boss=="" then
+    ZN:Print("Please create a template first.")
+    UIErrorsFrame:AddMessage("Please create a template first.", 0.8, 0.07, 0.2, 5.0)
+  else
+    table.insert(ZNotes.BossTemplates[boss],
+    {
+      ["id"] = 0,
+      ["name"] = "",
+      ["time"] = 0,
+      ["prio"] = 0,
+      ["station"] = true,
+      ["aoe"] = true,
+      ["repeatX"] = 1,
+      ["repeatAfter"] = 0,
+      ["need"] = {}
+    })
+    ZN:ReloadBossSpellTable(boss)
+  end
 end
 
 function ZN:addNewBossTrenner(boss)
-  table.insert(ZNotes.BossTemplates[boss],
-  {
-    ["trenner"] = true,
-    ["text"] = "",
-    ["time"] = 0,
-    ["prio"] = 9000,
-    ["raidicon"] = "{rt1}",
-  })
-  ZN:ReloadBossTrennerTable(boss)
+  if not boss then
+    ZN:Print("Please select a template first.")
+    UIErrorsFrame:AddMessage("Please select a template first.", 0.8, 0.07, 0.2, 5.0)
+  elseif boss=="" then
+    ZN:Print("Please create a template first.")
+    UIErrorsFrame:AddMessage("Please create a template first.", 0.8, 0.07, 0.2, 5.0)
+  else
+    table.insert(ZNotes.BossTemplates[boss],
+    {
+      ["trenner"] = true,
+      ["text"] = "",
+      ["time"] = 0,
+      ["prio"] = 9000,
+      ["raidicon"] = "{rt1}",
+    })
+    ZN:ReloadBossTrennerTable(boss)
+  end
 end
 
 local function UpdateBossPrioRow(BossSpellID, BossSpell, AnchorFrame, ContentRow, boss, needindex)
@@ -832,36 +849,36 @@ function ZN:ReloadBossTrennerTable(boss)
 
   local spellI=1
   --local boss="SampleBoss"
-  for i=1, #ZNotes.BossTemplates[boss] do
-      if ZNotes.BossTemplates[boss][i].trenner then
-          ZN.BossTrennerIndex[spellI]=i
-          spellI = spellI + 1
-      end
-  end
-  ZN:BuildBossTrennerSortArray (boss)
-  local scrollHeight = (ZN.BossTableRows.row+ZN.BossTableRows.rowgap)*#ZN.BossTrennerIndex
-  BossSpellTable.scrollChild:SetHeight(scrollHeight)
-
   for i=1, #ZN.BossTrennerRows do
     ZN.BossTrennerRows[i]:SetShown(false)
   end
+  if  boss and ZNotes.BossTemplates[boss] then
+    for i=1, #ZNotes.BossTemplates[boss] do
+        if ZNotes.BossTemplates[boss][i].trenner then
+            ZN.BossTrennerIndex[spellI]=i
+            spellI = spellI + 1
+        end
+    end
+    ZN:BuildBossTrennerSortArray (boss)
+    local scrollHeight = (ZN.BossTableRows.row+ZN.BossTableRows.rowgap)*#ZN.BossTrennerIndex
+    BossSpellTable.scrollChild:SetHeight(scrollHeight)
 
-  local anchor=BossSpellTable.TitleRow
-  
-  for i=1, #ZN.BossTrennerSortArray do
-    if i >#ZN.BossTrennerRows then
-      ZN.BossTrennerRows[i] = CreateBossTrennerRow(ZN.BossTrennerIndex[ZN.BossTrennerSortArray[i]], ZNotes.BossTemplates[boss][ZN.BossTrennerIndex[ZN.BossTrennerSortArray[i]]], anchor,boss)
-    else 
-      UpdateBossTrennerRow(ZN.BossTrennerIndex[ZN.BossTrennerSortArray[i]], ZNotes.BossTemplates[boss][ZN.BossTrennerIndex[ZN.BossTrennerSortArray[i]]], anchor,ZN.BossTrennerRows[i],boss)
-    end
-    if i==1 then
-      ZN.BossTrennerRows[i]:ClearAllPoints()
-      ZN.BossTrennerRows[i]:SetPoint("TOPLEFT", ZNBodyFrame.Subframes.BossTrenner.scrollChild,"TOPLEFT")
-    end
-    ZN.BossTrennerRows[i]:SetShown(true)
-    anchor = ZN.BossTrennerRows[i]
-  end  
-  
+    local anchor=BossSpellTable.TitleRow
+    
+    for i=1, #ZN.BossTrennerSortArray do
+      if i >#ZN.BossTrennerRows then
+        ZN.BossTrennerRows[i] = CreateBossTrennerRow(ZN.BossTrennerIndex[ZN.BossTrennerSortArray[i]], ZNotes.BossTemplates[boss][ZN.BossTrennerIndex[ZN.BossTrennerSortArray[i]]], anchor,boss)
+      else 
+        UpdateBossTrennerRow(ZN.BossTrennerIndex[ZN.BossTrennerSortArray[i]], ZNotes.BossTemplates[boss][ZN.BossTrennerIndex[ZN.BossTrennerSortArray[i]]], anchor,ZN.BossTrennerRows[i],boss)
+      end
+      if i==1 then
+        ZN.BossTrennerRows[i]:ClearAllPoints()
+        ZN.BossTrennerRows[i]:SetPoint("TOPLEFT", ZNBodyFrame.Subframes.BossTrenner.scrollChild,"TOPLEFT")
+      end
+      ZN.BossTrennerRows[i]:SetShown(true)
+      anchor = ZN.BossTrennerRows[i]
+    end  
+  end
 end
 
 function ZN:ReloadBossSpellTable(boss)
@@ -870,37 +887,38 @@ function ZN:ReloadBossSpellTable(boss)
 
   local spellI=1
   --local boss="SampleBoss"
-  for i=1, #ZNotes.BossTemplates[boss] do
-      if not ZNotes.BossTemplates[boss][i].trenner then
-          ZN.BossSpellsIndex[spellI]=i
-          spellI = spellI + 1
-      end
-  end
-  ZN:BuildBossSpellSortArray (boss)
-  local scrollHeight = (ZN.BossTableRows.row+ZN.BossTableRows.rowgap)*#ZN.BossSpellsIndex
-  BossSpellTable.scrollChild:SetHeight(scrollHeight)
-
-
   for i=1, #ZN.BossSpellRows do
     ZN.BossSpellRows[i]:SetShown(false)
   end
 
-  local anchor=BossSpellTable.TitleRow
-  
-  for i=1, #ZN.BossSpellSortArray do
-    if i >#ZN.BossSpellRows then
-      ZN.BossSpellRows[i] = CreateBossSpellRow(ZN.BossSpellsIndex[ZN.BossSpellSortArray[i]], ZNotes.BossTemplates[boss][ZN.BossSpellsIndex[ZN.BossSpellSortArray[i]]], anchor,boss)
-    else 
-      UpdateBossSpellRow(ZN.BossSpellsIndex[ZN.BossSpellSortArray[i]], ZNotes.BossTemplates[boss][ZN.BossSpellsIndex[ZN.BossSpellSortArray[i]]], anchor,ZN.BossSpellRows[i],boss)
+  if boss and ZNotes.BossTemplates[boss] then
+    for i=1, #ZNotes.BossTemplates[boss] do
+        if not ZNotes.BossTemplates[boss][i].trenner then
+            ZN.BossSpellsIndex[spellI]=i
+            spellI = spellI + 1
+        end
     end
-    if i==1 then
-      ZN.BossSpellRows[i]:ClearAllPoints()
-      ZN.BossSpellRows[i]:SetPoint("TOPLEFT", ZNBodyFrame.Subframes.BossSpells.scrollChild,"TOPLEFT")
-    end
-    ZN.BossSpellRows[i]:SetShown(true)
-    anchor = ZN.BossSpellRows[i]
-  end  
+    ZN:BuildBossSpellSortArray (boss)
+    local scrollHeight = (ZN.BossTableRows.row+ZN.BossTableRows.rowgap)*#ZN.BossSpellsIndex
+    BossSpellTable.scrollChild:SetHeight(scrollHeight)
   
+
+    local anchor=BossSpellTable.TitleRow
+    
+    for i=1, #ZN.BossSpellSortArray do
+      if i >#ZN.BossSpellRows then
+        ZN.BossSpellRows[i] = CreateBossSpellRow(ZN.BossSpellsIndex[ZN.BossSpellSortArray[i]], ZNotes.BossTemplates[boss][ZN.BossSpellsIndex[ZN.BossSpellSortArray[i]]], anchor,boss)
+      else 
+        UpdateBossSpellRow(ZN.BossSpellsIndex[ZN.BossSpellSortArray[i]], ZNotes.BossTemplates[boss][ZN.BossSpellsIndex[ZN.BossSpellSortArray[i]]], anchor,ZN.BossSpellRows[i],boss)
+      end
+      if i==1 then
+        ZN.BossSpellRows[i]:ClearAllPoints()
+        ZN.BossSpellRows[i]:SetPoint("TOPLEFT", ZNBodyFrame.Subframes.BossSpells.scrollChild,"TOPLEFT")
+      end
+      ZN.BossSpellRows[i]:SetShown(true)
+      anchor = ZN.BossSpellRows[i]
+    end  
+  end
 end
 
 ZN.BossSpellSortArray={}
