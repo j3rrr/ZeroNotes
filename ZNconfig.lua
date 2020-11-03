@@ -22,7 +22,7 @@ function ZN:Config()
 
   ConfigFrame.DebugModeCheckBox.button:SetScript("OnMouseDown",function()
     ConfigFrame.DebugModeCheckBox.toggleChecked()
-    ZNotes.DebugMode = ConfigFrame.DebugModeCheckBox
+    ZNotes.DebugMode = ConfigFrame.DebugModeCheckBox.active
     ZN:DebugModeToggle()
   end)
   ZNDebugMode = {}

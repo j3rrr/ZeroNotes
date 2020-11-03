@@ -103,6 +103,9 @@ function ZN:createGroupTemplateFrames()
   ZNeditGroupFrame.CancelButton:SetScript("OnClick", function(self) ZNeditGroupFrame:Hide() end)
 
   GroupTemplates.btnEditTemplate:SetScript("OnClick", function(self) 
+    for i=1, #ZN.GroupPopups do
+		  ZN.GroupPopups[i]:SetShown(false)
+	  end
     if ZN.selectedGroupTemplate ~= nil and ZN.selectedGroupTemplate ~= "" then   
       ZNeditGroupFrame:Show() 
       ZNeditGroupFrame.newGroupName:SetText(ZN.selectedGroupTemplate)
@@ -143,11 +146,15 @@ function ZN:createGroupTemplateFrames()
   ZNnewGroupFrame.ZeroTemplate = ZN:createCheckBox(ZNnewGroupFrame, "TOPLEFT", ZNnewGroupFrame.UseLiveGroup, "BOTTOMLEFT", 130, -20, "Zero Template", 12, ZN.Colors.ACTIVE, 200, false) 
   ZNnewGroupFrame.ZeroTemplate:SetScript("OnClick",function(self)
     self.toggleChecked()
-    ZNnewGroupFrame.UseLiveGroup.toggleChecked()
+    if self.active == ZNnewGroupFrame.UseLiveGroup.active then
+      ZNnewGroupFrame.UseLiveGroup.toggleChecked()
+    end
   end)
   ZNnewGroupFrame.ZeroTemplate.button:SetScript("OnMouseDown",function()
     ZNnewGroupFrame.ZeroTemplate.toggleChecked()
-    ZNnewGroupFrame.UseLiveGroup.toggleChecked()
+    if ZNnewGroupFrame.ZeroTemplate.active == ZNnewGroupFrame.UseLiveGroup.active then
+      ZNnewGroupFrame.UseLiveGroup.toggleChecked()
+    end
   end)
   local guildName,_,_ = GetGuildInfo("player")
   if (IsInGuild() and not guildName == "Zero") or not IsInGuild() then
@@ -343,6 +350,9 @@ function ZN:createGroupTemplateFrames()
   ZNcopyGroupFrame.CancelButton:SetScript("OnClick", function(self) ZNcopyGroupFrame:Hide() end)
 
   GroupTemplates.btnCopyTemplate:SetScript("OnClick", function(self)   
+    for i=1, #ZN.GroupPopups do
+		  ZN.GroupPopups[i]:SetShown(false)
+	  end
     if ZN.selectedGroupTemplate ~= nil and ZN.selectedGroupTemplate ~= "" then 
       ZNcopyGroupFrame:Show() 
       ZNcopyGroupFrame.newGroupName:SetText(ZN.selectedGroupTemplate)
@@ -360,6 +370,9 @@ function ZN:createGroupTemplateFrames()
 
   ZNSidebarFrame.btnDeleteGroupTemplate:SetScript("OnClick", function(self)
     -- ZN.selectedGroupTemplate = GroupTemplateSelectButtonHead.ZNText:GetText()
+    for i=1, #ZN.GroupPopups do
+		  ZN.GroupPopups[i]:SetShown(false)
+	  end
     if ZN.selectedGroupTemplate ~= nil and ZN.selectedGroupTemplate ~= "" then
       ZNdeleteGroupFrame.Message:SetText("This will delete "..ZN.selectedGroupTemplate.."\nAre you sure?")
       ZNdeleteGroupFrame:Show()
@@ -382,6 +395,9 @@ ZN.GroupMemberRows = {}
 ZN.GroupMemberRowsSelectedClass = {}
 
 function ZN:createNewGroupTemplate()
+  for i=1, #ZN.GroupPopups do
+    ZN.GroupPopups[i]:SetShown(false)
+  end
   ZNnewGroupFrame:Show()
 end
 
