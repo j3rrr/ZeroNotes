@@ -13,7 +13,7 @@ ZNUiFunctions.lua
 ZNFrame.lua
 ZNplayer.lua
 ZNboss.lua
-ZNinfo.lua
+ZNinfoinstall.lua
 ZNstartUp.lua
 ZNgrouptemplates.lua
 ZNpreviewFunctions.lua

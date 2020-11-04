@@ -578,6 +578,10 @@ ZNBodyFrame.Subframes.BossTrenner.ScrollBar:SetPoint("TOPRIGHT", ZNBodyFrame.Sub
 ZNBodyFrame.Subframes.BossTrenner.ScrollBar:SetPoint("BOTTOMRIGHT", ZNBodyFrame.Subframes.BossTrenner, "BOTTOMRIGHT", 0, 0);
 ZNBodyFrame.Subframes.Player.ScrollBar:SetPoint("TOPRIGHT", ZNBodyFrame.Subframes.Player, "TOPRIGHT", 0, 0);
 ZNBodyFrame.Subframes.Player.ScrollBar:SetPoint("BOTTOMRIGHT", ZNBodyFrame.Subframes.Player, "BOTTOMRIGHT", 0, 0);
+--[[ ##############################################################################
+	First Load Install Frame
+############################################################################## --]]
+--ZNInstallFrame = ZN.createMainFrame("ZNInstallFrame", 302, 202, ZN.Colors.BG, 1, "HIGH")
 
 --[[ ##############################################################################
 	Slashcommand

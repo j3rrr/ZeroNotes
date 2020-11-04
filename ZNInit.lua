@@ -109,7 +109,6 @@ function ZN:SecondsToClock(seconds)
   end
 end
 
-
 ZN.encounter_list = ""
 ZN.zoneId_list = ""
 ZN.zoneGroupId_list = ""
@@ -319,9 +318,9 @@ ZN.PlayerClassesColored2Order = {
 }
 
 function ZN.initMinimapButton()
- ZNotes.minimap = ZNotes.minimap or {
-        hide = false,
-      }
+  ZNotes.minimap = ZNotes.minimap or {
+    hide = false,
+  }
 end
 
 function ZN.initLastTemplates()
@@ -843,10 +842,6 @@ ZNotes.GroupTemplates = ZNotes.GroupTemplates or {
   }
 }
 end
-
-ZN.BossTemplatesOrder = {
-  "sampleboss",
-}
 
 ZN.SpecNames = {
   -- Death Knight

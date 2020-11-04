@@ -1,6 +1,8 @@
 -- Author      : marku
 -- Create Date : 6/11/2020 6:12:32 PM
 
+ZNotes = ZNotes or {}
+
 ZNEventHandler = CreateFrame('FRAME', 'ZNEventHandler')
 ZNEventHandler.dtbl = {}
 
