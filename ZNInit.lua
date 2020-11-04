@@ -843,10 +843,6 @@ ZNotes.GroupTemplates = ZNotes.GroupTemplates or {
 }
 end
 
-ZN.BossTemplatesOrder = {
-  "sampleboss",
-}
-
 ZN.SpecNames = {
   -- Death Knight
   [250] = 'Blood',
