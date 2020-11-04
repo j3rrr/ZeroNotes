@@ -810,34 +810,39 @@ ZNotes.GroupTemplates = ZNotes.GroupTemplates or {
   ["Use Current Group"] = {}, 
   ["sample group"] = {
     {
-      ["name"] = "Player 1",
+      ["name"] = "Brattan",
       ["class"] = "warrior",
       ["spec"] = "arms",
     },
     {
-      ["name"] = "Player 2",
+      ["name"] = "Starplayer",
       ["class"] = "hunter",
       ["spec"] = "bm",
     },
     {
-      ["name"] = "Player 3",
+      ["name"] = "Kongfuzius",
       ["class"] = "monk",
       ["spec"] = "bm",
     },
     {
-      ["name"] = "Player 4",
+      ["name"] = "Pepe",
       ["class"] = "priest",
       ["spec"] = "shadow",
     },
     {
-      ["name"] = "Player 5",
+      ["name"] = "Nosoulshards",
       ["class"] = "warlock",
       ["spec"] = "affli",
     },
     {
-      ["name"] = "Player 6",
+      ["name"] = "xBeHiNdYoUsTyLeRx",
       ["class"] = "rogue",
       ["spec"] = "assa",
+    },
+    {
+      ["name"] = "Tackschlitzpuff",
+      ["class"] = "druid",
+      ["spec"] = "feral",
     },
   }
 }

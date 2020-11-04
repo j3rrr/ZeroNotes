@@ -24,7 +24,28 @@ function ZN:createGroupTemplateFrames()
   GroupTemplates.btnEditTemplate = ZN.CreateIconButton(GroupTemplates, "RIGHT", GroupTemplateSelectButtonHead, "RIGHT", 16, 16, -8, 0, "Interface\\AddOns\\ZeroNotes\\Media\\Texture\\edit", ZN.Colors.ACTIVE, ZN.Colors.INACTIVE, false, ZN.Colors.ACTIVE, true, "Edit Template", ZN.Colors.ACTIVE)
   GroupTemplates.btnEditTemplate:SetFrameStrata("DIALOG")
   
-  GroupTemplates.btnNewTemplate:SetScript("OnClick", function(self) ZN:createNewGroupTemplate() end)
+  GroupTemplates.btnNewTemplate:SetScript("OnClick", function(self) 
+    if not IsInGroup() then
+      ZNnewGroupFrame.UseLiveGroup:Hide()
+      ZNnewGroupFrame.UseLiveGroup.label:Hide()
+      ZNnewGroupFrame.UseLiveGroup.button:Hide()
+    else
+      ZNnewGroupFrame.UseLiveGroup:Show()
+      ZNnewGroupFrame.UseLiveGroup.label:Show()
+      ZNnewGroupFrame.UseLiveGroup.button:Show()
+    end
+    local guildName,_,_ = GetGuildInfo("player")
+    if (IsInGuild() and not guildName == "Zero") or not IsInGuild() then
+      ZNnewGroupFrame.ZeroTemplate:Hide()
+      ZNnewGroupFrame.ZeroTemplate.label:Hide()
+      ZNnewGroupFrame.ZeroTemplate.button:Hide()
+    else
+      ZNnewGroupFrame.ZeroTemplate:Show()
+      ZNnewGroupFrame.ZeroTemplate.label:Show()
+      ZNnewGroupFrame.ZeroTemplate.button:Show()
+    end
+    ZN:createNewGroupTemplate()
+  end)
   -- Main View Columns
   GroupTemplates.GroupTemplatesLeft = ZN.createSubFrame("GroupTemplatesLeft", GroupTemplates, 300, 530, nil, 1, "TOPLEFT", "HIGH", false, 0, 0)
   GroupTemplates.GroupTemplatesMiddle = ZN.createSubFrame("GroupTemplatesMiddle", GroupTemplates, 300, 530, nil, 1, "TOPLEFT", "HIGH", false, 10, 0, GroupTemplates.GroupTemplatesLeft, "TOPRIGHT")
@@ -136,12 +157,6 @@ function ZN:createGroupTemplateFrames()
   ZNnewGroupFrame.UseLiveGroup.button:SetScript("OnMouseDown",function()
     ZNnewGroupFrame.UseLiveGroup.toggleChecked()
   end)
-  local guildName,_,_ = GetGuildInfo("player")
-  if (IsInGuild() and not guildName == "Zero") or not IsInGuild() then
-    ZNnewGroupFrame.UseLiveGroup:Hide()
-    ZNnewGroupFrame.UseLiveGroup.label:Hide()
-    ZNnewGroupFrame.UseLiveGroup.button:Hide()
-  end
   -- Zero Template Checkbox
   ZNnewGroupFrame.ZeroTemplate = ZN:createCheckBox(ZNnewGroupFrame, "TOPLEFT", ZNnewGroupFrame.UseLiveGroup, "BOTTOMLEFT", 130, -20, "Zero Template", 12, ZN.Colors.ACTIVE, 200, false) 
   ZNnewGroupFrame.ZeroTemplate:SetScript("OnClick",function(self)
@@ -156,12 +171,6 @@ function ZN:createGroupTemplateFrames()
       ZNnewGroupFrame.UseLiveGroup.toggleChecked()
     end
   end)
-  local guildName,_,_ = GetGuildInfo("player")
-  if (IsInGuild() and not guildName == "Zero") or not IsInGuild() then
-    ZNnewGroupFrame.ZeroTemplate:Hide()
-    ZNnewGroupFrame.ZeroTemplate.label:Hide()
-    ZNnewGroupFrame.ZeroTemplate.button:Hide()
-  end  
   ZNnewGroupFrame.Message = ZN.CreateText(ZNnewGroupFrame, "TOP", ZNnewGroupFrame, "TOP", 250, 30, 0, -41, "Interface\\AddOns\\ZeroNotes\\Media\\Font\\ZNReg.ttf", 12, ZN.Colors.ACTIVE, "Template Name", "LEFT")
   ZNnewGroupFrame.newGroupName = ZN.SingleLineEditBox("newGroupName", ZNnewGroupFrame, "TOP", ZNnewGroupFrame.Message, "BOTTOM", 250, 30, 0, -10, 20, 0 ,12, ZN.Colors.ACTIVE, ZN.Colors.SBButtonBG, nil, "", "LEFT")
   ZNnewGroupFrame.ErrorMessage = ZN.CreateText(ZNnewGroupFrame, "TOP", ZNnewGroupFrame.newGroupName, "BOTTOM", 250, 20, 0, 0, "Interface\\AddOns\\ZeroNotes\\Media\\Font\\ZNVers.ttf", 10, ZN.Colors.chatYell, "", "CENTER")
