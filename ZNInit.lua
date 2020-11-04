@@ -1297,7 +1297,7 @@ ZN.HeadersToolTips = {
   },
   ["bossimun"] = {
     ["tooltip"] = true,
-    ["text"] = "How many imunity cooldowns do you want to assign"
+    ["text"] = "How many immunity cooldowns do you want to assign"
   },
   ["bossedit"] = {
     ["tooltip"] = true,
