@@ -13,6 +13,7 @@ local function onUILoad(text)
       if not ZNotes.DebugMode then
         ZNotes.DebugMode = false
       end
+      C_ChatInfo.RegisterAddonMessagePrefix('ZERONOTE')
       ZN.initBossTemplates()
       ZN.initGroupTemplates()
       ZN.initLastTemplates()
