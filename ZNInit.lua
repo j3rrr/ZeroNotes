@@ -1245,6 +1245,60 @@ ZN.PlayerTableColumnHeaders = {
   "spellrating",
   "delete",
 }
+ZN.HeadersToolTips = {
+  ["playeraoe"] = {
+    ["tooltip"] = true,
+    ["text"] = "Utility only\n\nSet to |cff"..ZN.Colors.chatGuild.."true|r if your spell is AoE\ne.g. Rallying Cry\n\nSet to |cff"..ZN.Colors.chatYell.."false|r if your spell is single target\ne.g. Pain Suppression"
+  },
+  ["playerstation"] = {
+    ["tooltip"] = true,
+    ["text"] = "Set to |cff"..ZN.Colors.chatGuild.."true|r if you can't move while casting the spell or the effect is stationary\n\ne.g. Divine Hymn (channeling)\nor Power Word: Barrier (stationary)"
+  },
+  ["playerspellrating"] = {
+    ["tooltip"] = true,
+    ["text"] = "Highest Rating spells will be assigned first\n(if not overwritten in Bosstemplates)"
+  },
+  ["bosstime"] = {
+    ["tooltip"] = true,
+    ["text"] = "First Time the spell is casted (in seconds)"
+  },
+  ["bossprio"] = {
+    ["tooltip"] = true,
+    ["text"] = "Highest Prio spells will get highest rated Playerspells assigned first"
+  },
+  ["bossstation"] = {
+    ["tooltip"] = true,
+    ["text"] = "Set to |cff"..ZN.Colors.chatGuild.."true|r if the group is stacked and the player using a cooldown |cff"..ZN.Colors.chatPartyLeader.."has to|r stand still\n\nSet to |cff"..ZN.Colors.chatYell.."false|r if the player using a cooldown |cff"..ZN.Colors.chatPartyLeader.."has to|r move"
+  },
+  ["bossaoe"] = {
+    ["tooltip"] = true,
+    ["text"] = "Utility only\n\nSet to |cff"..ZN.Colors.chatGuild.."true|r if the spell effect the entire group\n\nSet to |cff"..ZN.Colors.chatYell.."false|r if the spell only effects one group member (e.g. active tank)"
+  },
+  ["bossrepeatX"] = {
+    ["tooltip"] = true,
+    ["text"] = "Spell will be repeated X times"
+  },
+  ["bossrepeatAfter"] = {
+    ["tooltip"] = true,
+    ["text"] = "Spell will be repeated every X seconds"
+  },
+  ["bossheal"] = {
+    ["tooltip"] = true,
+    ["text"] = "How many healing cooldowns do you want to assign"
+  },
+  ["bossutil"] = {
+    ["tooltip"] = true,
+    ["text"] = "How many utility cooldowns do you want to assign"
+  },
+  ["bossimun"] = {
+    ["tooltip"] = true,
+    ["text"] = "How many imunity cooldowns do you want to assign"
+  },
+  ["bossedit"] = {
+    ["tooltip"] = true,
+    ["text"] = "|cff"..ZN.Colors.itemHeirloom.."Advanced|r\nOverwrite settings to force specific cooldowns"
+  },
+}
 
 ZN.PlayerTableColumnHeaderNames = {
   ["role"] = "Role",

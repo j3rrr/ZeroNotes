@@ -585,7 +585,14 @@ local function CreateSpellTitleRow()
         local text = ZN.BossSpellTableColumnHeaderNames[header]
         local width = ZN.BossSpellTableColumns[header]
         local height = ZN.BossTableRows.title
-        local headerButton = ZN.CreateGenericButton(nil, TitleRow, "LEFT", anchor, anchor==TitleRow and "LEFT" or "RIGHT", width, height, 0, 0, 0, 0 ,10, ZN.Colors.INACTIVE, ZN.Colors.BG, nil, text, "CENTER", false)
+        local tooltip = false
+      local tooltipText = ""
+      if ZN.HeadersToolTips["boss"..header] then
+        tooltip = ZN.HeadersToolTips["boss"..header]["tooltip"]
+        tooltipText = ZN.HeadersToolTips["boss"..header]["text"]
+      end
+      local tooltipColor = ZN.Colors.ACTIVE
+        local headerButton = ZN.CreateGenericButton(nil, TitleRow, "LEFT", anchor, anchor==TitleRow and "LEFT" or "RIGHT", width, height, 0, 0, 0, 0 ,10, ZN.Colors.INACTIVE, ZN.Colors.BG, nil, text, "CENTER", false, nil, tooltip, tooltipText, tooltipColor)
         anchor = headerButton
     end
     return TitleRow

@@ -87,8 +87,16 @@ local function CreateTitleRow()
     local text = ZN.PlayerTableColumnHeaderNames[header]
     local width = ZN.PlayerTableColumns[header]
     local height = ZN.PlayerTableRows.title
-    local headerButton = ZN.CreateGenericButton(nil, TitleRow, "LEFT", anchor, anchor==TitleRow and "LEFT" or "RIGHT", width, height, 0, 0, 0, 0 ,10, ZN.Colors.INACTIVE, ZN.Colors.BG, nil, text, "CENTER", false)
+    local tooltip = false
+    local tooltipText = ""
+    if ZN.HeadersToolTips["player"..header] then
+      tooltip = ZN.HeadersToolTips["player"..header]["tooltip"]
+      tooltipText = ZN.HeadersToolTips["player"..header]["text"]
+    end
+    local tooltipColor = ZN.Colors.ACTIVE
+    local headerButton = ZN.CreateGenericButton(nil, TitleRow, "LEFT", anchor, anchor==TitleRow and "LEFT" or "RIGHT", width, height, 0, 0, 0, 0 ,10, ZN.Colors.INACTIVE, ZN.Colors.BG, nil, text, "CENTER", false, nil, tooltip, tooltipText, tooltipColor)
     anchor = headerButton
+    
   end
   return TitleRow
 end
