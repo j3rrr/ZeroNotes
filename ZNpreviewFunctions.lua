@@ -104,10 +104,6 @@ function ZN:createPreviewTemplateTable(arr)
   return prioNote
 end
 
-
---CreateTextureMarkup(file, fileWidth, fileHeight, width, height, left, right, top, bottom, xOffset, yOffset)
-
-
 function ZN:printPreviewNote(arr)
   local rawNoteData = ZN:createPreviewTemplateTable(arr)
   if rawNoteData == nil then

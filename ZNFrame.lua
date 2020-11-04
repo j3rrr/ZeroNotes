@@ -1,10 +1,3 @@
---TODO
---Dropdown Layout / framework
---Textfeld (input)
---Checkbox
---minimapbutton
---
-
 local _, ZN, L = ...
 
 
@@ -14,8 +7,9 @@ local _, ZN, L = ...
 --
 --classfilter.visible
 
---##############################################################################
--- Templates
+--[[ ##############################################################################
+	Templates
+############################################################################## --]]
 function ZN.createMainFrame(name, width, height, color, a, strata)
 	local NewFrame = CreateFrame('FRAME', name, UIParent)
 	NewFrame:SetFrameStrata(strata)
@@ -507,11 +501,9 @@ function ZN:createCheckBox(parent, point, anchor, anchorPoint, xOffset, yOffset,
 	return cb
 end
 
--- Templates End
---##############################################################################
-
---##############################################################################
--- Frame Stuff
+--[[ ##############################################################################
+	Frames
+############################################################################## --]]
 ZNFrame = ZN.createMainFrame("ZNFrame", 1000, 600, ZN.Colors.BG, 1, "HIGH")
 ZNHeaderFrame = ZN.createSubFrame("ZNHeader", ZNFrame, 1000, 58, ZN.Colors.HD, 1, "TOPRIGHT", "HIGH",nil,nil,nil,nil,nil,true)
 ZNSidebarFrame = ZN.createSubFrame("ZNSideBar", ZNFrame, 300, 540, ZN.Colors.HD, 1, "BOTTOMLEFT", "DIALOG")
@@ -519,8 +511,9 @@ ZNSidebarFrame.collapsed = false
 ZNSidebarFrame:EnableMouse(true)
 ZNBodyFrame = ZN.createSubFrame("ZNBody", ZNFrame, 950, 540, ZN.Colors.BG, 1, "BOTTOMRIGHT", "HIGH")
 ZNInfoFrame = ZN.createSubFrame("ZNInfoFrame",ZNFrame, 302, 202, ZN.Colors.ROWBG, 1, 'CENTER', 'TOOLTIP', true)
---##############################################################################
--- Header
+--[[ ##############################################################################
+	Header
+############################################################################## --]]
 ZNHeaderFrame.btnLogo = ZN.CreateIconButton(ZNHeaderFrame, "LEFT", ZNHeaderFrame, "LEFT", 32, 32, 30, 0, "Interface\\AddOns\\ZeroNotes\\Media\\Texture\\zero_logo", ZN.Colors.INACTIVE, ZN.Colors.ACTIVE, false)
 ZNHeaderFrame.Title = ZN.CreateText(ZNHeaderFrame, "LEFT", ZNHeaderFrame.btnLogo, "LEFT", 100, 20, 40, 0, "Interface\\AddOns\\ZeroNotes\\Media\\Font\\ZNVers.ttf", 18, ZN.Colors.ACTIVE, ZN.Title)
 ZNHeaderFrame.Version = ZN.CreateText(ZNHeaderFrame, "BOTTOMLEFT", ZNHeaderFrame.Title, "BOTTOMRIGHT", 30, 20, 0, 0, "Interface\\AddOns\\ZeroNotes\\Media\\Font\\ZNVers.ttf", 12, ZN.Colors.INACTIVE, ZN.Version)
@@ -538,8 +531,9 @@ ZNHeaderFrame.btnImpExp:SetScript("OnClick", function(self) ZN:ClickImpExp(ZNHea
 ZNHeaderFrame.btnBoss:SetScript("OnClick", function(self) ZN:ClickBoss(ZNHeaderFrame, ZNSidebarFrame, ZNBodyFrame) end)
 ZNHeaderFrame.btnPlayer:SetScript("OnClick", function(self) ZN:ClickPlayer(ZNHeaderFrame, ZNSidebarFrame, ZNBodyFrame) end)
 ZNHeaderFrame.btnGroup:SetScript("OnClick", function(self) ZN:ClickGroupTemplates(ZNHeaderFrame, ZNSidebarFrame, ZNBodyFrame) end)
---##############################################################################
--- Sidebar 
+--[[ ##############################################################################
+	Sidebar
+############################################################################## --]]
 ZNSidebarFrame.btnCollapseSidebar = ZN.CreateIconButton(ZNSidebarFrame, "BOTTOMRIGHT", ZNSidebarFrame, "BOTTOMRIGHT", 20, 20, -14, 14, "Interface\\AddOns\\ZeroNotes\\Media\\Texture\\arrow_left", ZN.Colors.ACTIVE, ZN.Colors.INACTIVE, false)
 ZNSidebarFrame.Subframes = {}
 ZNSidebarFrame.Subframes.Home = ZN.createSubFrame("ZNSideBarHomeContent", ZNSidebarFrame, 240, 540, nil, 1, "CENTER", "DIALOG",  true)
@@ -549,8 +543,9 @@ ZNSidebarFrame.Subframes.Player = ZN.createSubFrame("ZNSideBarPlayerContent", ZN
 ZNSidebarFrame.Subframes.GroupTemplates = ZN.createSubFrame("ZNSideBarGroupTemplatesContent", ZNSidebarFrame, 240, 500, nil, 1, "TOP","DIALOG", true)
 -- Sidebar Functions
 ZNSidebarFrame.btnCollapseSidebar:SetScript("OnClick", function(self) ZN:ClickCollapse(ZNFrame, ZNHeaderFrame, ZNSidebarFrame) end)
---##############################################################################
--- Body
+--[[ ##############################################################################
+	Body
+############################################################################## --]]
 ZNBodyFrame.Subframes = {}
 ZNBodyFrame.Subframes.Home = ZN.createSubFrame("ZNBodyHomeContent", ZNBodyFrame, 640, 530, nil, 1, "RIGHT","HIGH", true, -30, 0)
 ZNBodyFrame.Subframes.ImpExp = ZN.createSubFrame("ZNBodyImpExpContent", ZNBodyFrame, 680, 530, nil, 1, "RIGHT","HIGH", true, -10, 0)
@@ -584,12 +579,9 @@ ZNBodyFrame.Subframes.BossTrenner.ScrollBar:SetPoint("BOTTOMRIGHT", ZNBodyFrame.
 ZNBodyFrame.Subframes.Player.ScrollBar:SetPoint("TOPRIGHT", ZNBodyFrame.Subframes.Player, "TOPRIGHT", 0, 0);
 ZNBodyFrame.Subframes.Player.ScrollBar:SetPoint("BOTTOMRIGHT", ZNBodyFrame.Subframes.Player, "BOTTOMRIGHT", 0, 0);
 
--- Frame Stuff End
---##############################################################################
-
-
---##############################################################################
--- Slashcommand etc.
+--[[ ##############################################################################
+	Slashcommand
+############################################################################## --]]
 ZN:ClickHome(ZNHeaderFrame, ZNSidebarFrame, ZNBodyFrame)
 
 local function handler(msg)

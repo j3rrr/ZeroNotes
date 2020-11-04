@@ -6,10 +6,9 @@ local roleTable           = ZN.RoleTable
 local classTable          = ZN.ClassTable
 local templateClassTable  = ZN.SpecIdToTemplateClass
 
-
---##############################################################################
--- Callback functions for libGroupInspecT for updating/removing members
-
+--[[ ##############################################################################
+  Callback functions for libGroupInspecT for updating/removing members
+############################################################################## --]]
 ZN.delayedUpdates = {}
 
 function ZN:libInspectUpdate(event, GUID, unit, info)
@@ -81,7 +80,9 @@ ZN.inspectLib = LibStub:GetLibrary("LibGroupInSpecT-1.1", true)
 
 ZN.inspectLib.RegisterCallback(ZN, "GroupInSpecT_Update", "libInspectUpdate")
 ZN.inspectLib.RegisterCallback(ZN, "GroupInSpecT_Remove", "libInspectRemove")
-
+--[[ ##############################################################################
+  Build Roster
+############################################################################## --]]
 function ZN:templateToRoster(group)
   local tmp = {}
   for i = 1, #ZNotes.GroupTemplates[group] do
@@ -100,6 +101,62 @@ function ZN:templateToRoster(group)
     end
   end
   return tmp
+end
+
+function ZN:BuildRaidRosterGroupTemplate()
+  if not IsInGroup() then
+    ZN:Print("You need to join a group or raid")
+    return
+  end
+  local RaidSize = GetNumGroupMembers()
+  local RaidRoster = {}
+  local unitprefix = "raid"
+
+  if IsInGroup() and not IsInRaid() then
+    unitprefix = "party"
+  end
+
+  if ZN.inspectLib then
+    if RaidSize ~= 0 then
+      local u = CreateFrame("Frame")
+      for i = 1, RaidSize do
+        unit = unitprefix..i       
+        if i == RaidSize and not IsInRaid() then 
+          unit = "player"
+        end
+        local GUID = UnitGUID(unit)
+        if GUID then
+          local info = ZN.inspectLib:GetCachedInfo(GUID)
+          if info then
+            ZN:libInspectUpdate("Init", GUID, unit, info)
+          else
+            ZN.inspectLib:Rescan(GUID)
+          end
+        end
+
+        local tmp = {}
+        if memberInfo.name then 
+          tmp["name"] = memberInfo.name
+        else
+          ZN:Print("Group Inspect Error: Try /reload or wait until all Groupmembers are online")
+          --UIErrorsFrame:AddMessage("Group Inspect not finished (names)", 0.8, 0.07, 0.2, 5.0)
+          return
+        end
+        if memberInfo.specID then 
+          tmp["class"] = classTable[memberInfo.specID]
+          tmp["spec"] = templateClassTable[memberInfo.specID]
+        else
+          ZN:Print("Group Inspect Error: Try /reload or wait until all Groupmembers are online")
+          --UIErrorsFrame:AddMessage("Group Inspect not finished (class / role))", 0.8, 0.07, 0.2, 5.0)
+          return
+        end
+        table.insert(RaidRoster, tmp)
+      end
+    end
+  else
+  ZN:Print("LibGroupInSpecT-1.1 not found")
+  end
+  return RaidRoster
 end
 
 function ZN:BuildRaidRoster(group)
@@ -158,7 +215,9 @@ function ZN:BuildRaidRoster(group)
   end
   return RaidRoster
 end
-
+--[[ ##############################################################################
+  Spell Stuff
+############################################################################## --]]
 function ZN:addPlayerToSpell(name, availableSpells, spellname)
   for i,spell in ipairs(availableSpells["spells"]) do
     if spell["name"] == spellname then
@@ -211,35 +270,6 @@ function ZN:getAvailableSpells(group)
   return availableSpells
 end
 
-function ZN:createNoteTemplate(boss)
-  local template = ZNotes.BossTemplates[boss]
-  local noteTemplate = {
-    ["bossid"] = template.bossid,
-    ["spells"] = {}
-  }
-
-  if not template then
-    ZN:Print("You need to choose a Boss / Raid")
-  else
-    for _,spell in ipairs(template) do
-      if spell["trenner"] then
-        table.insert(noteTemplate["spells"], spell)
-      else
-        tmp = {}
-        for i = 1, spell["repeatX"] do
-          tmp = table.copy(spell)
-          --tmp["need"] = table.copy(spell["need"])
-          tmp["time"] = spell["time"]+(spell["repeatAfter"]*(i-1))
-          tmp["repeatX"] = nil
-          tmp["repeatAfter"] = nil
-          table.insert(noteTemplate["spells"], tmp)
-        end      
-      end
-    end
-  end
-  return noteTemplate
-end
-
 function ZN:blockTimeframe(arr, spellalias, spellCd, time)
   if not arr["used"][spellalias] then
     arr["used"][spellalias] = {}
@@ -267,6 +297,74 @@ function ZN:isSpellAvailable(arr, spellalias, spellCd, time)
     end
   end
   return false
+end
+
+function ZN:ShiftSpellRatings(needs,sortedAvailableSpells)
+  local role = needs.role and needs.role or nil
+  local class = needs.class and needs.class or nil
+  local value = needs.value and needs.value or nil
+  local playername = needs.playername and needs.playername or nil
+  local type = needs.type and needs.type or nil
+
+  if role == "all" then role = nil end
+  if class == "all" then class = nil end 
+  if value == 0 then value = nil end 
+  if playername =="" or playername =="all" then playername = nil end
+  if playername and playername:lower()=="all" then playername = nil end
+ 
+  
+
+  --print("spell type: "..type..", role: ".. (role and role or "leer")..", class: "..(class and class or "leer")..", rating: "..(value and value or "leer"))
+  for i,spell in pairs(sortedAvailableSpells) do 
+    --print("player type: "..spell.type..", role: "..spell.role..", class: "..spell.class)
+    if value and spell.type==type and
+     (
+       (role and not class and not playername and spell.role==role) or
+       (class and not role and not playername and spell.class==class) or
+       (class and role and not playername and spell.class==class and spell.role==role) or 
+       (playername and not role and not class and spell.PlayerName==playername) or 
+       (playername and role and not class and spell.PlayerName==playername and spell.role==role) or 
+       (playername and not role and class and spell.PlayerName==playername and spell.class==class) or 
+       (playername and  role and class and spell.PlayerName==playername and spell.class==class and spell.role==role)
+    ) then
+      spell.rating= spell.baseRating+value
+       --print("enhanced rating: "..spell.rating)
+    else
+      spell.rating= spell.baseRating
+      --print("normal rating: "..spell.rating)
+    end
+  end
+end
+--[[ ##############################################################################
+  Build Note String
+############################################################################## --]]
+function ZN:createNoteTemplate(boss)
+  local template = ZNotes.BossTemplates[boss]
+  local noteTemplate = {
+    ["bossid"] = template.bossid,
+    ["spells"] = {}
+  }
+
+  if not template then
+    ZN:Print("You need to choose a Boss / Raid")
+  else
+    for _,spell in ipairs(template) do
+      if spell["trenner"] then
+        table.insert(noteTemplate["spells"], spell)
+      else
+        tmp = {}
+        for i = 1, spell["repeatX"] do
+          tmp = table.copy(spell)
+          --tmp["need"] = table.copy(spell["need"])
+          tmp["time"] = spell["time"]+(spell["repeatAfter"]*(i-1))
+          tmp["repeatX"] = nil
+          tmp["repeatAfter"] = nil
+          table.insert(noteTemplate["spells"], tmp)
+        end      
+      end
+    end
+  end
+  return noteTemplate
 end
 
 function ZN:createRawNote(boss, group)
@@ -357,43 +455,6 @@ function ZN:createRawNote(boss, group)
   
   --table.sort(prioNote["lines"], function(a,b) return a.time < b.time end)
   return prioNote
-end
-
-function ZN:ShiftSpellRatings(needs,sortedAvailableSpells)
-  local role = needs.role and needs.role or nil
-  local class = needs.class and needs.class or nil
-  local value = needs.value and needs.value or nil
-  local playername = needs.playername and needs.playername or nil
-  local type = needs.type and needs.type or nil
-
-  if role == "all" then role = nil end
-  if class == "all" then class = nil end 
-  if value == 0 then value = nil end 
-  if playername =="" or playername =="all" then playername = nil end
-  if playername and playername:lower()=="all" then playername = nil end
- 
-  
-
-  --print("spell type: "..type..", role: ".. (role and role or "leer")..", class: "..(class and class or "leer")..", rating: "..(value and value or "leer"))
-  for i,spell in pairs(sortedAvailableSpells) do 
-    --print("player type: "..spell.type..", role: "..spell.role..", class: "..spell.class)
-    if value and spell.type==type and
-     (
-       (role and not class and not playername and spell.role==role) or
-       (class and not role and not playername and spell.class==class) or
-       (class and role and not playername and spell.class==class and spell.role==role) or 
-       (playername and not role and not class and spell.PlayerName==playername) or 
-       (playername and role and not class and spell.PlayerName==playername and spell.role==role) or 
-       (playername and not role and class and spell.PlayerName==playername and spell.class==class) or 
-       (playername and  role and class and spell.PlayerName==playername and spell.class==class and spell.role==role)
-    ) then
-      spell.rating= spell.baseRating+value
-       --print("enhanced rating: "..spell.rating)
-    else
-      spell.rating= spell.baseRating
-      --print("normal rating: "..spell.rating)
-    end
-  end
 end
 
 function ZN:PrintNote(boss, inclMissing, group)
@@ -527,60 +588,4 @@ function ZN:PrintNote(boss, inclMissing, group)
     rtNote = rtNote .. "\n\n\n" .. missingNote
   end
   return rtNote
-end
-
-function ZN:BuildRaidRosterGroupTemplate()
-  if not IsInGroup() then
-    ZN:Print("You need to join a group or raid")
-    return
-  end
-  local RaidSize = GetNumGroupMembers()
-  local RaidRoster = {}
-  local unitprefix = "raid"
-
-  if IsInGroup() and not IsInRaid() then
-    unitprefix = "party"
-  end
-
-  if ZN.inspectLib then
-    if RaidSize ~= 0 then
-      local u = CreateFrame("Frame")
-      for i = 1, RaidSize do
-        unit = unitprefix..i       
-        if i == RaidSize and not IsInRaid() then 
-          unit = "player"
-        end
-        local GUID = UnitGUID(unit)
-        if GUID then
-          local info = ZN.inspectLib:GetCachedInfo(GUID)
-          if info then
-            ZN:libInspectUpdate("Init", GUID, unit, info)
-          else
-            ZN.inspectLib:Rescan(GUID)
-          end
-        end
-
-        local tmp = {}
-        if memberInfo.name then 
-          tmp["name"] = memberInfo.name
-        else
-          ZN:Print("Group Inspect Error: Try /reload or wait until all Groupmembers are online")
-          --UIErrorsFrame:AddMessage("Group Inspect not finished (names)", 0.8, 0.07, 0.2, 5.0)
-          return
-        end
-        if memberInfo.specID then 
-          tmp["class"] = classTable[memberInfo.specID]
-          tmp["spec"] = templateClassTable[memberInfo.specID]
-        else
-          ZN:Print("Group Inspect Error: Try /reload or wait until all Groupmembers are online")
-          --UIErrorsFrame:AddMessage("Group Inspect not finished (class / role))", 0.8, 0.07, 0.2, 5.0)
-          return
-        end
-        table.insert(RaidRoster, tmp)
-      end
-    end
-  else
-  ZN:Print("LibGroupInSpecT-1.1 not found")
-  end
-  return RaidRoster
 end

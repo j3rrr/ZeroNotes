@@ -12,19 +12,22 @@ ImpExpContent = ZNBodyFrame.Subframes.ImpExp
 
 ImpExpSidebar.ImpExpPlayerDbButton = ZN.CreateGenericButton("ImpExpPlayerDbButton", ImpExpSidebar, "TOPLEFT", ImpExpSidebar, "TOPLEFT", 240, 30, 0, -30,0,0, 12, ZN.Colors.ACTIVE, ZN.Colors.SBButtonBG, nil, "Playerspell DB", "CENTER",true )
 ImpExpSidebar.ImpExpBossTemplateButton = ZN.CreateGenericButton("ImpExpBossTemplateButton", ImpExpSidebar, "TOPLEFT", ImpExpSidebar.ImpExpPlayerDbButton, "BOTTOMLEFT", 240, 30, 0, -10,0,0, 12, ZN.Colors.ACTIVE, ZN.Colors.SBButtonBG, nil, "Boss Templates", "CENTER",true )
-ImpExpSidebar.ImpExpBossWeakaurasButton = ZN.CreateGenericButton("ImpExpBossWeakaurasButton", ImpExpSidebar, "TOPLEFT", ImpExpSidebar.ImpExpBossTemplateButton, "BOTTOMLEFT", 240, 30, 0, -10,0,0, 12, ZN.Colors.ACTIVE, ZN.Colors.SBButtonBG, nil, "Weakauras", "CENTER",true )
+ImpExpSidebar.ImpExpGroupTemplateButton = ZN.CreateGenericButton("ImpExpBossTemplateButton", ImpExpSidebar, "TOPLEFT", ImpExpSidebar.ImpExpBossTemplateButton, "BOTTOMLEFT", 240, 30, 0, -10,0,0, 12, ZN.Colors.ACTIVE, ZN.Colors.SBButtonBG, nil, "Group Templates", "CENTER",true )
+ImpExpSidebar.ImpExpBossWeakaurasButton = ZN.CreateGenericButton("ImpExpBossWeakaurasButton", ImpExpSidebar, "TOPLEFT", ImpExpSidebar.ImpExpGroupTemplateButton, "BOTTOMLEFT", 240, 30, 0, -10,0,0, 12, ZN.Colors.ACTIVE, ZN.Colors.SBButtonBG, nil, "Weakauras", "CENTER",true )
 
 ImpExpContent.ImpExpInfoSubframe = ZN.createSubFrame("ImpExpInfoSubframe", ImpExpContent, 680, 530, ZN.Colors.BG, 1, "TOP","HIGH", false, 0, 0)
 ImpExpContent.PlayerDbSubframe = ZN.createSubFrame("PlayerDbSubframe", ImpExpContent, 680, 530, ZN.Colors.BG, 1, "TOP","DIALOG", true, 0, 0)
 ImpExpContent.BossTemplateSubframe = ZN.createSubFrame("BossTemplateSubframe", ImpExpContent, 680, 530, ZN.Colors.BG, 1, "TOP","DIALOG", true, 0, 0)
+ImpExpContent.GroupTemplateSubframe = ZN.createSubFrame("GroupTemplateSubframe", ImpExpContent, 680, 530, ZN.Colors.BG, 1, "TOP","DIALOG", true, 0, 0)
 ImpExpContent.WeakaurasSubframe = ZN.createSubFrame("WeakaurasSubframe", ImpExpContent, 680, 530, ZN.Colors.BG, 1, "TOP","DIALOG", true, 0, 0)
 
 ImpExpSidebar.ImpExpPlayerDbButton:SetScript("OnClick", function(self) ZN:ToggleImpExpView("ImpExpContent.PlayerDbSubframe") end)
 ImpExpSidebar.ImpExpBossTemplateButton:SetScript("OnClick", function(self) ZN:ToggleImpExpView("ImpExpContent.BossTemplateSubframe") end)
+ImpExpSidebar.ImpExpGroupTemplateButton:SetScript("OnClick", function(self) ZN:ToggleImpExpView("ImpExpContent.GroupTemplateSubframe") end)
 ImpExpSidebar.ImpExpBossWeakaurasButton:SetScript("OnClick", function(self) ZN:ToggleImpExpView("ImpExpContent.WeakaurasSubframe") end)
-
---##############################################################################
--- Imp / Exp Info
+--[[ ##############################################################################
+  Imp / Exp Info
+############################################################################## --]]
 ImpExpInfoSubframe = ImpExpContent.ImpExpInfoSubframe
 ImpExpInfoSubframe.UrlButton = ZN.CreateGenericButton("HomeUrlButton", ImpExpInfoSubframe, "BOTTOM", ImpExpInfoSubframe, "BOTTOM", 640, 30, 0, 0,0,0, 10, ZN.Colors.INACTIVE, ZN.Colors.BG, nil, "www.zero-wow.de", "CENTER",false )
 ImpExpInfoSubframe.UrlButton:SetScript("OnClick", function(self) ZN:ToggleInfo(self) end)
@@ -34,24 +37,14 @@ ImpExpInfoSubframe.MainIntro = ZN.CreateText(ImpExpInfoSubframe, "TOP", ImpExpIn
 .."|cff"..ZN.Colors.chatYell.."Warning:|r Importing a new Playerspell DB will override your current DB!\n\n"
 .."If you want to extend the usage of your notes or you / member of your raid don't use ExRT have a look at the Weakauras Tab."
 , "LEFT", "TOP",8)
--- ImpExpInfoSubframe.HowToTitle = ZN.CreateText(ImpExpInfoSubframe, "TOP", ImpExpInfoSubframe.MainIntro, "BOTTOM", 680, 30, 0, -20, "Interface\\AddOns\\ZeroNotes\\Media\\Font\\ZNReg.ttf", 18, ZN.Colors.ACTIVE, "How to use", "LEFT", "TOP")
--- ImpExpInfoSubframe.Paragraph = ZN.CreateText(ImpExpInfoSubframe, "TOP", ImpExpInfoSubframe.HowToTitle, "BOTTOM", 680, 250, 0, 0, "Interface\\AddOns\\ZeroNotes\\Media\\Font\\ZNTitle.ttf", 14, ZN.Colors.ACTIVE, 
--- "* Use the editor to set ratings, types, etc for all playerspells, you want to assign during encounters\n"
--- .."* Use the editor to create a template for each boss\n"
--- .."* Create the note or send it directly to all raidmembers using Exorsus Raid Tools\n\n"
--- .."Playerspells with the highest rating will be assigned to the highest priority spells in an encounter first to make sure that all important spells will be covered.\n"
--- .."Spells will be blocked when they have been used until they are off cooldown.\n"
--- .."If you don't have any more useable spells, there will be a notification in the note.\n"
--- .."Define how many healing cooldowns, utility spells or immunities you want to use each time.\nSee the default template to get an idea.\n"
--- , "LEFT", "TOP",8)
---##############################################################################
--- Player DB Imp / Exp
+--[[ ##############################################################################
+  Player DB Imp / Exp
+############################################################################## --]]
 PlayerDbSubframe = ImpExpContent.PlayerDbSubframe
 PlayerDbSubframe.EditBox = ZN.MultiLineEditBox("PlayerDbEditBox", PlayerDbSubframe, "TOP", PlayerDbSubframe, "TOP", 660, 450, 0, -65, 0, 0 ,12, ZN.Colors.ACTIVE, ZN.Colors.HD, nil, "", "LEFT")
 PlayerDbSubframe.PlayerDbImportButton = ZN.CreateGenericButton("PlayerDbImportButton", PlayerDbSubframe, "BOTTOMRIGHT", PlayerDbSubframe.EditBox, "TOPRIGHT", 200, 30, 0, 10,0,0, 12, ZN.Colors.ACTIVE, ZN.Colors.SBButtonBG, nil, "Import Spell DB", "CENTER",true )
 PlayerDbSubframe.PlayerDbExportButton = ZN.CreateGenericButton("PlayerDbExportButton", PlayerDbSubframe, "RIGHT", PlayerDbSubframe.PlayerDbImportButton, "LEFT", 200, 30, -10, 0,0,0, 12, ZN.Colors.ACTIVE, ZN.Colors.SBButtonBG, nil, "Export Spell DB", "CENTER",true )
---##############################################################################
--- Import Player DB Confirmation
+--Import Player DB Confirmation
 ZNPlayerImportConfirmFrame = ZN.createSubFrame("ZNPlayerImportConfirmFrame",ZNFrame, 302, 202, ZN.Colors.ROWBG, 1, 'CENTER', 'TOOLTIP', true)
 ZNPlayerImportConfirmFrame:SetScript("OnMouseDown", function(self, button)end)
 table.insert(ZN.DropDownsEdit, ZNPlayerImportConfirmFrame)
@@ -70,7 +63,6 @@ ZNPlayerImportConfirmFrame.CancelButton = ZN.CreateGenericButton("ZNImportPlayer
 
 ZNPlayerImportConfirmFrame.btnClose:SetScript("OnClick", function(self) ZNPlayerImportConfirmFrame:Hide() end)
 ZNPlayerImportConfirmFrame.CancelButton:SetScript("OnClick", function(self) ZNPlayerImportConfirmFrame:Hide() end)
---##############################################################################
 -- Import
 ZNPlayerImportConfirmFrame.ConfirmButton:SetScript("OnClick", function(self) 
   local str = PlayerDbSubframe.EditBox.editbox:GetText() 
@@ -84,7 +76,6 @@ ZNPlayerImportConfirmFrame.ConfirmButton:SetScript("OnClick", function(self)
   ZN:Print("Imported Player DB")
   ZNPlayerImportConfirmFrame:Hide()
 end)
---##############################################################################
 -- Export
 -- https://stackoverflow.com/questions/6075262/lua-table-tostringtablename-and-table-fromstringstringtable-functions
 PlayerDbSubframe.PlayerDbExportButton:SetScript("OnClick", function(self) 
@@ -96,28 +87,9 @@ end)
 PlayerDbSubframe.PlayerDbImportButton:SetScript("OnClick", function(self) 
   ZNPlayerImportConfirmFrame:SetShown(not ZNPlayerImportConfirmFrame:IsShown());
 end)
-
---##############################################################################
--- Boss Template Imp / Exp
--- Export
-BossTemplateSubframe = ImpExpContent.BossTemplateSubframe
-BossTemplateSubframe.ExportEditBox = ZN.MultiLineEditBox("TemplateExportEditBox", BossTemplateSubframe, "TOP", BossTemplateSubframe, "TOP", 660, 180, 0, -65, 0, 0 ,12, ZN.Colors.ACTIVE, ZN.Colors.HD, nil, "", "LEFT")
-BossTemplateSubframe.TemplateSelectButton = ZN.CreateGenericButton("ZNBossTemplateSelectButton", BossTemplateSubframe, "BOTTOMLEFT", BossTemplateSubframe.ExportEditBox, "TOPLEFT", 240, 30, 0, 10,10,0, 12, ZN.Colors.ACTIVE, ZN.Colors.SBButtonBG, nil, "Select Template..", "LEFT",true )
-BossTemplateSubframe.TemplateSelectButton.doOnUpdate = true
-BossTemplateSubframe.TemplateSelectButton.OnUpdate = function(_,_,_,newValue) selectedTemplate = newValue end
-BossTemplateSubframe.TemplateExportButton = ZN.CreateGenericButton("TemplateExportButton", BossTemplateSubframe, "BOTTOMRIGHT", BossTemplateSubframe.ExportEditBox, "TOPRIGHT", 200, 30, 0, 10,0,0, 12, ZN.Colors.ACTIVE, ZN.Colors.SBButtonBG, nil, "Export", "CENTER",true )
-
-BossTemplateSubframe.TemplateSelectButton:SetScript("OnClick", function(self) ZN:CreateDropdown(self, ZN:getTableKeys(ZNotes.BossTemplates), ZN:getTableOrder(ZNotes.BossTemplates), 240, ZN.Colors.INACTIVE, "LEFT", 10) end)
-BossTemplateSubframe.TemplateExportButton:SetScript("OnClick", function(self) 
-  if selectedTemplate == nil or selectedTemplate == "Select Template.." then
-    ZN:Print("You need to select a Boss Template")
-    return
-  end
-  local str = ZN:serializeTable(ZNotes.BossTemplates[selectedTemplate], nil, true) 
-  
-  BossTemplateSubframe.ExportEditBox.editbox:SetText(ZN:enc(str)) 
-end)
-
+--[[ ##############################################################################
+  Boss Template Imp / Exp
+############################################################################## --]]
 -- Import
 BossTemplateSubframe.ImportEditBox = ZN.MultiLineEditBox("TemplateImportEditBox", BossTemplateSubframe, "BOTTOM", BossTemplateSubframe, "BOTTOM", 660, 180, 0, 15, 0, 0 ,12, ZN.Colors.ACTIVE, ZN.Colors.HD, nil, "", "LEFT")
 BossTemplateSubframe.ImportNameTextBox = ZN.SingleLineEditBox("ImportNameTextBox", BossTemplateSubframe, "BOTTOMLEFT", BossTemplateSubframe.ImportEditBox, "TOPLEFT", 400, 30, 0, 10, 10, 0 ,12, ZN.Colors.ACTIVE, ZN.Colors.SBButtonBG, nil, "Enter Template Name", "LEFT")
@@ -141,11 +113,28 @@ BossTemplateSubframe.TemplateImportButton:SetScript("OnClick", function(self)
 
   BossTemplateSubframe.ImportEditBox.editbox:SetText("|cff"..ZN.Colors.itemUncommon.."Template successfully imported as|r |cff"..ZN.Colors.chatInstance.."'"..newTemplateName.."'|r")
 end)
+-- Export
+BossTemplateSubframe = ImpExpContent.BossTemplateSubframe
+BossTemplateSubframe.ExportEditBox = ZN.MultiLineEditBox("TemplateExportEditBox", BossTemplateSubframe, "TOP", BossTemplateSubframe, "TOP", 660, 180, 0, -65, 0, 0 ,12, ZN.Colors.ACTIVE, ZN.Colors.HD, nil, "", "LEFT")
+BossTemplateSubframe.TemplateSelectButton = ZN.CreateGenericButton("ZNBossTemplateSelectButton", BossTemplateSubframe, "BOTTOMLEFT", BossTemplateSubframe.ExportEditBox, "TOPLEFT", 240, 30, 0, 10,10,0, 12, ZN.Colors.ACTIVE, ZN.Colors.SBButtonBG, nil, "Select Boss Template..", "LEFT",true )
+BossTemplateSubframe.TemplateSelectButton.doOnUpdate = true
+BossTemplateSubframe.TemplateSelectButton.OnUpdate = function(_,_,_,newValue) selectedTemplate = newValue end
+BossTemplateSubframe.TemplateExportButton = ZN.CreateGenericButton("TemplateExportButton", BossTemplateSubframe, "BOTTOMRIGHT", BossTemplateSubframe.ExportEditBox, "TOPRIGHT", 200, 30, 0, 10,0,0, 12, ZN.Colors.ACTIVE, ZN.Colors.SBButtonBG, nil, "Export", "CENTER",true )
 
---##############################################################################
--- Weakauras 
+BossTemplateSubframe.TemplateSelectButton:SetScript("OnClick", function(self) ZN:CreateDropdown(self, ZN:getTableKeys(ZNotes.BossTemplates), ZN:getTableOrder(ZNotes.BossTemplates), 240, ZN.Colors.INACTIVE, "LEFT", 10) end)
+BossTemplateSubframe.TemplateExportButton:SetScript("OnClick", function(self) 
+  if selectedTemplate == nil or selectedTemplate == "Select Boss Template.." then
+    ZN:Print("You need to select a Boss Template")
+    return
+  end
+  local str = ZN:serializeTable(ZNotes.BossTemplates[selectedTemplate], nil, true) 
+  
+  BossTemplateSubframe.ExportEditBox.editbox:SetText(ZN:enc(str)) 
+end)
+--[[ ##############################################################################
+  Weakauras
+############################################################################## --]]
 WeakaurasSubframe = ImpExpContent.WeakaurasSubframe
---WeakaurasSubframe.EditBox = ZN.MultiLineEditBox("WeakaurasEditBox", WeakaurasSubframe, "TOP", WeakaurasSubframe, "TOP", 660, 450, 0, -65, 0, 0 ,12, ZN.Colors.ACTIVE, ZN.Colors.HD, nil, "", "LEFT")
 WeakaurasSubframe.Title = ZN.CreateText(WeakaurasSubframe, "TOPLEFT", WeakaurasSubframe, "TOPLEFT", 680, 30, 0, -30, "Interface\\AddOns\\ZeroNotes\\Media\\Font\\ZNVers.ttf", 18, ZN.Colors.ACTIVE, "Zero Weakauras", "LEFT", "TOP")
 WeakaurasSubframe.IntroText = ZN.CreateText(WeakaurasSubframe, "TOPLEFT", WeakaurasSubframe.Title, "BOTTOMLEFT", 680, 50, 0, 0, "Interface\\AddOns\\ZeroNotes\\Media\\Font\\ZNTitle.ttf", 14, ZN.Colors.ACTIVE,
 "There are two Weakauras to supplement ZeroNotes."
@@ -208,3 +197,48 @@ WeakaurasSubframe.ZNDImportStringFrame.btnClose:SetScript("OnClick", function(se
 WeakaurasSubframe.ZNDImportStringButton:SetScript("OnClick", function(self) WeakaurasSubframe.ZNDImportStringFrame:Show() end)
 WeakaurasSubframe.ZNDWagoButton:SetScript("OnClick", function(self) ZNDWagoUrlFrame:Show() end)
 ZNDWagoUrlFrame.btnClose:SetScript("OnClick", function(self) ZNDWagoUrlFrame:Hide() end)
+--[[ ##############################################################################
+  Player Group Imp / Exp
+############################################################################## --]]
+-- Import
+GroupTemplateSubframe = ImpExpContent.GroupTemplateSubframe
+GroupTemplateSubframe.ImportEditBox = ZN.MultiLineEditBox("TemplateImportEditBox", GroupTemplateSubframe, "BOTTOM", GroupTemplateSubframe, "BOTTOM", 660, 180, 0, 15, 0, 0 ,12, ZN.Colors.ACTIVE, ZN.Colors.HD, nil, "", "LEFT")
+GroupTemplateSubframe.ImportNameTextBox = ZN.SingleLineEditBox("ImportNameTextBox", GroupTemplateSubframe, "BOTTOMLEFT", GroupTemplateSubframe.ImportEditBox, "TOPLEFT", 400, 30, 0, 10, 10, 0 ,12, ZN.Colors.ACTIVE, ZN.Colors.SBButtonBG, nil, "Enter Template Name", "LEFT")
+GroupTemplateSubframe.TemplateImportButton = ZN.CreateGenericButton("TemplateImportButton", GroupTemplateSubframe, "BOTTOMRIGHT", GroupTemplateSubframe.ImportEditBox, "TOPRIGHT", 200, 30, 0, 10,0,0, 12, ZN.Colors.ACTIVE, ZN.Colors.SBButtonBG, nil, "Import", "CENTER",true )
+
+GroupTemplateSubframe.TemplateImportButton:SetScript("OnClick", function(self) 
+  local newTemplateName = GroupTemplateSubframe.ImportNameTextBox:GetText()
+  local encstr = GroupTemplateSubframe.ImportEditBox.editbox:GetText()
+  local decstr = ZN:dec(encstr)
+
+  if newTemplateName == "Enter Template Name" or newTemplateName == "" then
+    UIErrorsFrame:AddMessage("Please Enter a Name for your Template", 0.8, 0.07, 0.2, 5.0)    
+    return
+  end
+  if encstr == "" then
+    UIErrorsFrame:AddMessage("You need to insert an import string", 0.8, 0.07, 0.2, 5.0)
+    return
+  end
+
+  ZNotes.GroupTemplates[newTemplateName] = loadstring(decstr)()
+
+  GroupTemplateSubframe.ImportEditBox.editbox:SetText("|cff"..ZN.Colors.itemUncommon.."Template successfully imported as|r |cff"..ZN.Colors.chatInstance.."'"..newTemplateName.."'|r")
+end)
+-- Export
+GroupTemplateSubframe = ImpExpContent.GroupTemplateSubframe
+GroupTemplateSubframe.ExportEditBox = ZN.MultiLineEditBox("TemplateExportEditBox", GroupTemplateSubframe, "TOP", GroupTemplateSubframe, "TOP", 660, 180, 0, -65, 0, 0 ,12, ZN.Colors.ACTIVE, ZN.Colors.HD, nil, "", "LEFT")
+GroupTemplateSubframe.TemplateSelectButton = ZN.CreateGenericButton("ZNGroupTemplateSelectButton", GroupTemplateSubframe, "BOTTOMLEFT", GroupTemplateSubframe.ExportEditBox, "TOPLEFT", 240, 30, 0, 10,10,0, 12, ZN.Colors.ACTIVE, ZN.Colors.SBButtonBG, nil, "Select Group Template..", "LEFT",true )
+GroupTemplateSubframe.TemplateSelectButton.doOnUpdate = true
+GroupTemplateSubframe.TemplateSelectButton.OnUpdate = function(_,_,_,newValue) selectedTemplate = newValue end
+GroupTemplateSubframe.TemplateExportButton = ZN.CreateGenericButton("TemplateExportButton", GroupTemplateSubframe, "BOTTOMRIGHT", GroupTemplateSubframe.ExportEditBox, "TOPRIGHT", 200, 30, 0, 10,0,0, 12, ZN.Colors.ACTIVE, ZN.Colors.SBButtonBG, nil, "Export", "CENTER",true )
+
+GroupTemplateSubframe.TemplateSelectButton:SetScript("OnClick", function(self) ZN:CreateDropdown(self, ZN:getTableKeys(ZNotes.GroupTemplates), ZN:getTemplateTableWithoutCurrentOrder(ZNotes.GroupTemplates), 240, ZN.Colors.INACTIVE, "LEFT", 10) end)
+GroupTemplateSubframe.TemplateExportButton:SetScript("OnClick", function(self) 
+  if selectedTemplate == nil or selectedTemplate == "Select Group Template.." then
+    ZN:Print("You need to select a Group Template")
+    return
+  end
+  local str = ZN:serializeTable(ZNotes.GroupTemplates[selectedTemplate], nil, true) 
+  
+  GroupTemplateSubframe.ExportEditBox.editbox:SetText(ZN:enc(str)) 
+end)

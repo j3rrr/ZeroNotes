@@ -1,5 +1,7 @@
 local _, ZN, L = ...
-
+--[[ ##############################################################################
+	Helper
+############################################################################## --]]
 function ZN:Print(msg)
 	print("|cff00ffffZero|rNotes: |cffff7e40"..msg.."|r")
 end
@@ -24,6 +26,45 @@ function ZN:ShowToolTip(text, color, parent, anchor)
 	GameTooltip:Show()
 end
 
+function ZN:getTableOrder(arr) 
+	local tmp = {}
+	for k,v in pairs(arr) do
+		table.insert(tmp, k)
+	end	
+	return tmp
+end
+
+function ZN:getTemplateTableOrder(arr) 
+	local tmp = {}
+	table.insert(tmp, "Use Current Group")
+	for k,v in pairs(arr) do
+		if k ~= "Use Current Group" then
+			table.insert(tmp, k)
+		end
+	end	
+	return tmp
+end
+
+function ZN:getTemplateTableWithoutCurrentOrder(arr) 
+	local tmp = {}
+	for k,v in pairs(arr) do
+		if k ~= "Use Current Group" then
+			table.insert(tmp, k)
+		end
+	end	
+	return tmp
+end
+
+function ZN:getTableKeys(arr) 
+	local tmp = {}
+	for k,v in pairs(arr) do
+		tmp[k] = k
+	end	
+	return tmp
+end
+--[[ ##############################################################################
+	Header Tabs
+############################################################################## --]]
 function ZN:ClickHome(ZNHeaderFrame, ZNSidebarFrame, ZNBodyFrame)
 	ZNHeaderFrame.btnHome.active = true
 	ZNHeaderFrame.btnHome:GetNormalTexture():SetVertexColor(tonumber("0x"..ZN.Colors.ACTIVE:sub(1,2))/255, tonumber("0x"..ZN.Colors.ACTIVE:sub(3,4))/255, tonumber("0x"..ZN.Colors.ACTIVE:sub(5,6))/255, 1)
@@ -271,6 +312,32 @@ function ZN:ClickGroupTemplates(ZNHeaderFrame, ZNSidebarFrame, ZNBodyFrame)
 	end
 end
 
+function ZN:ToggleImpExpView(frameToShow)
+	if frameToShow == "ImpExpContent.PlayerDbSubframe" then
+		ImpExpContent.PlayerDbSubframe:SetShown(not ImpExpContent.PlayerDbSubframe:IsShown());
+		ImpExpContent.BossTemplateSubframe:Hide()
+		ImpExpContent.GroupTemplateSubframe:Hide()
+		ImpExpContent.WeakaurasSubframe:Hide()
+	elseif frameToShow == "ImpExpContent.BossTemplateSubframe" then
+		ImpExpContent.PlayerDbSubframe:Hide()
+		ImpExpContent.BossTemplateSubframe:SetShown(not ImpExpContent.BossTemplateSubframe:IsShown());
+		ImpExpContent.GroupTemplateSubframe:Hide()
+		ImpExpContent.WeakaurasSubframe:Hide()
+	elseif frameToShow == "ImpExpContent.GroupTemplateSubframe" then
+		ImpExpContent.PlayerDbSubframe:Hide()
+		ImpExpContent.BossTemplateSubframe:Hide()
+		ImpExpContent.GroupTemplateSubframe:SetShown(not ImpExpContent.GroupTemplateSubframe:IsShown());
+		ImpExpContent.WeakaurasSubframe:Hide()
+	elseif frameToShow == "ImpExpContent.WeakaurasSubframe" then
+		ImpExpContent.PlayerDbSubframe:Hide()
+		ImpExpContent.BossTemplateSubframe:Hide()
+		ImpExpContent.GroupTemplateSubframe:Hide()
+		ImpExpContent.WeakaurasSubframe:SetShown(not ImpExpContent.WeakaurasSubframe:IsShown());
+	end
+end
+--[[ ##############################################################################
+	Sidebar Collapse
+############################################################################## --]]
 function ZN:ClickCollapse(ZNFrame, ZNHeaderFrame, ZNSidebarFrame, collapse, expand)
 	if (not ZNSidebarFrame.collapsed and not collapse and not expand) or collapse then
 		ZNSidebarFrame.collapsed = true
@@ -329,29 +396,9 @@ function ZN:ClickPreviewCollapse()
 		ZNBodyFrame.Subframes.PreviewTemplateContent:Hide()
 	end
 end
-
-function ZN:ToggleImpExpView(frameToShow)
-	if frameToShow == "ImpExpContent.PlayerDbSubframe" then
-		-- if not ImpExpContent.ImpExpInfoSubframe:IsShown() then
-		-- 	ImpExpContent.ImpExpInfoSubframe:Show()
-		-- else
-		-- 	ImpExpContent.ImpExpInfoSubframe:Hide()
-		-- end
-		ImpExpContent.PlayerDbSubframe:SetShown(not ImpExpContent.PlayerDbSubframe:IsShown());
-		ImpExpContent.BossTemplateSubframe:Hide()
-		ImpExpContent.WeakaurasSubframe:Hide()
-	elseif frameToShow == "ImpExpContent.BossTemplateSubframe" then
-		ImpExpContent.PlayerDbSubframe:Hide()
-		ImpExpContent.BossTemplateSubframe:SetShown(not ImpExpContent.BossTemplateSubframe:IsShown());
-		ImpExpContent.WeakaurasSubframe:Hide()
-	elseif frameToShow == "ImpExpContent.WeakaurasSubframe" then
-		ImpExpContent.PlayerDbSubframe:Hide()
-		ImpExpContent.BossTemplateSubframe:Hide()
-		ImpExpContent.WeakaurasSubframe:SetShown(not ImpExpContent.WeakaurasSubframe:IsShown());
-		--ImpExpContent.WeakaurasSubframe:Show()
-	end
-end
-
+--[[ ##############################################################################
+	Dropdowns
+############################################################################## --]]
 function ZN:CreateDropdown(parentObj, list, order, width, dropDownBgColor, buttonAlign, buttonTextXOffset, hoverColor, strata, listItemHeight, buttonTextYOffset)
 
 	if not parentObj.dropdownInit then
@@ -414,8 +461,6 @@ function ZN:CreateDropdown(parentObj, list, order, width, dropDownBgColor, butto
 end
 
 function ZN:CreateIconDropdown(parentObj, list, order, width, dropDownBgColor, buttonAlign, buttonTextXOffset, hoverColor, strata, listItemHeight, buttonTextYOffset, rows, perRow, singleFirst)
--- (self, ZN.ClassIconsList, ZN.ClassIconsListOrder, 40, ZN.Colors.SBButtonBG, "CENTER", 0, ZN.Colors.HD, nil, 40, -8, 2, 6, true)
---ZN.DropdownList(name, parent, point, anchorFrame, anchorPoint, width, height, color, a, anchor, hide, contents, strata)
 	if not parentObj.dropdownInit then
 		parentObj.dropdownInit = true
 		local parentName = parentObj.name	
@@ -469,49 +514,3 @@ function ZN:CreateIconDropdown(parentObj, list, order, width, dropDownBgColor, b
 
 	parentObj.dropdown:SetShown(not wasShown);
 end
-
-function ZN:SendToExRT(template) 
-	print(template)
-end
-
-function ZN:ShowNoteInEditor(template) 
-	print(template)
-end
-
-function ZN:getTableOrder(arr) 
-	local tmp = {}
-	for k,v in pairs(arr) do
-		table.insert(tmp, k)
-	end	
-	return tmp
-end
-
-function ZN:getTemplateTableOrder(arr) 
-	local tmp = {}
-	table.insert(tmp, "Use Current Group")
-	for k,v in pairs(arr) do
-		if k ~= "Use Current Group" then
-			table.insert(tmp, k)
-		end
-	end	
-	return tmp
-end
-
-function ZN:getTemplateTableWithoutCurrentOrder(arr) 
-	local tmp = {}
-	for k,v in pairs(arr) do
-		if k ~= "Use Current Group" then
-			table.insert(tmp, k)
-		end
-	end	
-	return tmp
-end
-
-function ZN:getTableKeys(arr) 
-	local tmp = {}
-	for k,v in pairs(arr) do
-		tmp[k] = k
-	end	
-	return tmp
-end
-

@@ -1,6 +1,9 @@
 local _, ZN, L = ...
 
 function ZN:Config()
+  --[[ ##############################################################################
+    Config Frame
+  ############################################################################## --]]
   ZNBodyFrame.Subframes.Home.ConfigFrame = ZN.createSubFrame("ZNConfig", HomeContent, 680 , 530, ZN.Colors.BG, 1, "TOP", "DIALOG", true, 0, 0, nil, nil, nil)
   ConfigFrame = HomeContent.ConfigFrame
   ConfigFrame:SetBackdrop({bgFile = "Interface/Tooltips/UI-Tooltip-Background", 
@@ -32,6 +35,9 @@ function ZN:Config()
   end
 
   ZNDebugMode = {}
+  --[[ ##############################################################################
+    Debug Mode Only
+  ############################################################################## --]]
 
   ZNDebugMode.btnReload = ZN.CreateGenericButton("ZNDebugReloadButton", ZNFrame, "BOTTOMRIGHT", ZNFrame, "TOPRIGHT", 240, 30, 0,30,0,0, 12, ZN.Colors.black, ZN.Colors.chatGeneral, nil, "/reload", "CENTER",true, ZN.Colors.SBButtonBG )
   ZNDebugMode.btnReload:SetScript("OnClick", function() ReloadUI() end)

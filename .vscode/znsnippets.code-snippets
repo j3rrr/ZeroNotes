@@ -36,6 +36,16 @@
 		"description": "ZN Comment"
 	},
 
+	"ZNcommentBig": {
+		"prefix": "ZNcommentBig",
+		"body": [
+			"--[[ ##############################################################################",
+			"  $1",
+			"############################################################################## --]]"
+		],
+		"description": "ZN Comment Big"
+	},
+
 	"ZNcreateSubFrame": {
 		"prefix": "ZNcreateSubFrame",
 		"body": [

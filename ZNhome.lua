@@ -4,8 +4,9 @@ local selectedTemplate = nil
 local selectedGroupTemplate = nil
 
 HomeContent = ZNBodyFrame.Subframes.Home
-
--- Home Body
+--[[ ##############################################################################
+  Home Body
+############################################################################## --]]
 HomeContent.UrlButton = ZN.CreateGenericButton("HomeUrlButton", HomeContent, "BOTTOM", HomeContent, "BOTTOM", 640, 30, 0, 0,0,0, 10, ZN.Colors.INACTIVE, ZN.Colors.BG, nil, "www.zero-wow.de", "CENTER",false )
 HomeContent.UrlButton:SetScript("OnClick", function(self) ZN:ToggleInfo(self) end)
 HomeContent.MainTitle = ZN.CreateText(HomeContent, "TOP", HomeContent, "TOP", 680, 30, 0, -30, "Interface\\AddOns\\ZeroNotes\\Media\\Font\\ZNVers.ttf", 18, ZN.Colors.ACTIVE, "Welcome to Zero Notes", "LEFT", "TOP")
@@ -22,15 +23,17 @@ HomeContent.Paragraph = ZN.CreateText(HomeContent, "TOP", HomeContent.HowToTitle
 .."If you don't have any more useable spells, there will be a notification in the note.\n"
 .."Define how many healing cooldowns, utility spells or immunities you want to use each time.\nSee the default template to get an idea.\n"
 , "LEFT", "TOP",8)
-
---Raw Note Editbox
+--[[ ##############################################################################
+  Raw Note Edit Box
+############################################################################## --]]
 HomeContent.ShowNoteEditBox = ZN.createSubFrame("ShowNoteEditBox", HomeContent, 680, 530, ZN.Colors.BG, 1, "TOP","DIALOG", true, 0, 0)
 HomeContent.ShowNoteEditBox.btnClose = ZN.CreateIconButton(HomeContent.ShowNoteEditBox, "TOPRIGHT", HomeContent.ShowNoteEditBox, "TOPRIGHT", 16, 16, -10, -10, "Interface\\AddOns\\ZeroNotes\\Media\\Texture\\x_big_active", ZN.Colors.ACTIVE, ZN.Colors.INACTIVE, false)
 HomeContent.ShowNoteEditBox.EditBox = ZN.MultiLineEditBox("ZBMImportEditBox", HomeContent.ShowNoteEditBox, "TOP", HomeContent.ShowNoteEditBox, "TOP", 660, 450, 0, -65, 0, 0 ,12, ZN.Colors.ACTIVE, ZN.Colors.HD, nil, "", "LEFT")
 
 HomeContent.ShowNoteEditBox.btnClose:SetScript("OnClick", function(self) HomeContent.ShowNoteEditBox:Hide() end)
-
--- Home Sidebar
+--[[ ##############################################################################
+  Sidebar
+############################################################################## --]]
 HomeSidebar = ZNSidebarFrame.Subframes.Home
 HomeSidebar.TemplateSelectButton = ZN.CreateGenericButton("ZNBossTemplateSelectButton", HomeSidebar, "TOPLEFT", HomeSidebar, "TOPLEFT", 240, 30, 0, -60,10,0, 12, ZN.Colors.ACTIVE, ZN.Colors.SBButtonBG, "Select Boss Template", "Select Template..", "LEFT",true )
 HomeSidebar.TemplateSelectButton.doOnUpdate = true
@@ -46,7 +49,6 @@ HomeSidebar.GroupTemplateSelectButton:SetScript("OnClick", function(self)
   ZN:CreateDropdown(self, ZN:getTableKeys(ZNotes.GroupTemplates), ZN:getTemplateTableOrder(ZNotes.GroupTemplates), 240, ZN.Colors.BG, "LEFT", 10, nil, "TOOLTIP")
 end)
 
-
 if IsAddOnLoaded("ExRT") then
   HomeSidebar.SendToExRTButton = ZN.CreateGenericButton("SendToExRTButton", HomeSidebar, "BOTTOMLEFT", HomeSidebar, "BOTTOMLEFT", 240, 30, 0, 100,0,0, 12, ZN.Colors.ACTIVE, ZN.Colors.SBButtonBG, nil, "Send Note to ExRT", "CENTER",true )
 else
@@ -54,11 +56,8 @@ else
 end
 
 HomeSidebar.ShowNoteInEditorButton = ZN.CreateGenericButton("ShowNoteInEditorButton", HomeSidebar, "TOPLEFT", HomeSidebar.SendToExRTButton, "BOTTOMLEFT", 240, 30, 0, -10,0,0, 12, ZN.Colors.ACTIVE, ZN.Colors.SBButtonBG, nil, "Show Note", "CENTER",true )
-
 HomeSidebar.btnConfig = ZN.CreateIconButton(HomeSidebar, "BOTTOMLEFT", HomeSidebar, "BOTTOMLEFT", 24, 24, 0, 17, "Interface\\AddOns\\ZeroNotes\\Media\\Texture\\config", ZN.Colors.ACTIVE, ZN.Colors.INACTIVE, false, nil, true, "Open Config", ZN.Colors.ACTIVE)
-
 HomeSidebar.btnConfig:SetScript("OnClick", function(self) HomeContent.ConfigFrame:SetShown(not HomeContent.ConfigFrame:IsShown()); end)
-
 -- Home Sidebar Functions
 HomeSidebar.TemplateSelectButton:SetScript("OnClick", function(self) ZN:CreateDropdown(self, ZN:getTableKeys(ZNotes.BossTemplates), ZN:getTableOrder(ZNotes.BossTemplates), 240, ZN.Colors.BG, "LEFT", 10, nil, "TOOLTIP") end)
 
@@ -92,7 +91,7 @@ end)
 
 HomeSidebar.IncludeMissingCheckBox = ZN:createCheckBox(HomeSidebar, "TOPLEFT", HomeSidebar.GroupTemplateSelectButton, "BOTTOMLEFT", 0, -20, "Include Missing Spells", 14, ZN.Colors.ACTIVE, 200, true)
 
--- Checkbox onclick
+-- Missing Checkbox onclick
 HomeSidebar.IncludeMissingCheckBox:SetScript("OnClick",function(self)
   self.toggleChecked()
 end)

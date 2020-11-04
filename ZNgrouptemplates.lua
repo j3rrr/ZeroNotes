@@ -1,14 +1,12 @@
 local _, ZN, L = ...
 
--- for i=1, #ZN.DropDownsEdit do
--- 		ZN.DropDownsEdit[i]:SetShown(false)
--- 	end
-
 function ZN:createGroupTemplateFrames()
+  --[[ ##############################################################################
+    Group Templates Frames
+  ############################################################################## --]]
   GroupTemplates = ZNBodyFrame.Subframes.GroupTemplates
-
-  --GroupTemplates.NoTemplatesMessage = ZN.CreateGenericButton("NoTemplatesMessage", GroupTemplates, "TOPLEFT", GroupTemplates, "TOPLEFT", 930, 530, 0, 0, 0, 0 , 18, ZN.Colors.INACTIVE, ZN.Colors.BG, nil, "No Templates found.\nCreate a new Template using the [BUTTON] above", "CENTER", false, nil, nil, nil, nil, nil)
   GroupTemplates.NoTemplatesMessage = ZN.CreateText(GroupTemplates, "TOPLEFT", GroupTemplates, "TOPLEFT", 930, 530, 0, 0, "Interface\\Addons\\ZeroNotes\\Media\\Font\\ZNReg.ttf", 16, ZN.Colors.INACTIVE, "No Templates found\nCreate a new Template using the button above", "CENTER", "CENTER", 20, false, nil, nil, nil)
+  -- Select Dropdown
   GroupTemplateSelectButtonHead = ZN.CreateGenericButton("ZNGroupTemplateSelectButton", GroupTemplates, "LEFT", ZNHeaderFrame.Version, "LEFT", 240, 30, 50, 0,10,0, 12, ZN.Colors.ACTIVE, ZN.Colors.SBButtonBG, nil, ZN.selectedGroupTemplate , "LEFT",true )
   GroupTemplateSelectButtonHead.doOnUpdate = true
   GroupTemplateSelectButtonHead.OnUpdate = function(_,_,_,newValue) 
@@ -20,19 +18,20 @@ function ZN:createGroupTemplateFrames()
       end
   end
   GroupTemplateSelectButtonHead:SetScript("OnClick", function(self) ZN:CreateDropdown(self, ZN:getTableKeys(ZNotes.GroupTemplates), ZN:getTemplateTableWithoutCurrentOrder(ZNotes.GroupTemplates), 240, ZN.Colors.BG, "LEFT", 10, nil, "TOOLTIP") end)
-
-  GroupTemplates.GroupTemplatesLeft = ZN.createSubFrame("GroupTemplatesLeft", GroupTemplates, 300, 530, nil, 1, "TOPLEFT", "HIGH", false, 0, 0)
-  GroupTemplates.GroupTemplatesMiddle = ZN.createSubFrame("GroupTemplatesMiddle", GroupTemplates, 300, 530, nil, 1, "TOPLEFT", "HIGH", false, 10, 0, GroupTemplates.GroupTemplatesLeft, "TOPRIGHT")
-  GroupTemplates.GroupTemplatesRight = ZN.createSubFrame("GroupTemplatesRight", GroupTemplates, 300, 530, nil, 1, "TOPLEFT", "HIGH", false, 10, 0, GroupTemplates.GroupTemplatesMiddle, "TOPRIGHT")
-
+  -- Buttons
   GroupTemplates.btnNewTemplate = ZN.CreateIconButton(GroupTemplates, "LEFT", GroupTemplateSelectButtonHead, "RIGHT", 18, 18, 8, 0, "Interface\\AddOns\\ZeroNotes\\Media\\Texture\\newtempl", ZN.Colors.ACTIVE, ZN.Colors.INACTIVE, false, ZN.Colors.ACTIVE, true, "Create New Template", ZN.Colors.ACTIVE)
   GroupTemplates.btnCopyTemplate  = ZN.CreateIconButton(GroupTemplates, "LEFT", GroupTemplates.btnNewTemplate, "RIGHT", 18, 18, 8, 0, "Interface\\AddOns\\ZeroNotes\\Media\\Texture\\copy", ZN.Colors.ACTIVE, ZN.Colors.INACTIVE, false, ZN.Colors.ACTIVE, true, "Copy Template", ZN.Colors.ACTIVE)
   GroupTemplates.btnEditTemplate = ZN.CreateIconButton(GroupTemplates, "RIGHT", GroupTemplateSelectButtonHead, "RIGHT", 16, 16, -8, 0, "Interface\\AddOns\\ZeroNotes\\Media\\Texture\\edit", ZN.Colors.ACTIVE, ZN.Colors.INACTIVE, false, ZN.Colors.ACTIVE, true, "Edit Template", ZN.Colors.ACTIVE)
   GroupTemplates.btnEditTemplate:SetFrameStrata("DIALOG")
   
   GroupTemplates.btnNewTemplate:SetScript("OnClick", function(self) ZN:createNewGroupTemplate() end)
-
-  -- Edit Group Popup
+  -- Main View Columns
+  GroupTemplates.GroupTemplatesLeft = ZN.createSubFrame("GroupTemplatesLeft", GroupTemplates, 300, 530, nil, 1, "TOPLEFT", "HIGH", false, 0, 0)
+  GroupTemplates.GroupTemplatesMiddle = ZN.createSubFrame("GroupTemplatesMiddle", GroupTemplates, 300, 530, nil, 1, "TOPLEFT", "HIGH", false, 10, 0, GroupTemplates.GroupTemplatesLeft, "TOPRIGHT")
+  GroupTemplates.GroupTemplatesRight = ZN.createSubFrame("GroupTemplatesRight", GroupTemplates, 300, 530, nil, 1, "TOPLEFT", "HIGH", false, 10, 0, GroupTemplates.GroupTemplatesMiddle, "TOPRIGHT")
+  --[[ ##############################################################################
+    Edit Group Popup
+  ############################################################################## --]]
   ZNeditGroupFrame = ZN.createSubFrame("ZNeditGroupFrame",ZNFrame, 302, 202, ZN.Colors.HD, 1, 'CENTER', 'TOOLTIP', true)
   ZNeditGroupFrame:SetScript("OnMouseDown", function(self, button)end)
   table.insert(ZN.DropDownsEdit, ZNeditGroupFrame)
@@ -113,8 +112,9 @@ function ZN:createGroupTemplateFrames()
       ZN:Print("No Template selected")
     end
   end)
-
-  -- New Group Popup
+  --[[ ##############################################################################
+    New Group Popup
+  ############################################################################## --]]
   ZNnewGroupFrame = ZN.createSubFrame("ZNnewGroupFrame",ZNFrame, 302, 202, ZN.Colors.HD, 1, 'CENTER', 'TOOLTIP', true)
   ZNnewGroupFrame:SetScript("OnMouseDown", function(self, button)end)
   table.insert(ZN.DropDownsEdit, ZNnewGroupFrame)
@@ -237,8 +237,9 @@ function ZN:createGroupTemplateFrames()
   end)
   ZNnewGroupFrame.btnClose:SetScript("OnClick", function(self) ZNnewGroupFrame:Hide() end)
   ZNnewGroupFrame.CancelButton:SetScript("OnClick", function(self) ZNnewGroupFrame:Hide() end)
-
-  -- Delete Group Popup
+  --[[ ##############################################################################
+    Delete Group Popup
+  ############################################################################## --]]
   ZNdeleteGroupFrame = ZN.createSubFrame("ZNdeleteGroupFrame",ZNFrame, 302, 202, ZN.Colors.HD, 1, 'CENTER', 'TOOLTIP', true)
   ZNdeleteGroupFrame:SetScript("OnMouseDown", function(self, button)end)
   table.insert(ZN.DropDownsEdit, ZNdeleteGroupFrame)
@@ -279,8 +280,9 @@ function ZN:createGroupTemplateFrames()
   end)
   ZNdeleteGroupFrame.btnClose:SetScript("OnClick", function(self) ZNdeleteGroupFrame:Hide() end)
   ZNdeleteGroupFrame.CancelButton:SetScript("OnClick", function(self) ZNdeleteGroupFrame:Hide() end)
-
-  -- Copy Group Popup
+  --[[ ##############################################################################
+    Copy Group Popup
+  ############################################################################## --]]
   ZNcopyGroupFrame = ZN.createSubFrame("ZNcopyGroupFrame",ZNFrame, 302, 202, ZN.Colors.HD, 1, 'CENTER', 'TOOLTIP', true)
   ZNcopyGroupFrame:SetScript("OnMouseDown", function(self, button)end)
   table.insert(ZN.DropDownsEdit, ZNcopyGroupFrame)
@@ -360,8 +362,9 @@ function ZN:createGroupTemplateFrames()
       ZN:Print("No Template selected")
     end
   end)
-
-  -- Sidebar
+  --[[ ##############################################################################
+    Sidebar
+  ############################################################################## --]]
   ZNSidebarFrame.btnDeleteGroupTemplate = ZN.CreateIconButton(ZNSidebarFrame, "BOTTOMRIGHT", ZNSidebarFrame, "BOTTOMRIGHT", 20, 20, -14, 20, "Interface\\AddOns\\ZeroNotes\\Media\\Texture\\delete2", ZN.Colors.ACTIVE, ZN.Colors.INACTIVE, false, nil, true, "Delete Template", ZN.Colors.ACTIVE)
   ZNSidebarFrame.btnDeleteGroupTemplate:SetShown(false)
 
@@ -390,7 +393,9 @@ function ZN:createGroupTemplateFrames()
     end
   end)
 end
-
+--[[ ##############################################################################
+  Group View Functions
+############################################################################## --]]
 ZN.GroupMemberRows = {}
 ZN.GroupMemberRowsSelectedClass = {}
 
@@ -402,7 +407,6 @@ function ZN:createNewGroupTemplate()
 end
 
 function ZN:CreateGroupMemberRow(index, anchorFrame, template)
-
   local parent = GroupTemplates.GroupTemplatesLeft
   local yOffsset = 0
   if index > 1 then  
