@@ -45,7 +45,7 @@ PlayerSidebar.SortSelectButton:SetScript("OnClick", function(self) ZN:CreateDrop
 
 ZNSidebarFrame.btnResetFilter = ZN.CreateIconButton(PlayerSidebar, "BOTTOMLEFT", PlayerSidebar, "BOTTOMLEFT", 24, 24, 0, -24, "Interface\\AddOns\\ZeroNotes\\Media\\Texture\\resetfilter", ZN.Colors.ACTIVE, ZN.Colors.INACTIVE, false, nil, true, "Reset All Filter", ZN.Colors.ACTIVE)
 ZNSidebarFrame.btnResetPlayer = ZN.CreateIconButton(ZNSidebarFrame, "BOTTOM", ZNSidebarFrame.btnCollapseSidebar, "TOP", 20, 20, 0, 20, "Interface\\AddOns\\ZeroNotes\\Media\\Texture\\reset", ZN.Colors.ACTIVE, ZN.Colors.INACTIVE, false, nil, true, "Reset Player DB", ZN.Colors.ACTIVE)
-ZNSidebarFrame.btnReloadPlayer = ZN.CreateIconButton(ZNSidebarFrame, "BOTTOM", ZNSidebarFrame.btnResetPlayer, "TOP", 20, 20, 0, 20, "Interface\\AddOns\\ZeroNotes\\Media\\Texture\\update", ZN.Colors.ACTIVE, ZN.Colors.INACTIVE, false, nil, true, "Update Table", ZN.Colors.ACTIVE)
+ZNSidebarFrame.btnReloadPlayer = ZN.CreateIconButton(ZNSidebarFrame, "BOTTOM", ZNSidebarFrame.btnResetPlayer, "TOP", 20, 20, 0, 20, "Interface\\AddOns\\ZeroNotes\\Media\\Texture\\update", ZN.Colors.ACTIVE, ZN.Colors.INACTIVE, false, nil, true, "Update Player Table", ZN.Colors.ACTIVE)
 ZNSidebarFrame.btnAddPlayer = ZN.CreateIconButton(ZNSidebarFrame, "BOTTOM", ZNSidebarFrame.btnReloadPlayer, "TOP", 20, 20, 0, 20, "Interface\\AddOns\\ZeroNotes\\Media\\Texture\\plus_nobg", ZN.Colors.ACTIVE, ZN.Colors.INACTIVE, false, nil, true, "Add Spell", ZN.Colors.ACTIVE)
 
 ZNSidebarFrame.btnReloadPlayer:SetShown(false)
@@ -207,21 +207,19 @@ local function CreateContentRow(PlayerSpellID, PlayerSpell, AnchorFrame)
   if class =="all" then class="zzz" end
 
   ContentRow.Role = CreateGenericButton ("Role"..PlayerSpellID, ContentRow, "LEFT", ContentRow, "LEFT", "role", ZN.ColoredRoles[PlayerSpell.role],PlayerSpellID)
-  --ContentRow.Classi = CreateIconDropButton ("Classi"..PlayerSpellID, ContentRow, "LEFT", ContentRow.Role, "RIGHT", "class", ZN.ClassIconsList[class],PlayerSpellID)
   ContentRow.Class = CreateGenericButton ("Class"..PlayerSpellID, ContentRow, "LEFT", ContentRow.Role, "RIGHT", "class", ZN.ClassIconsList[class],PlayerSpellID,0,-8)
   ContentRow.SpellId = CreateSingleLineEditBox("Spellid"..PlayerSpellID, ContentRow, "LEFT", ContentRow.Class, "RIGHT", "spellid", PlayerSpell.id,0,PlayerSpellID)
   ContentRow.SpellName = CreateText(ContentRow, "LEFT", ContentRow.SpellId, "RIGHT", "spellname", (GetSpellInfo(PlayerSpell.id) and GetSpellInfo(PlayerSpell.id) or "|cffff3f40Invalid Spell ID|r"):upper())
   ContentRow.SpellType = CreateGenericButton ("Type"..PlayerSpellID, ContentRow, "LEFT", ContentRow.SpellName, "RIGHT", "spelltype", ZN.Types[PlayerSpell.type],PlayerSpellID)
   ContentRow.Aoe = CreateCheckBox(ContentRow, "LEFT", ContentRow.SpellType, "RIGHT", "aoe", PlayerSpellID, PlayerSpell.aoe)
   ContentRow.Station = CreateCheckBox(ContentRow, "LEFT", ContentRow.Aoe, "RIGHT", "station", PlayerSpellID, PlayerSpell.station)
-  --ContentRow.SpellCd = CreateText(ContentRow, "LEFT", ContentRow.Station, "RIGHT", "spellcd", select(1,GetSpellBaseCooldown(PlayerSpell.id))/1000, 17)
   ContentRow.SpellCd = CreateSingleLineEditBox("Spellcd"..PlayerSpellID, ContentRow, "LEFT", ContentRow.Station, "RIGHT", "spellcd", PlayerSpell.cd, 17, PlayerSpellID)
   ContentRow.SpellRating = CreateSingleLineEditBox("Spellrating"..PlayerSpellID, ContentRow, "LEFT", ContentRow.SpellCd, "RIGHT", "spellrating", PlayerSpell.rating,0, PlayerSpellID)
   ContentRow.Delete = CreateIconButton(ContentRow, "LEFT", ContentRow.SpellRating, "RIGHT", "delete", PlayerSpellID)
-  -- ContentRow.Class.ZNText:SetJustifyH("LEFT")
-  -- ContentRow.Class:SetWidth(ContentRow.Class:GetWidth()-40)
+
 
   ContentRow.SpellId.refersTo=ContentRow.SpellName
+  ContentRow.SpellType.AoeBtn = ContentRow.Aoe
 
   ContentRow.Class.OnUpdate=function(_, row, column, newvalue,self)
     ZNotes.PlayerSpells[row][column]=newvalue
@@ -231,11 +229,56 @@ local function CreateContentRow(PlayerSpellID, PlayerSpell, AnchorFrame)
     self.ZNText:SetText(ZN.ClassIconsList[class])
   end
 
+  ContentRow.SpellType.OnUpdate=function(_, row, column, newvalue,self)
+    ZNotes.PlayerSpells[row][column]=newvalue
 
-  ContentRow.Aoe:SetScript("OnClick",function(self)
-    self.toggleChecked()
-    ZNotes.PlayerSpells[self.Row][self.Column] = self.active
-  end)
+    if newvalue ~= "util" then
+      if newvalue=="heal" then
+        self.AoeBtn.active=true
+        ZNotes.PlayerSpells[row]["aoe"]=true
+        self.AoeBtn:SetNormalTexture(ZN.CheckBoxTextures.checked)
+      else
+        self.AoeBtn.active=false
+        ZNotes.PlayerSpells[row]["aoe"]=false
+        self.AoeBtn:SetNormalTexture(ZN.CheckBoxTextures.unchecked)
+      end
+      self.AoeBtn:SetScript("OnClick",function(self) end)
+      self.AoeBtn.activeColor=ZN.Colors.INACTIVE
+      self.AoeBtn.inactiveColor=ZN.Colors.INACTIVE
+      self.AoeBtn.highlightColor=ZN.Colors.INACTIVE
+      self.AoeBtn:GetNormalTexture():SetVertexColor(tonumber("0x"..ZN.Colors.INACTIVE:sub(1,2))/255, tonumber("0x"..ZN.Colors.INACTIVE:sub(3,4))/255, tonumber("0x"..ZN.Colors.INACTIVE:sub(5,6))/255, 1)
+    else
+      if self.AoeBtn.active then
+        self.AoeBtn:GetNormalTexture():SetVertexColor(tonumber("0x"..ZN.CheckBoxTextures.checkedColor:sub(1,2))/255, tonumber("0x"..ZN.CheckBoxTextures.checkedColor:sub(3,4))/255, tonumber("0x"..ZN.CheckBoxTextures.checkedColor:sub(5,6))/255, 1)
+      else
+        self.AoeBtn:GetNormalTexture():SetVertexColor(tonumber("0x"..ZN.CheckBoxTextures.uncheckedColor:sub(1,2))/255, tonumber("0x"..ZN.CheckBoxTextures.uncheckedColor:sub(3,4))/255, tonumber("0x"..ZN.CheckBoxTextures.uncheckedColor:sub(5,6))/255, 1)
+      end
+      self.AoeBtn.activeColor=ZN.CheckBoxTextures.checkedColor
+      self.AoeBtn.inactiveColor=ZN.CheckBoxTextures.uncheckedColor
+      self.AoeBtn.highlightColor=ZN.Colors.ACTIVE
+      self.AoeBtn:SetScript("OnClick",function(self)
+        self.toggleChecked()
+        ZNotes.PlayerSpells[self.Row][self.Column] = self.active
+      end)
+    end
+  end
+
+
+  if PlayerSpell.type ~= "util" then
+    ContentRow.Aoe:SetScript("OnClick",function(self) end)
+    ContentRow.Aoe.activeColor=ZN.Colors.INACTIVE
+    ContentRow.Aoe.inactiveColor=ZN.Colors.INACTIVE
+    ContentRow.Aoe.highlightColor=ZN.Colors.INACTIVE
+    ContentRow.Aoe:GetNormalTexture():SetVertexColor(tonumber("0x"..ZN.Colors.INACTIVE:sub(1,2))/255, tonumber("0x"..ZN.Colors.INACTIVE:sub(3,4))/255, tonumber("0x"..ZN.Colors.INACTIVE:sub(5,6))/255, 1)
+  else
+     ContentRow.Aoe:SetScript("OnClick",function(self)
+      self.toggleChecked()
+      ZNotes.PlayerSpells[self.Row][self.Column] = self.active
+    end)
+    ContentRow.Aoe.activeColor=ZN.CheckBoxTextures.checkedColor
+    ContentRow.Aoe.inactiveColor=ZN.CheckBoxTextures.uncheckedColor
+    ContentRow.Aoe.highlightColor=ZN.Colors.ACTIVE
+  end
 
   ContentRow.Station:SetScript("OnClick",function(self)
     self.toggleChecked()
@@ -275,6 +318,28 @@ local function UpdateContentRow(PlayerSpellID, PlayerSpell, AnchorFrame,ContentR
   ContentRow.SpellRating.Row = PlayerSpellID
   ContentRow.SpellRating:SetText(PlayerSpell.rating)
   ContentRow.Delete.Row = PlayerSpellID
+
+  if PlayerSpell.type ~= "util" then
+    ContentRow.Aoe:SetScript("OnClick",function(self) end)
+    ContentRow.Aoe.activeColor=ZN.Colors.INACTIVE
+    ContentRow.Aoe.inactiveColor=ZN.Colors.INACTIVE
+    ContentRow.Aoe.highlightColor=ZN.Colors.INACTIVE
+    ContentRow.Aoe:GetNormalTexture():SetVertexColor(tonumber("0x"..ZN.Colors.INACTIVE:sub(1,2))/255, tonumber("0x"..ZN.Colors.INACTIVE:sub(3,4))/255, tonumber("0x"..ZN.Colors.INACTIVE:sub(5,6))/255, 1)
+  else
+    if ContentRow.Aoe.active then
+      ContentRow.Aoe:GetNormalTexture():SetVertexColor(tonumber("0x"..ZN.CheckBoxTextures.checkedColor:sub(1,2))/255, tonumber("0x"..ZN.CheckBoxTextures.checkedColor:sub(3,4))/255, tonumber("0x"..ZN.CheckBoxTextures.checkedColor:sub(5,6))/255, 1)
+    else
+      ContentRow.Aoe:GetNormalTexture():SetVertexColor(tonumber("0x"..ZN.CheckBoxTextures.uncheckedColor:sub(1,2))/255, tonumber("0x"..ZN.CheckBoxTextures.uncheckedColor:sub(3,4))/255, tonumber("0x"..ZN.CheckBoxTextures.uncheckedColor:sub(5,6))/255, 1)
+    end
+    ContentRow.Aoe.activeColor=ZN.CheckBoxTextures.checkedColor
+    ContentRow.Aoe.inactiveColor=ZN.CheckBoxTextures.uncheckedColor
+    ContentRow.Aoe.highlightColor=ZN.Colors.ACTIVE
+    ContentRow.Aoe:SetScript("OnClick",function(self)
+      self.toggleChecked()
+      ZNotes.PlayerSpells[self.Row][self.Column] = self.active
+    end)
+  end
+
 end
 
 ZN.PlayerRows={}
