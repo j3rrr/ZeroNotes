@@ -773,7 +773,7 @@ ZNotes.BossTemplates = ZNotes.BossTemplates or {
       ["name"]= "Heroic Leap",
       ["id"]= "6544",
       ["time"]= 125,
-      ["prio"]= 2,    
+      ["prio"]= 3,    
       ["station"]= true,
       ["need"]= {
         {
