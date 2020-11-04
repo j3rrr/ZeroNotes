@@ -12,7 +12,7 @@ local function onUILoad(text)
       end
       if not ZNotes.DebugMode then
         ZNotes.DebugMode = false
-      end      
+      end
       ZN.initBossTemplates()
       ZN.initGroupTemplates()
       ZN.initLastTemplates()

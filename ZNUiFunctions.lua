@@ -407,7 +407,7 @@ function ZN:CreateDropdown(parentObj, list, order, width, dropDownBgColor, butto
 		local dropdown = ZN.DropdownList(parentName.."Dropdown", ZNFrame, "TOPLEFT", parentObj, "BOTTOMLEFT" , width, listItemHeight and listItemHeight or 30, dropDownBgColor, 1, "CENTER", true, #order, "TOOLTIP")
 		parentObj.dropdown = dropdown
 		dropdown.dropdownItems = {}
-		
+
 		for i = 1, #order do
 			local text = list[order[i]]:upper()
 			text = text:gsub("(:%d+|)T", "%1t")
