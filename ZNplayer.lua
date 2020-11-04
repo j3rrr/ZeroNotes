@@ -93,9 +93,20 @@ local function CreateTitleRow()
   return TitleRow
 end
 
-local function CreateGenericButton (name, parent, point, anchor, anchorPoint, type, text,row,xoffset)
-  local btn = ZN.CreateGenericButton(name, parent, point, anchor, anchorPoint, ZN.PlayerTableColumns[type], ZN.PlayerTableRows.row, 0, 0,xoffset and xoffset or 0, 0 ,12, ZN.Colors.INACTIVE, ZN.Colors.ROWBG, nil, text, "CENTER", false)
-  btn:SetScript("OnClick", function(self) ZN:CreateDropdown(self, ZN.PlayerDropdowns[type].content, ZN.PlayerDropdowns[type].order, ZN.PlayerTableColumns[type], ZN.Colors.SBButtonBG, "CENTER",0, ZN.Colors.HD) end)
+local function CreateGenericButton (name, parent, point, anchor, anchorPoint, type, text,row,xoffset, fontoffset)
+  local btn = ZN.CreateGenericButton(name, parent, point, anchor, anchorPoint, ZN.PlayerTableColumns[type], ZN.PlayerTableRows.row, 0, 0,xoffset and xoffset or 0, fontoffset and fontoffset or 0 ,12, ZN.Colors.INACTIVE, ZN.Colors.ROWBG, nil, text, "CENTER", false)
+  local width = ZN.PlayerTableColumns[type]
+  if type == "class" then
+    width=200
+  end
+  btn:SetScript("OnClick", function(self) 
+    ZN:CreateDropdown(self, ZN.PlayerDropdowns[type].content, ZN.PlayerDropdowns[type].order, width, ZN.Colors.SBButtonBG, "CENTER",0, ZN.Colors.HD) 
+    if self.Column == "class" then
+      self.dropdown:ClearAllPoints()
+      self.dropdown:SetPoint("TOP", self, "BOTTOM")
+    end
+  end)
+
   btn.Row = row
   btn.Column = ZN.PlayerAttributeMapping[type]
   btn.OnUpdate=function(_, row, column, newvalue)
@@ -162,12 +173,34 @@ local function CreateIconButton(parent, point, anchor, anchorPoint, type, row)
   return btn
 end
 
+-- local function CreateIconDropButton(name, parent, point, anchor, anchorPoint, type, text,row,xoffset)
+--   local btn = ZN.CreateGenericButton(name, parent, point, anchor, anchorPoint, ZN.PlayerTableColumns[type], ZN.PlayerTableRows.row, 0, 0,xoffset and xoffset or 0, -8 ,12, nil, ZN.Colors.ROWBG, nil, text, "CENTER", false)
+--   btn:SetScript("OnClick", function(self)
+--       ZN:CreateIconDropdown(self, ZN.ClassIconsList, ZN.ClassIconsListOrder, 40, ZN.Colors.SBButtonBG, "CENTER", 0, ZN.Colors.HD, nil, 40, -8, 2, 6, true)
+--   end)
+--   btn.Column = ZN.PlayerAttributeMapping[type]
+--   btn.OnUpdate=function(_, row, column, newvalue,self)
+--     ZNotes.PlayerSpells[btn.Row][btn.Column]=newvalue
+--     local class = PlayerSpell.class
+--     if class and (class=="diszi" or class=="shadow") then class="priest" end
+--     if class =="all" then class="zzz" end
+--     self.ZNText:SetText(ZN.ClassIconsList[class])
+--   end
+--   btn.doOnUpdate=true
+
+--   btn.Row = row
+--   return btn
+-- end
+
 local function CreateContentRow(PlayerSpellID, PlayerSpell, AnchorFrame)
   local ContentRow = ZN.createSubFrame("ZNPlayerRow"..PlayerSpellID, ZNBodyFrame.Subframes.Player.scrollChild, 930, ZN.PlayerTableRows.row, ZN.Colors.ROWBG, 1, "TOPLEFT", "HIGH", false, 0,-ZN.PlayerTableRows.rowgap, AnchorFrame, "BOTTOMLEFT")
-  --iconbutton on click setzen für onupdate
+  local class = PlayerSpell.class
+  if class and (class=="diszi" or class=="shadow") then class="priest" end
+  if class =="all" then class="zzz" end
+
   ContentRow.Role = CreateGenericButton ("Role"..PlayerSpellID, ContentRow, "LEFT", ContentRow, "LEFT", "role", ZN.ColoredRoles[PlayerSpell.role],PlayerSpellID)
-  -- ContentRow.Classi = CreateIconButton(ContentRow, "LEFT", ContentRow.Role, "RIGHT", "square", PlayerSpellID)
-  ContentRow.Class = CreateGenericButton ("Class"..PlayerSpellID, ContentRow, "LEFT", ContentRow.Role, "RIGHT", "class", ZN.PlayerClassesColored[PlayerSpell.class],PlayerSpellID)
+  --ContentRow.Classi = CreateIconDropButton ("Classi"..PlayerSpellID, ContentRow, "LEFT", ContentRow.Role, "RIGHT", "class", ZN.ClassIconsList[class],PlayerSpellID)
+  ContentRow.Class = CreateGenericButton ("Class"..PlayerSpellID, ContentRow, "LEFT", ContentRow.Role, "RIGHT", "class", ZN.ClassIconsList[class],PlayerSpellID,0,-8)
   ContentRow.SpellId = CreateSingleLineEditBox("Spellid"..PlayerSpellID, ContentRow, "LEFT", ContentRow.Class, "RIGHT", "spellid", PlayerSpell.id,0,PlayerSpellID)
   ContentRow.SpellName = CreateText(ContentRow, "LEFT", ContentRow.SpellId, "RIGHT", "spellname", (GetSpellInfo(PlayerSpell.id) and GetSpellInfo(PlayerSpell.id) or "|cffff3f40Invalid Spell ID|r"):upper())
   ContentRow.SpellType = CreateGenericButton ("Type"..PlayerSpellID, ContentRow, "LEFT", ContentRow.SpellName, "RIGHT", "spelltype", ZN.Types[PlayerSpell.type],PlayerSpellID)
@@ -181,6 +214,15 @@ local function CreateContentRow(PlayerSpellID, PlayerSpell, AnchorFrame)
   -- ContentRow.Class:SetWidth(ContentRow.Class:GetWidth()-40)
 
   ContentRow.SpellId.refersTo=ContentRow.SpellName
+
+  ContentRow.Class.OnUpdate=function(_, row, column, newvalue,self)
+    ZNotes.PlayerSpells[row][column]=newvalue
+    local class = newvalue
+    if class and (class=="diszi" or class=="shadow") then class="priest" end
+    if class =="all" then class="zzz" end
+    self.ZNText:SetText(ZN.ClassIconsList[class])
+  end
+
 
   ContentRow.Aoe:SetScript("OnClick",function(self)
     self.toggleChecked()
@@ -203,10 +245,14 @@ end
 local function UpdateContentRow(PlayerSpellID, PlayerSpell, AnchorFrame,ContentRow)
   ContentRow:SetPoint("TOP", AnchorFrame, "BOTTOM",0,-ZN.PlayerTableRows.rowgap)
   --iconbutton on click setzen für onupdate
+  local class = PlayerSpell.class
+  if class and (class=="diszi" or class=="shadow") then class="priest" end
+  if class =="all" then class="zzz" end
+  
   ContentRow.Role.Row = PlayerSpellID
   ContentRow.Role.ZNText:SetText(ZN.ColoredRoles[PlayerSpell.role]:upper())
   ContentRow.Class.Row = PlayerSpellID
-  ContentRow.Class.ZNText:SetText(ZN.PlayerClassesColored[PlayerSpell.class]:upper())
+  ContentRow.Class.ZNText:SetText(ZN.ClassIconsList[class])
   ContentRow.SpellId.Row = PlayerSpellID
   ContentRow.SpellId:SetText(PlayerSpell.id)
   ContentRow.SpellName:SetText((GetSpellInfo(PlayerSpell.id) and GetSpellInfo(PlayerSpell.id) or "|cffff3f40Invalid Spell ID|r"):upper())

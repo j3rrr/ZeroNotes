@@ -1055,6 +1055,15 @@ ZN.SpecsToRole = {
   },
 }
 
+ZN.SpecsToClass = {
+    ["priest"] = {
+    -- Priest
+    ["diszi"] = 'diszi',
+    ["holy"] = 'priest',
+    ["shadow"] = 'shadow',
+  }
+}
+
 ZN.SpecIdToTemplateClass = {
   -- Death Knight
   [250] = 'blood',
@@ -1218,10 +1227,10 @@ ZN.ClassTable = {
 
 ZN.PlayerTableColumns = {
   ["role"] = 100,
-  ["class"] = 200,
-  ["spellid"] = 80,
-  ["spellname"] = 200,
-  ["spelltype"] = 100,
+  ["class"] = 40,
+  ["spellid"] = 110,
+  ["spellname"] = 300,
+  ["spelltype"] = 130,
   ["aoe"] = 50,
   ["station"] = 50,
   ["spellcd"] = 50,
@@ -1303,7 +1312,8 @@ ZN.PlayerTableRows = {
 ZN.PlayerDropdowns = {
   ["role"] = {["content"]=ZN.ColoredRoles, ["order"]=ZN.ColoredRolesOrder},
   ["class"] = {["content"]=ZN.PlayerClassesColored, ["order"]=ZN.PlayerClassesColoredOrder},
-  ["spelltype"] = {["content"]=ZN.Types, ["order"]=ZN.TypesOrder}
+  ["spelltype"] = {["content"]=ZN.Types, ["order"]=ZN.TypesOrder},
+  ["spec"] = {["content"]=ZN.Types, ["order"]=ZN.TypesOrder},
 }
 
 ZN.RoleSelectionColor = {
