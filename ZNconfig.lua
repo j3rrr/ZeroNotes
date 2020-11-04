@@ -25,26 +25,26 @@ function ZN:Config()
     ZNotes.DebugMode = ConfigFrame.DebugModeCheckBox.active
     ZN:DebugModeToggle()
   end)
-  ZNDebugMode = {}
-
-  ZNDebugMode.btnReload = ZN.CreateGenericButton("ZNDebugReloadButton", ZNFrame, "BOTTOMRIGHT", ZNFrame, "TOPRIGHT", 240, 30, 0,30,0,0, 12, ZN.Colors.black, ZN.Colors.chatGeneral, nil, "/reload", "CENTER",true, ZN.Colors.SBButtonBG )
-
-  ZNDebugMode.btnReload:SetScript("OnClick", function() ReloadUI() end)
-
-  if not ConfigFrame.DebugModeCheckBox.active then
-    ZNDebugMode.btnReload:Hide()
-  end
 
   function ZN:DebugModeToggle()
     ZNDebugMode.btnReload:SetShown(not ZNDebugMode.btnReload:IsShown());
+    ZNDebugMode.btnRunStuff:SetShown(not ZNDebugMode.btnRunStuff:IsShown());
+  end
+
+  ZNDebugMode = {}
+
+  ZNDebugMode.btnReload = ZN.CreateGenericButton("ZNDebugReloadButton", ZNFrame, "BOTTOMRIGHT", ZNFrame, "TOPRIGHT", 240, 30, 0,30,0,0, 12, ZN.Colors.black, ZN.Colors.chatGeneral, nil, "/reload", "CENTER",true, ZN.Colors.SBButtonBG )
+  ZNDebugMode.btnReload:SetScript("OnClick", function() ReloadUI() end)
+
+  if not ZNotes.DebugMode then
+    ZNDebugMode.btnReload:Hide()
   end
 
   ZNDebugMode.btnRunStuff = ZN.CreateGenericButton("btnRunStuff", ConfigFrame, "TOPLEFT", ConfigFrame.DebugModeCheckBox, "BOTTOMLEFT", 240, 30, 0,-20,0,0, 12, ZN.Colors.ACTIVE, ZN.Colors.SBButtonBG, nil, "/run", "CENTER",true, ZN.Colors.HD )
-  ZNDebugMode.btnRunStuff:Hide()
   ZNDebugMode.btnRunStuff:SetScript("OnClick", function() ZN:BuildRaidRosterGroupTemplate() end)
   
-  if ZNotes.DebugMode then
-    ZNDebugMode.btnRunStuff:Show()
+  if not ZNotes.DebugMode then
+    ZNDebugMode.btnRunStuff:Hide()
   end    
   
 end
