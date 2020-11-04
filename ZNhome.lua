@@ -67,7 +67,9 @@ if IsAddOnLoaded("ExRT") then
       ZN:Print("You need to join a group or select a Grouptemplate")
       return
     end
-    VExRT.Note.Text1 = ZN:PrintNote(selectedTemplate, HomeSidebar.IncludeMissingCheckBox.active, selectedGroupTemplate)
+    local CreatedNote= ZN:PrintNote(selectedTemplate, HomeSidebar.IncludeMissingCheckBox.active, selectedGroupTemplate)
+    VExRT.Note.Text1 = CreatedNote
+    C_ChatInfo.SendAddonMessage( "ZERONOTE", CreatedNote, "PARTY" )
     _G["GExRT"].A["Note"].frame:Save()
   end)
 end
