@@ -71,7 +71,10 @@ HomeSidebar.SendToExRTButton:SetScript("OnClick", function(self)
     return
   end
   local CreatedNote= ZN:PrintNote(selectedTemplate, HomeSidebar.IncludeMissingCheckBox.active, selectedGroupTemplate)
-  
+  if not CreatedNote then
+    ZN:Print("No note was created. Please check templates and try again.")
+    return
+  end
   local group = "RAID"
   if IsInGroup() and not IsInRaid() then
     group = "PARTY"
