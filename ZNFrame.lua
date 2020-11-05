@@ -593,6 +593,9 @@ local function handler(msg)
 	ZNotes.minimap.hide = not ZNotes.minimap.hide
 	DEFAULT_CHAT_FRAME:AddMessage("|cff00ffffZero|rNotes: Minimap button " .. (ZNotes.minimap.hide and "hidden" or "shown"))
 	ZN:UpdateMinimapButton()
+	elseif msg=="debug" then
+		ZNotes.DebugMode = not ZNotes.DebugMode
+		ZN:DebugModeToggle()
 	else
 		ZN:Toggle()
 	end
