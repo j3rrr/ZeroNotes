@@ -595,6 +595,7 @@ local function handler(msg)
 	ZN:UpdateMinimapButton()
 	elseif msg=="debug" then
 		ZNotes.DebugMode = not ZNotes.DebugMode
+		ZNSidebarFrame.Subframes.Home.btnConfig:SetShown(not ZNSidebarFrame.Subframes.Home.btnConfig:IsShown())
 		ZN:DebugModeToggle()
 	else
 		ZN:Toggle()
