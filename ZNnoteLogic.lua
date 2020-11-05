@@ -6,6 +6,7 @@ local roleTable           = ZN.RoleTable
 local classTable          = ZN.ClassTable
 local templateClassTable  = ZN.SpecIdToTemplateClass
 
+-- lib / roster building code largely adapted from ZenTracker https://wago.io/r14U746B7
 --[[ ##############################################################################
   Callback functions for libGroupInspecT for updating/removing members
 ############################################################################## --]]
