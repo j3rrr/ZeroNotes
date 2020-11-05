@@ -50,9 +50,11 @@ HomeSidebar.GroupTemplateSelectButton:SetScript("OnClick", function(self)
 end)
 
 if IsAddOnLoaded("ExRT") then
-  HomeSidebar.SendToExRTButton = ZN.CreateGenericButton("SendToExRTButton", HomeSidebar, "BOTTOMLEFT", HomeSidebar, "BOTTOMLEFT", 240, 30, 0, 100,0,0, 12, ZN.Colors.ACTIVE, ZN.Colors.SBButtonBG, nil, "Send Note to ExRT", "CENTER",true )
+  HomeSidebar.SendToExRTButton = ZN.CreateGenericButton("SendToExRTButton", HomeSidebar, "BOTTOMLEFT", HomeSidebar, "BOTTOMLEFT", 240, 30, 0, 100,0,0, 12, ZN.Colors.ACTIVE, ZN.Colors.SBButtonBG, nil, "Send Note to ExRT & ZND", "CENTER",true )
 else
-  HomeSidebar.SendToExRTButton = ZN.CreateGenericButton("SendToExRTButton", HomeSidebar, "BOTTOMLEFT", HomeSidebar, "BOTTOMLEFT", 240, 30, 0, 100,0,0, 12, ZN.Colors.chatYell, ZN.Colors.SBButtonBG, nil, "ExRT not found", "CENTER",false )
+  HomeSidebar.SendToExRTButton = ZN.CreateGenericButton("SendToExRTButton", HomeSidebar, "BOTTOMLEFT", HomeSidebar, "BOTTOMLEFT", 240, 30, 0, 100,0,0, 12, ZN.Colors.ACTIVE, ZN.Colors.SBButtonBG, nil, "Send Note to ZND", "CENTER",true )
+  HomeSidebar.SendToExRTButton.label = ZN.CreateText(HomeSidebar, "BOTTOM", HomeSidebar.SendToExRTButton, "TOP", 240, 20, 0, 4, "Interface\\AddOns\\ZeroNotes\\Media\\Font\\ZNVers.ttf", 10, ZN.Colors.INACTIVE, "ExRT not found", "CENTER", "CENTER")
+
 end
 
 HomeSidebar.ShowNoteInEditorButton = ZN.CreateGenericButton("ShowNoteInEditorButton", HomeSidebar, "TOPLEFT", HomeSidebar.SendToExRTButton, "BOTTOMLEFT", 240, 30, 0, -10,0,0, 12, ZN.Colors.ACTIVE, ZN.Colors.SBButtonBG, nil, "Show Note", "CENTER",true )
@@ -61,18 +63,34 @@ HomeSidebar.btnConfig:SetScript("OnClick", function(self) HomeContent.ConfigFram
 -- Home Sidebar Functions
 HomeSidebar.TemplateSelectButton:SetScript("OnClick", function(self) ZN:CreateDropdown(self, ZN:getTableKeys(ZNotes.BossTemplates), ZN:getTableOrder(ZNotes.BossTemplates), 240, ZN.Colors.BG, "LEFT", 10, nil, "TOOLTIP") end)
 
-if IsAddOnLoaded("ExRT") then
-  HomeSidebar.SendToExRTButton:SetScript("OnClick", function(self) 
-    if not IsInGroup() and (selectedGroupTemplate == "Use Current Group" or selectedGroupTemplate == nil) then 
-      ZN:Print("You need to join a group or select a Grouptemplate")
-      return
+
+HomeSidebar.SendToExRTButton:SetScript("OnClick", function(self) 
+  if not IsInGroup() and (selectedGroupTemplate == "Use Current Group" or selectedGroupTemplate == nil) then 
+    ZN:Print("You need to join a group or select a Grouptemplate")
+    return
+  end
+  local CreatedNote= ZN:PrintNote(selectedTemplate, HomeSidebar.IncludeMissingCheckBox.active, selectedGroupTemplate)
+  
+  local group = "RAID"
+  if IsInGroup() and not IsInRaid() then
+    group = "PARTY"
+  end
+  if IsInRaid() or IsInGroup() then
+    local parts = math.ceil(string.len(CreatedNote)/255)
+    C_ChatInfo.SendAddonMessage( "ZERONOTE", "NewNote", group )
+    for i=1,parts do
+      C_ChatInfo.SendAddonMessage( "ZERONOTE", strsub(CreatedNote,1+(255*(i-1)),255+(255*(i-1))), group )
     end
-    local CreatedNote= ZN:PrintNote(selectedTemplate, HomeSidebar.IncludeMissingCheckBox.active, selectedGroupTemplate)
+    C_ChatInfo.SendAddonMessage( "ZERONOTE", "DoneNewNote", group )
+  else
+  ZN:Print("Note not sent to ZND because you are not in a group.")
+  end
+  if IsAddOnLoaded("ExRT") then
     VExRT.Note.Text1 = CreatedNote
-    C_ChatInfo.SendAddonMessage( "ZERONOTE", CreatedNote, "PARTY" )
     _G["GExRT"].A["Note"].frame:Save()
-  end)
-end
+  end
+end)
+
 
 HomeSidebar.ShowNoteInEditorButton:SetScript("OnClick", function(self) 
   if not IsInGroup() then
