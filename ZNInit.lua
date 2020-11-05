@@ -1538,7 +1538,7 @@ ZN.ZeroGroupTemplate = {
   }, -- [1]
   {
     ["class"] = "paladin",
-    ["name"] = "Yabbaaaaa",
+    ["name"] = "Yabba",
     ["spec"] = "holy",
   }, -- [2]
   {
