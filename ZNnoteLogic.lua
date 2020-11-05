@@ -55,7 +55,7 @@ members = {}
 
 function ZN:libInspectRemove(event, GUID)
   if not IsInGroup() then return end
-  if not GUID then return end
+  if not GUID or not self.members then return end
   local member = self.members[GUID]
   if not member then
       return

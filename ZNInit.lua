@@ -679,7 +679,19 @@ ZN.DefaultPlayerSpells={
     ["rating"] = 300,
     ["station"] = false,
     ["name"] = "sacrifice",
-  }, -- [31]
+  },
+  {
+    ["type"] = "util",
+    ["id"] = 6940,
+    ["class"] = "paladin",
+    ["role"] = "melee",
+    ["cd"] = 300,
+    ["color"] = "c79c6e",
+    ["aoe"] = false,
+    ["rating"] = 300,
+    ["station"] = false,
+    ["name"] = "sacrifice",
+  },
   {
     ["type"] = "imun",
     ["id"] = 642,
