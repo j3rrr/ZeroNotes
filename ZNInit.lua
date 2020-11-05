@@ -1277,7 +1277,7 @@ ZN.HeadersToolTips = {
   },
   ["bossaoe"] = {
     ["tooltip"] = true,
-    ["text"] = "Utility only\n\nSet to |cff"..ZN.Colors.chatGuild.."true|r if the spell effect the entire group\n\nSet to |cff"..ZN.Colors.chatYell.."false|r if the spell only effects one group member (e.g. active tank)"
+    ["text"] = "Utility only\n\nSet to |cff"..ZN.Colors.chatGuild.."true|r if the spell affects the entire group\n\nSet to |cff"..ZN.Colors.chatYell.."false|r if the spell only affects one group member (e.g. active tank)"
   },
   ["bossrepeatX"] = {
     ["tooltip"] = true,
