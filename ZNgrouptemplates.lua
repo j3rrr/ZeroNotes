@@ -220,7 +220,14 @@ function ZN:createGroupTemplateFrames()
       elseif ZNnewGroupFrame.ZeroTemplate.active then
         ZNotes.GroupTemplates[name] = ZN.ZeroGroupTemplate
       elseif ZNnewGroupFrame.UseLiveGroup.active then
-        ZNotes.GroupTemplates[name] = ZN:BuildRaidRosterGroupTemplate()
+        local tempRoster = ZN:BuildRaidRosterGroupTemplate()
+        if tempRoster == nil then
+          --ZN:Print("Group Inspect Error: Try /reload or wait until all Groupmembers are online")
+          return
+        else
+          ZNotes.GroupTemplates[name] = tempRoster
+        end
+        
       else
         ZNotes.GroupTemplates[name] = {}
         for i = 1, 30 do
