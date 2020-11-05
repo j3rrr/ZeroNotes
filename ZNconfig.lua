@@ -20,12 +20,14 @@ function ZN:Config()
   ConfigFrame.DebugModeCheckBox:SetScript("OnClick",function(self)
     self.toggleChecked()
     ZNotes.DebugMode = self.active
+    ZNSidebarFrame.Subframes.Home.btnConfig:SetShown(not ZNSidebarFrame.Subframes.Home.btnConfig:IsShown())
     ZN:DebugModeToggle()
   end)
 
   ConfigFrame.DebugModeCheckBox.button:SetScript("OnMouseDown",function()
     ConfigFrame.DebugModeCheckBox.toggleChecked()
     ZNotes.DebugMode = ConfigFrame.DebugModeCheckBox.active
+    ZNSidebarFrame.Subframes.Home.btnConfig:SetShown(not ZNSidebarFrame.Subframes.Home.btnConfig:IsShown())
     ZN:DebugModeToggle()
   end)
 

@@ -596,6 +596,9 @@ local function handler(msg)
 	elseif msg=="debug" then
 		ZNotes.DebugMode = not ZNotes.DebugMode
 		ZNSidebarFrame.Subframes.Home.btnConfig:SetShown(not ZNSidebarFrame.Subframes.Home.btnConfig:IsShown())
+		if not ZNSidebarFrame.Subframes.Home.btnConfig.active==ZNotes.DebugMode then
+			ZNBodyFrame.Subframes.Home.ConfigFrame.DebugModeCheckBox.toggleChecked()
+		end
 		ZN:DebugModeToggle()
 	else
 		ZN:Toggle()

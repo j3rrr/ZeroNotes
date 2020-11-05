@@ -19,6 +19,9 @@ local function onUILoad(text)
       ZN.initLastTemplates()
       ZN:createGroupTemplateFrames()
       ZN:Config()
+      if ZNotes.DebugMode then
+        ZNSidebarFrame.Subframes.Home.btnConfig:SetShown(true)
+      end
       ZNEventHandler:Unregister('ADDON_LOADED', 'onUILoad')
       ZNEventHandler:Unregister('PLAYER_LOGIN', 'onUILoad')
       ZN.icon:Register("ZNLDB", ZN.ZNLDB, ZNotes.minimap)
