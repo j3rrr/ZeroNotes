@@ -459,8 +459,11 @@ function ZN:CreateGroupMemberRow(index, anchorFrame, template)
     ZN.GroupMemberRowsSelectedClass[index] = newValue
     MemberRow.specList = ZN.Specs[ZN.GroupMemberRowsSelectedClass[index]]
     MemberRow.specListOrder = ZN:getTableOrder(ZN.Specs[ZN.GroupMemberRowsSelectedClass[index]])
-    if MemberRow.specList == ZN.Specs["none"] then
-      MemberRow.Spec.ZNText:SetText("-")
+    if MemberRow.specList == ZN.Specs["zzz"] then
+      MemberRow.Spec.ZNText:SetText("")
+      MemberRow.Name:SetText("Name")
+      ZNotes.GroupTemplates[ZN.selectedGroupTemplate][ZN.GroupTemplateSortArray[row]]["spec"] = "empty"
+      ZNotes.GroupTemplates[ZN.selectedGroupTemplate][ZN.GroupTemplateSortArray[row]]["name"] = "Name"
     else
       MemberRow.Spec.ZNText:SetText("SPEC")
     end
