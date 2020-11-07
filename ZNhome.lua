@@ -97,8 +97,8 @@ end)
 
 
 HomeSidebar.ShowNoteInEditorButton:SetScript("OnClick", function(self) 
-  if not IsInGroup() then
-    ZN:Print("You need to be in a party or raid.")
+  if not IsInGroup() and (selectedGroupTemplate == "Use Current Group" or selectedGroupTemplate == nil) then 
+    ZN:Print("You need to join a group or select a Grouptemplate")
     return
   end
   if selectedTemplate == nil or selectedTemplate == "Select Template.." then
