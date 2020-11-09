@@ -730,90 +730,159 @@ function ZN.initPlayerSpells()
 end
 
 function ZN.initBossTemplates()
-ZNotes.BossTemplates = ZNotes.BossTemplates or {
-  ["sampleboss"] = {
-    ["bossid"] = "1234",
-    {
-      ["name"]= "Charge",
-      ["id"]= "100",
-      ["time"]= 20,
-      ["prio"]= 1,    
-      ["station"]= false,
-      ["need"]= {
-        {
-          ["type"]= "heal",
-          ["ratingOverwrite"] = {
-            ["monk"] = 9000
-          }
-        },
-        {
-          ["type"]= "imun",
-          ["ratingOverwrite"] = {
-            ["tankpaladin"] = 9000
-          }
-        },
-        {
-          ["type"]= "util",
-          ["ratingOverwrite"] = {
-            ["range"] = 9000
-          }
-        }
-      },
-      ["aoe"]= false,
-      ["repeatX"]= 4,
-      ["repeatAfter"]= 40
-    },
-    {
-      ["name"]= "Execute",
-      ["id"]= "163201",
-      ["time"]= 35,
-      ["prio"]= 2,    
-      ["station"]= true,
-      ["need"]= {
-        {
-          ["type"]= "heal"
-        },
-        {
-          ["type"]= "util"
-        }
-      },
-      ["aoe"]= true,
-      ["repeatX"]= 2,
-      ["repeatAfter"]= 60
-    },
-    {
-      ["name"]= "Heroic Leap",
-      ["id"]= "6544",
-      ["time"]= 125,
-      ["prio"]= 3,    
-      ["station"]= true,
-      ["need"]= {
-        {
-          ["type"]= "imun"
-        },
-        {
-          ["type"]= "imun"
-        }
-      },
-      ["aoe"]= true,
-      ["repeatX"]= 2,
-      ["repeatAfter"]= 30
-    },
-    {
-      ["text"]= "Phase 1",
-      ["time"]= 0,
-      ["prio"]= 9000,
-      ["trenner"]= true,
-      ["raidicon"]= "{rt1}"
-    },
-      {
-      ["text"]= "Phase 2",
-      ["time"]= 110,
-      ["prio"]= 9000,
-      ["trenner"]= true,
-      ["raidicon"]= "{rt8}"
-    },
-  }
+  if ZNotes.BossTemplates and not ZNotes.BossTemplatesMigrated then
+    for k,v in pairs(ZNotes.BossTemplates) do
+      local BossTrennerIndex={}
+      local spellI=1
+      for i=1, #v do
+          if v[i].trenner then
+              BossTrennerIndex[spellI]=i
+              spellI = spellI + 1
+          end
+      end
+
+      local BossTrennerSortArray={}
+      for i=1, #BossTrennerIndex do
+        BossTrennerSortArray[i]=i
+      end
+
+      for k=1,#BossTrennerIndex do
+        for i=1,#BossTrennerIndex do
+          local pivot = v[BossTrennerIndex[BossTrennerSortArray[i]]]["time"]
+          for j=i+1,#BossTrennerIndex do
+            local comp = v[BossTrennerIndex[BossTrennerSortArray[j]]]["time"]
+            if  type(comp)=="number"  and comp<pivot then
+              local saveUnit = BossTrennerSortArray[i]
+              BossTrennerSortArray[i] = BossTrennerSortArray[j]
+              BossTrennerSortArray[j] = saveUnit
+            end
+          end 
+        end 
+      end 
+
+      for i=1, #BossTrennerSortArray do
+        v[BossTrennerIndex[BossTrennerSortArray[i]]].phase=i
+        v[BossTrennerIndex[BossTrennerSortArray[i]]].no=i
+        if v[BossTrennerIndex[BossTrennerSortArray[i+1]]] then
+          v[BossTrennerIndex[BossTrennerSortArray[i]]].duration = v[BossTrennerIndex[BossTrennerSortArray[i+1]]].time - v[BossTrennerIndex[BossTrennerSortArray[i]]].time
+        else
+          v[BossTrennerIndex[BossTrennerSortArray[i]]].duration = 0
+        end
+        v[BossTrennerIndex[BossTrennerSortArray[i]]].time=0
+      end
+
+      for i=1, #v do
+        if not v[i].trenner then
+          v[i].phase=0
+        end
+      end
+    end
+
+    ZNotes.BossTemplatesMigrated = true
+  end
+  ZNotes.BossTemplates = ZNotes.BossTemplates or {
+    ["sampleboss"] = {
+			{
+				["repeatAfter"] = 20,
+				["id"] = "100",
+				["need"] = {
+					{
+						["ratingOverwrite"] = {
+							["monk"] = 9000,
+						},
+						["type"] = "heal",
+					}, -- [1]
+					{
+						["ratingOverwrite"] = {
+							["tankpaladin"] = 9000,
+						},
+						["type"] = "imun",
+					}, -- [2]
+					{
+						["ratingOverwrite"] = {
+							["range"] = 9000,
+						},
+						["type"] = "util",
+					}, -- [3]
+				},
+				["repeatX"] = 3,
+				["prio"] = 1,
+				["name"] = "Charge",
+				["aoe"] = false,
+				["phase"] = 1,
+				["station"] = false,
+				["time"] = 20,
+			}, -- [1]
+			{
+				["repeatAfter"] = 0,
+				["id"] = "163201",
+				["need"] = {
+					{
+						["type"] = "heal",
+					}, -- [1]
+					{
+						["type"] = "util",
+					}, -- [2]
+				},
+				["repeatX"] = 1,
+				["prio"] = 2,
+				["name"] = "Execute",
+				["aoe"] = true,
+				["phase"] = 2,
+				["station"] = true,
+				["time"] = 5,
+			}, -- [2]
+			{
+				["repeatAfter"] = 0,
+				["id"] = "6544",
+				["need"] = {
+					{
+						["type"] = "imun",
+					}, -- [1]
+					{
+						["type"] = "imun",
+					}, -- [2]
+				},
+				["repeatX"] = 1,
+				["prio"] = 3,
+				["name"] = "Heroic Leap",
+				["aoe"] = true,
+				["phase"] = 2,
+				["station"] = true,
+				["time"] = 20,
+			}, -- [3]
+			{
+				["trenner"] = true,
+				["prio"] = 9000,
+				["time"] = 0,
+				["no"] = 1,
+				["phase"] = 1,
+				["text"] = "Phase 1",
+				["duration"] = 70,
+				["raidicon"] = "{rt1}",
+			}, -- [4]
+			{
+				["trenner"] = true,
+				["prio"] = 9000,
+				["time"] = 70,
+				["no"] = 2,
+				["phase"] = 2,
+				["text"] = "Phase 2",
+				["duration"] = 30,
+				["raidicon"] = "{rt8}",
+			}, -- [5]
+			{
+				["trenner"] = true,
+				["prio"] = 9000,
+				["time"] = 100,
+				["phase"] = 1,
+				["no"] = 3,
+				["text"] = "Phase 1",
+				["duration"] = 0,
+				["raidicon"] = "{rt1}",
+			}, -- [6]
+			["bossid"] = "1234",
+		}
 }
 end
 
@@ -1314,6 +1383,14 @@ ZN.HeadersToolTips = {
   ["bossedit"] = {
     ["tooltip"] = true,
     ["text"] = "|cff"..ZN.Colors.itemHeirloom.."Advanced|r\nOverwrite settings to force specific cooldowns"
+  },
+  ["trennerno"] = {
+    ["tooltip"] = true,
+    ["text"] = "Phase order in which phases will occur"
+  },
+  ["trennerphase"] = {
+    ["tooltip"] = true,
+    ["text"] = "ID of the phase. Spells with the same phase assigned will automatically appear as member of this phase"
   },
 }
 

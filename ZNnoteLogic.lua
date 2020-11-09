@@ -349,14 +349,38 @@ function ZN:createNoteTemplate(boss)
   if not template then
     ZN:Print("You need to choose a Boss / Raid")
   else
-    for _,spell in ipairs(template) do
-      if spell["trenner"] then
-        table.insert(noteTemplate["spells"], spell)
+    local tIndex, tSort =ZN:indexTrenner(template)
+    local maxPhase=0
+
+    for i=1, #tSort do
+      if template[tIndex[tSort[i-1]]] then
+        template[tIndex[tSort[i]]].time = template[tIndex[tSort[i-1]]].time + template[tIndex[tSort[i-1]]].duration
       else
+        template[tIndex[tSort[i]]].time = 0
+      end
+      table.insert(noteTemplate["spells"], template[tIndex[tSort[i]]])
+      
+      if template[tIndex[tSort[i]]].phase ~=0 then
+        for _,spell in ipairs(template) do
+          if not spell["trenner"] and spell.phase == template[tIndex[tSort[i]]].phase then
+            tmp = {}
+            for k = 1, spell["repeatX"] do
+              tmp = table.copy(spell)
+              tmp["time"] = spell["time"]+(spell["repeatAfter"]*(k-1))+template[tIndex[tSort[i]]].time
+              tmp["repeatX"] = nil
+              tmp["repeatAfter"] = nil
+              table.insert(noteTemplate["spells"], tmp)
+            end      
+          end
+        end
+      end
+    end
+
+    for _,spell in ipairs(template) do
+      if not spell["trenner"] and spell.phase == 0 then
         tmp = {}
         for i = 1, spell["repeatX"] do
           tmp = table.copy(spell)
-          --tmp["need"] = table.copy(spell["need"])
           tmp["time"] = spell["time"]+(spell["repeatAfter"]*(i-1))
           tmp["repeatX"] = nil
           tmp["repeatAfter"] = nil
@@ -364,6 +388,21 @@ function ZN:createNoteTemplate(boss)
         end      
       end
     end
+    -- for _,spell in ipairs(template) do
+    --   if spell["trenner"] then
+    --     table.insert(noteTemplate["spells"], spell)
+    --   else
+    --     tmp = {}
+    --     for i = 1, spell["repeatX"] do
+    --       tmp = table.copy(spell)
+    --       --tmp["need"] = table.copy(spell["need"])
+    --       tmp["time"] = spell["time"]+(spell["repeatAfter"]*(i-1))
+    --       tmp["repeatX"] = nil
+    --       tmp["repeatAfter"] = nil
+    --       table.insert(noteTemplate["spells"], tmp)
+    --     end      
+    --   end
+    -- end
   end
   return noteTemplate
 end

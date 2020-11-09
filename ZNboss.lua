@@ -269,12 +269,14 @@ ZN.BossSpellTableColumnHeaderNames = {
     ["repeatX"] = "x Times",
     ["repeatAfter"] = "Interval",
     ["heal"] = "Heal",
-    ["imun"] = "Immunity",
-    ["util"] = "Utility",
+    ["imun"] = "Immun",
+    ["util"] = "Util",
     ["edit"] = "Edit",
     ["delete"] = "Delete",
+    ["phase"] = "Phase",
   }
   ZN.BossSpellTableColumnHeaders = {
+    "phase",
     "spellid",
     "spellname",
     "time",
@@ -290,42 +292,50 @@ ZN.BossSpellTableColumnHeaderNames = {
     "delete",
   }
   ZN.BossSpellTableColumns = {
+    ["phase"] = 50,
     ["spellid"] = 80,
     ["spellname"] = 200,
     ["time"] = 60,
     ["prio"] = 60,
     ["station"] = 60,
     ["aoe"] = 60,
-    ["repeatX"] = 60,
-    ["repeatAfter"] = 60,
-    ["heal"]=60,
-    ["imun"]=60,
-    ["util"]=60,
-    ["edit"]= 55,
-    ["delete"] = 55,
+    ["repeatX"] = 55,
+    ["repeatAfter"] = 55,
+    ["heal"]=50,
+    ["imun"]=50,
+    ["util"]=50,
+    ["edit"]= 50,
+    ["delete"] = 50,
   }
  ZN.BossTrennerTableColumnHeaderNames = {
+    ["no"]="Order",
+    ["phase"] = "Phase",
     ["text"] = "Divider Text",
-    ["time"] = "Time",
+    ["duration"] = "Duration",
     ["raidicon"] = "Icon",
     ["delete"]= "Delete",
   }
 ZN.BossTrennerTableColumnHeaders = {
+  "no",
+  "phase",
   "text",
-  "time",
+  "duration",
   "raidicon",
   "delete",
   }
 ZN.BossTrennerTableColumns = {
-  ["text"] = 285,
-  ["time"] = 60,
-  ["raidicon"] = 60,
-  ["delete"] = 55,
+  ["no"]=50,
+  ["phase"]=50,
+  ["text"] = 190,
+  ["duration"] = 70,
+  ["raidicon"] = 50,
+  ["delete"] = 50,
   }
 ZN.BossDropdowns = {
   ["raidicon"] = {["content"]=ZN.TrennerIconsList, ["order"]=ZN.TrennerIconsListOrder},
   ["role"] = {["content"]=ZN.RoleSelectionColor, ["order"]=ZN.RoleSelectionOrder},
   ["class"] = {["content"]=ZN.PlayerClassesColored, ["order"]=ZN.PlayerClassesColoredOrder},
+  ["phase"] = {["content"]={["dummy"]=""}, ["order"]={"dummy"}}
   }
 ZN.BossAttributeMapping = {
   ["time"] = "time",
@@ -346,7 +356,10 @@ ZN.BossAttributeMapping = {
   ["class"] = "class",
   ["role"] = "role",
   ["value"] = "value",
-  ["playername"]="playername"
+  ["playername"]="playername",
+  ["phase"] = "phase",
+  ["duration"] = "duration",
+  ["no"] = "no",
 }
 ZN.BossPrioTableColumnHeaders = {
   "type",
@@ -374,7 +387,7 @@ ZN.BossTableIconButton = {
   ["aoe"]= {["size"]= 16, ["xOffset"]=44, ["type"]="checkBox"},
   ["station"]= {["size"]= 16, ["xOffset"]=22, ["type"]="checkBox"},
   ["edit"]= {["size"]= 16, ["xOffset"]=19, ["type"]="edit", ["texture"]="Interface\\AddOns\\ZeroNotes\\Media\\Texture\\edit"},
-  ["delete"]= {["size"]= 16, ["xOffset"]=39, ["type"]="delete", ["texture"]="Interface\\AddOns\\ZeroNotes\\Media\\Texture\\delete2"}
+  ["delete"]= {["size"]= 16, ["xOffset"]=32, ["type"]="delete", ["texture"]="Interface\\AddOns\\ZeroNotes\\Media\\Texture\\delete2"}
 }
 
 ZNSidebarFrame.btnReloadBossTrenner = ZN.CreateIconButton(ZNSidebarFrame, "BOTTOMRIGHT", ZNSidebarFrame, "BOTTOMRIGHT", 20, 20, -14, 20, "Interface\\AddOns\\ZeroNotes\\Media\\Texture\\update", ZN.Colors.ACTIVE, ZN.Colors.INACTIVE, false, nil, true, "Update Divider Table", ZN.Colors.ACTIVE)
@@ -578,36 +591,42 @@ function ZN:CreatePrioTitleRow()
 end
 
 local function CreateSpellTitleRow()
-    local TitleRow = ZN.createSubFrame("ZNBossSpellTitleRow", ZNBodyFrame.Subframes.BossSpellHead, 930, ZN.BossTableRows.title, ZN.Colors.BG, 1, "TOP", "HIGH", false, -5,0)
-    local anchor = TitleRow
-    for i=1, #ZN.BossSpellTableColumnHeaders do
-        local header = ZN.BossSpellTableColumnHeaders[i]
-        local text = ZN.BossSpellTableColumnHeaderNames[header]
-        local width = ZN.BossSpellTableColumns[header]
-        local height = ZN.BossTableRows.title
-        local tooltip = false
-      local tooltipText = ""
-      if ZN.HeadersToolTips["boss"..header] then
-        tooltip = ZN.HeadersToolTips["boss"..header]["tooltip"]
-        tooltipText = ZN.HeadersToolTips["boss"..header]["text"]
-      end
-      local tooltipColor = ZN.Colors.ACTIVE
-        local headerButton = ZN.CreateGenericButton(nil, TitleRow, "LEFT", anchor, anchor==TitleRow and "LEFT" or "RIGHT", width, height, 0, 0, 0, 0 ,10, ZN.Colors.INACTIVE, ZN.Colors.BG, nil, text, "CENTER", false, nil, tooltip, tooltipText, tooltipColor)
-        anchor = headerButton
+  local TitleRow = ZN.createSubFrame("ZNBossSpellTitleRow", ZNBodyFrame.Subframes.BossSpellHead, 930, ZN.BossTableRows.title, ZN.Colors.BG, 1, "TOP", "HIGH", false, -5,0)
+  local anchor = TitleRow
+  for i=1, #ZN.BossSpellTableColumnHeaders do
+    local header = ZN.BossSpellTableColumnHeaders[i]
+    local text = ZN.BossSpellTableColumnHeaderNames[header]
+    local width = ZN.BossSpellTableColumns[header]
+    local height = ZN.BossTableRows.title
+    local tooltip = false
+    local tooltipText = ""
+    if ZN.HeadersToolTips["boss"..header] then
+      tooltip = ZN.HeadersToolTips["boss"..header]["tooltip"]
+      tooltipText = ZN.HeadersToolTips["boss"..header]["text"]
     end
-    return TitleRow
+    local tooltipColor = ZN.Colors.ACTIVE
+    local headerButton = ZN.CreateGenericButton(nil, TitleRow, "LEFT", anchor, anchor==TitleRow and "LEFT" or "RIGHT", width, height, 0, 0, 0, 0 ,10, ZN.Colors.INACTIVE, ZN.Colors.BG, nil, text, "CENTER", false, nil, tooltip, tooltipText, tooltipColor)
+    anchor = headerButton
+  end
+  return TitleRow
 end
 
 local function CreateTrennerTitleRow()
     local TitleRow = ZN.createSubFrame("ZNBossTrennerTitleRow", ZNBodyFrame.Subframes.BossTrennerHead, 460, ZN.BossTableRows.title, ZN.Colors.BG, 1, "TOP", "HIGH", false, -5,0)
     local anchor = TitleRow
     for i=1, #ZN.BossTrennerTableColumnHeaders do
-        local header = ZN.BossTrennerTableColumnHeaders[i]
-        local text = ZN.BossTrennerTableColumnHeaderNames[header]
-        local width = ZN.BossTrennerTableColumns[header]
-        local height = ZN.BossTableRows.title
-        local headerButton = ZN.CreateGenericButton(nil, TitleRow, "LEFT", anchor, anchor==TitleRow and "LEFT" or "RIGHT", width, height, 0, 0, 0, 0 ,10, ZN.Colors.INACTIVE, ZN.Colors.BG, nil, text, "CENTER", false)
-        anchor = headerButton
+      local header = ZN.BossTrennerTableColumnHeaders[i]
+      local text = ZN.BossTrennerTableColumnHeaderNames[header]
+      local width = ZN.BossTrennerTableColumns[header]
+      local height = ZN.BossTableRows.title
+      local tooltipText = ""
+      if ZN.HeadersToolTips["trenner"..header] then
+        tooltip = ZN.HeadersToolTips["trenner"..header]["tooltip"]
+        tooltipText = ZN.HeadersToolTips["trenner"..header]["text"]
+      end
+      local tooltipColor = ZN.Colors.ACTIVE
+      local headerButton = ZN.CreateGenericButton(nil, TitleRow, "LEFT", anchor, anchor==TitleRow and "LEFT" or "RIGHT", width, height, 0, 0, 0, 0 ,10, ZN.Colors.INACTIVE, ZN.Colors.BG, nil, text, "CENTER", false, nil, tooltip, tooltipText, tooltipColor)
+      anchor = headerButton
     end
     return TitleRow
 end
@@ -615,7 +634,8 @@ end
 local function CreateBossSpellRow(BossSpellID, BossSpell, AnchorFrame, boss)
     local ContentRow = ZN.createSubFrame("ZNBossSpellRow"..BossSpellID, ZNBodyFrame.Subframes.BossSpells.scrollChild, 930, ZN.BossTableRows.row, ZN.Colors.ROWBG, 1, "TOPLEFT", "HIGH", false, 0,-ZN.BossTableRows.rowgap, AnchorFrame, "BOTTOMLEFT")
     
-    ContentRow.SpellId = CreateSingleLineEditBox("Spellid"..BossSpellID, ContentRow, "LEFT", ContentRow, "LEFT",ZN.BossSpellTableColumns["spellid"], "spellid", BossSpell.id,0,BossSpellID, boss)
+    ContentRow.Phase = CreateGenericButton ("Phase"..BossSpellID, ContentRow, "LEFT", ContentRow, "LEFT", ZN.BossSpellTableColumns["phase"], "phase", BossSpell.phase and "P"..BossSpell.phase or "P0" ,BossSpellID,boss)
+    ContentRow.SpellId = CreateSingleLineEditBox("Spellid"..BossSpellID, ContentRow, "LEFT", ContentRow.Phase, "RIGHT",ZN.BossSpellTableColumns["spellid"], "spellid", BossSpell.id,0,BossSpellID, boss)
     ContentRow.SpellName = CreateText(ContentRow, "LEFT", ContentRow.SpellId, "RIGHT",ZN.BossSpellTableColumns["spellname"], "spellname", (GetSpellInfo(BossSpell.id) and GetSpellInfo(BossSpell.id) or "|cffff3f40Invalid Spell ID|r"):upper())
     ContentRow.Time = CreateSingleLineEditBox("Time"..BossSpellID, ContentRow, "LEFT", ContentRow.SpellName, "RIGHT",ZN.BossSpellTableColumns["time"], "time", BossSpell.time,0,BossSpellID, boss)
     ContentRow.Prio = CreateSingleLineEditBox("Prio"..BossSpellID, ContentRow, "LEFT", ContentRow.Time, "RIGHT",ZN.BossSpellTableColumns["prio"], "prio", BossSpell.prio,0,BossSpellID, boss)
@@ -680,8 +700,10 @@ end
 local function CreateBossTrennerRow(BossSpellID, BossSpell, AnchorFrame, boss)
   local ContentRow = ZN.createSubFrame("ZNBossTrennerRow"..BossSpellID, ZNBodyFrame.Subframes.BossTrenner.scrollChild, 460, ZN.BossTableRows.row, ZN.Colors.ROWBG, 1, "TOPLEFT", "HIGH", false, 0,-ZN.BossTableRows.rowgap, AnchorFrame, "BOTTOMLEFT")
   
-  ContentRow.Text = CreateSingleLineEditBox("Text"..BossSpellID, ContentRow, "LEFT", ContentRow, "LEFT",ZN.BossTrennerTableColumns["text"], "text", BossSpell.text,0,BossSpellID, boss)
-  ContentRow.Time = CreateSingleLineEditBox("Time"..BossSpellID, ContentRow, "LEFT", ContentRow.Text, "RIGHT",ZN.BossTrennerTableColumns["time"], "time", BossSpell.time,0,BossSpellID, boss)
+  ContentRow.No = CreateSingleLineEditBox ("no"..BossSpellID, ContentRow, "LEFT", ContentRow, "LEFT", ZN.BossTrennerTableColumns["no"], "no", BossSpell.no and BossSpell.no or "0" ,0,BossSpellID,boss)
+  ContentRow.Phase = CreateSingleLineEditBox ("Phase"..BossSpellID, ContentRow, "LEFT", ContentRow.No, "RIGHT", ZN.BossTrennerTableColumns["phase"], "phase", BossSpell.phase and BossSpell.phase or "0" ,0,BossSpellID,boss)
+  ContentRow.Text = CreateSingleLineEditBox("Text"..BossSpellID, ContentRow, "LEFT", ContentRow.Phase, "RIGHT",ZN.BossTrennerTableColumns["text"], "text", BossSpell.text,0,BossSpellID, boss)
+  ContentRow.Time = CreateSingleLineEditBox("Time"..BossSpellID, ContentRow, "LEFT", ContentRow.Text, "RIGHT",ZN.BossTrennerTableColumns["duration"], "duration", BossSpell.duration,0,BossSpellID, boss)
   ContentRow.Icon = CreateGenericIconDropdownButton("Icon"..BossSpellID, ContentRow, "LEFT", ContentRow.Time, "RIGHT", ZN.BossTrennerTableColumns["raidicon"], "raidicon", ZN.TrennerIconsList[BossSpell.raidicon],BossSpellID,boss,-12)
   ContentRow.Delete = CreateIconButton(ContentRow, "LEFT", ContentRow.Icon, "RIGHT", "delete", BossSpellID,boss,19)
 
@@ -689,10 +711,23 @@ local function CreateBossTrennerRow(BossSpellID, BossSpell, AnchorFrame, boss)
     table.remove(ZNotes.BossTemplates[self.boss],self.Row)
     ZN:ReloadBossTrennerTable(self.boss)
     ZN:showPreview(ZN:printPreviewNote(selectedTemplate), ZNBodyFrame.Subframes.PreviewTemplateContent.ScrollNote.scrollChild,selectedTemplate)
+    ZN:getPhases()
   end)
 
   ContentRow.Text.OnUpdate=function(_, row, column, newvalue)
     ZNotes.BossTemplates[ ContentRow.Text.boss][ ContentRow.Text.Row][ ContentRow.Text.Column]=newvalue
+    ZN:showPreview(ZN:printPreviewNote(selectedTemplate), ZNBodyFrame.Subframes.PreviewTemplateContent.ScrollNote.scrollChild,selectedTemplate)
+  end
+
+  ContentRow.Phase.OnUpdate=function(_, row, column, newvalue,self)
+    newvalue = tonumber(newvalue)
+    if newvalue == nil then
+      UIErrorsFrame:AddMessage("You need to enter a numeric value", 0.8, 0.07, 0.2, 5.0)
+      self:SetText(ZNotes.BossTemplates[self.boss][self.Row][self.Column])
+    else
+      ZNotes.BossTemplates[self.boss][self.Row][self.Column]=newvalue
+    end
+    ZN:getPhases()
     ZN:showPreview(ZN:printPreviewNote(selectedTemplate), ZNBodyFrame.Subframes.PreviewTemplateContent.ScrollNote.scrollChild,selectedTemplate)
   end
 
@@ -787,9 +822,11 @@ function ZN:addNewBossTrenner(boss)
   else
     table.insert(ZNotes.BossTemplates[boss],
     {
+      ["no"]=0,
       ["trenner"] = true,
       ["text"] = "",
       ["time"] = 0,
+      ["duration"]=0,
       ["prio"] = 9000,
       ["raidicon"] = "{rt1}",
     })
@@ -828,11 +865,17 @@ end
 local function UpdateBossTrennerRow(BossSpellID, BossSpell, AnchorFrame,ContentRow,boss)
   ContentRow:SetPoint("TOP", AnchorFrame, "BOTTOM",0,-ZN.BossTableRows.rowgap)
   
+  ContentRow.No.Row = BossSpellID
+  ContentRow.No:SetText(BossSpell.no and BossSpell.no or "0")
+  ContentRow.No.boss=boss
+  ContentRow.Phase.Row = BossSpellID
+  ContentRow.Phase:SetText(BossSpell.phase and BossSpell.phase or "0")
+  ContentRow.Phase.boss=boss
   ContentRow.Text.Row = BossSpellID
   ContentRow.Text:SetText(BossSpell.text)
   ContentRow.Text.boss=boss
   ContentRow.Time.Row = BossSpellID
-  ContentRow.Time:SetText(BossSpell.time)
+  ContentRow.Time:SetText(BossSpell.duration)
   ContentRow.Time.boss=boss
   ContentRow.Icon.Row = BossSpellID
   ContentRow.Icon.ZNText:SetText(ZN.TrennerIconsList[BossSpell.raidicon])
@@ -846,6 +889,9 @@ end
 local function UpdateBossSpellRow(BossSpellID, BossSpell, AnchorFrame,ContentRow,boss)
   ContentRow:SetPoint("TOP", AnchorFrame, "BOTTOM",0,-ZN.BossTableRows.rowgap)
   
+  ContentRow.Phase.Row = BossSpellID
+  ContentRow.Phase.ZNText:SetText(BossSpell.phase and "P"..BossSpell.phase or "0")
+  ContentRow.Phase.boss=boss
   ContentRow.SpellId.Row = BossSpellID
   ContentRow.SpellId:SetText(BossSpell.id)
   ContentRow.SpellId.boss=boss
@@ -920,6 +966,7 @@ function ZN:InitBoss()
   
       ZN:showPreview(ZN:printPreviewNote(selectedTemplate), ZNBodyFrame.Subframes.PreviewTemplateContent.ScrollNote.scrollChild,selectedTemplate)
     end
+    ZN:getPhases()
 end
 
 function ZN:ReloadBossPrioTable(boss, BossSpellID, needindex)
@@ -1026,6 +1073,34 @@ function ZN:ReloadBossSpellTable(boss)
       anchor = ZN.BossSpellRows[i]
     end  
   end
+  ZN:getPhases()
+end
+
+function ZN:getPhases()
+  local phaseSort = {}
+  local phaseDisplay = {}
+
+  for i=1, #ZNotes.BossTemplates[selectedTemplate] do
+      if ZNotes.BossTemplates[selectedTemplate][i].trenner then
+        if ZNotes.BossTemplates[selectedTemplate][i].phase then
+          if not phaseDisplay[ZNotes.BossTemplates[selectedTemplate][i].phase] then
+            phaseDisplay[ZNotes.BossTemplates[selectedTemplate][i].phase] = "P"..ZNotes.BossTemplates[selectedTemplate][i].phase
+            table.insert(phaseSort,ZNotes.BossTemplates[selectedTemplate][i].phase)
+          end
+        end
+      end
+  end
+  if #phaseSort>0 then
+    table.sort(phaseSort, function(a,b) return a<b end)
+
+  else
+    phaseDisplay["dummy"]=""
+    table.insert(phaseSort,"dummy")
+  end
+
+  ZN.BossDropdowns["phase"]["content"]=phaseDisplay
+  ZN.BossDropdowns["phase"]["order"]=phaseSort
+
 end
 
 ZN.BossSpellSortArray={}
@@ -1037,10 +1112,12 @@ function ZN:BuildBossSpellSortArray (boss)
 
   for k=1,#ZN.BossSpellsIndex do
     for i=1,#ZN.BossSpellsIndex do
-      local pivot = ZNotes.BossTemplates[boss][ZN.BossSpellsIndex[ZN.BossSpellSortArray[i]]]["time"]
+      local pivot = ZNotes.BossTemplates[boss][ZN.BossSpellsIndex[ZN.BossSpellSortArray[i]]]["phase"]
+      local pivot2 = ZNotes.BossTemplates[boss][ZN.BossSpellsIndex[ZN.BossSpellSortArray[i]]]["time"]
       for j=i+1,#ZN.BossSpellsIndex do
-        local comp = ZNotes.BossTemplates[boss][ZN.BossSpellsIndex[ZN.BossSpellSortArray[j]]]["time"]
-        if  type(comp)=="number"  and comp<pivot then
+        local comp = ZNotes.BossTemplates[boss][ZN.BossSpellsIndex[ZN.BossSpellSortArray[j]]]["phase"]
+        local comp2 = ZNotes.BossTemplates[boss][ZN.BossSpellsIndex[ZN.BossSpellSortArray[j]]]["time"]
+        if  type(comp)=="number"  and (comp<pivot or comp==pivot and comp2<pivot2) then
           local saveUnit = ZN.BossSpellSortArray[i]
           ZN.BossSpellSortArray[i] = ZN.BossSpellSortArray[j]
           ZN.BossSpellSortArray[j] = saveUnit
@@ -1059,9 +1136,9 @@ function ZN:BuildBossTrennerSortArray (boss)
 
   for k=1,#ZN.BossTrennerIndex do
     for i=1,#ZN.BossTrennerIndex do
-      local pivot = ZNotes.BossTemplates[boss][ZN.BossTrennerIndex[ZN.BossTrennerSortArray[i]]]["time"]
+      local pivot = ZNotes.BossTemplates[boss][ZN.BossTrennerIndex[ZN.BossTrennerSortArray[i]]]["no"]
       for j=i+1,#ZN.BossTrennerIndex do
-        local comp = ZNotes.BossTemplates[boss][ZN.BossTrennerIndex[ZN.BossTrennerSortArray[j]]]["time"]
+        local comp = ZNotes.BossTemplates[boss][ZN.BossTrennerIndex[ZN.BossTrennerSortArray[j]]]["no"]
         if  type(comp)=="number"  and comp<pivot then
           local saveUnit = ZN.BossTrennerSortArray[i]
           ZN.BossTrennerSortArray[i] = ZN.BossTrennerSortArray[j]
