@@ -501,6 +501,40 @@ function ZN:createCheckBox(parent, point, anchor, anchorPoint, xOffset, yOffset,
 	return cb
 end
 
+function ZN:createSquareCheckBox(parent, point, anchor, anchorPoint, xOffset, yOffset, label, labelFontSize, labelColor, labelWidth, checked, tooltip, tooltipText, tooltipColor, tooltipAnchor)
+  local cb = ZN.CreateIconButton(parent, point, anchor, anchorPoint, 16, 16, xOffset, yOffset, ZN.SquareCheckBoxTextures.checked, ZN.SquareCheckBoxTextures.checkedColor, ZN.SquareCheckBoxTextures.uncheckedColor, true, ZN.Colors.ACTIVE, tooltip, tooltipText, tooltipColor, tooltipAnchor)
+  cb.toggleChecked = function()
+    if cb.active then
+      cb.active=false
+      cb:SetNormalTexture(ZN.SquareCheckBoxTextures.unchecked)
+      cb:GetNormalTexture():SetVertexColor(tonumber("0x"..ZN.SquareCheckBoxTextures.uncheckedColor:sub(1,2))/255, tonumber("0x"..ZN.SquareCheckBoxTextures.uncheckedColor:sub(3,4))/255, tonumber("0x"..ZN.SquareCheckBoxTextures.uncheckedColor:sub(5,6))/255, 1)
+    else
+      cb.active=true
+      cb:SetNormalTexture(ZN.SquareCheckBoxTextures.checked)
+      cb:GetNormalTexture():SetVertexColor(tonumber("0x"..ZN.SquareCheckBoxTextures.checkedColor:sub(1,2))/255, tonumber("0x"..ZN.SquareCheckBoxTextures.checkedColor:sub(3,4))/255, tonumber("0x"..ZN.SquareCheckBoxTextures.checkedColor:sub(5,6))/255, 1)
+    end
+  end
+  if not checked then
+    cb.toggleChecked()
+    cb:GetNormalTexture():SetVertexColor(tonumber("0x"..ZN.SquareCheckBoxTextures.uncheckedColor:sub(1,2))/255, tonumber("0x"..ZN.SquareCheckBoxTextures.uncheckedColor:sub(3,4))/255, tonumber("0x"..ZN.SquareCheckBoxTextures.uncheckedColor:sub(5,6))/255, 1)
+	end
+	local cbLabel = ZN.CreateText(parent, "LEFT", cb, "RIGHT", labelWidth , 16,8, 0, "Interface\\AddOns\\ZeroNotes\\Media\\Font\\ZNReg.ttf", labelFontSize, labelColor, label, "LEFT", "MIDDLE", 0)
+	cb.label = cbLabel
+	cb.buttonWidth = 16+labelWidth
+	cb.buttonHeight = labelFontSize+4
+	local cbButton = ZN.createSubFrame(nil, parent, cb.buttonWidth, cb.buttonHeight, nil, 1, "LEFT", "TOOLTIP", false, 0, 0, cb, "LEFT", false)
+	cb.button = cbButton
+	if tooltip then 
+		cb.button:SetScript('OnEnter', function(self)
+			ZN:ShowToolTip(tooltipText, tooltipColor, self, tooltipAnchor)
+		end)
+		cb.button:SetScript('OnLeave', function(self)
+			GameTooltip:Hide()
+		end)
+	end
+	return cb
+end
+
 --[[ ##############################################################################
 	Frames
 ############################################################################## --]]

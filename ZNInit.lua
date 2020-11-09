@@ -1446,6 +1446,13 @@ ZN.CheckBoxTextures = {
   ["uncheckedColor"] = ZN.Colors.dk,
 }
 
+ZN.SquareCheckBoxTextures = {
+  ["checked"] = "Interface\\AddOns\\ZeroNotes\\Media\\Texture\\check_true",
+  ["checkedColor"] = ZN.Colors.ACTIVE,
+  ["unchecked"] = "Interface\\AddOns\\ZeroNotes\\Media\\Texture\\check_false",
+  ["uncheckedColor"] = ZN.Colors.INACTIVE,
+}
+
 ZN.PlayerTableRows = {
   ["title"] = 30,
   ["row"] = 40,

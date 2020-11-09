@@ -49,15 +49,31 @@ HomeSidebar.GroupTemplateSelectButton:SetScript("OnClick", function(self)
   ZN:CreateDropdown(self, ZN:getTableKeys(ZNotes.GroupTemplates), ZN:getTemplateTableOrder(ZNotes.GroupTemplates), 240, ZN.Colors.BG, "LEFT", 10, nil, "TOOLTIP")
 end)
 
+
+HomeSidebar.SendToButton = ZN.CreateGenericButton("SendToButton", HomeSidebar, "BOTTOMLEFT", HomeSidebar, "BOTTOMLEFT", 240, 30, 0, 100,0,0, 12, ZN.Colors.ACTIVE, ZN.Colors.SBButtonBG, nil, "Send Note", "CENTER",true )
+
+-- ExRT Checkbox 
 if IsAddOnLoaded("ExRT") then
-  HomeSidebar.SendToExRTButton = ZN.CreateGenericButton("SendToExRTButton", HomeSidebar, "BOTTOMLEFT", HomeSidebar, "BOTTOMLEFT", 240, 30, 0, 100,0,0, 12, ZN.Colors.ACTIVE, ZN.Colors.SBButtonBG, nil, "Send Note to ExRT & ZND", "CENTER",true )
+  HomeSidebar.exrtCheckbox = ZN:createSquareCheckBox(HomeSidebar, "BOTTOMLEFT", HomeSidebar.SendToButton, "TOPLEFT", 0, 10, "ExRT", 12, ZN.Colors.ACTIVE, 70, false, true, "Send to ExRT", ZN.Colors.ACTIVE)
+  HomeSidebar.exrtCheckbox:SetScript("OnClick",function(self)
+    self.toggleChecked()
+  end)
+  HomeSidebar.exrtCheckbox.button:SetScript("OnMouseDown",function()
+    HomeSidebar.exrtCheckbox.toggleChecked()
+  end)
 else
-  HomeSidebar.SendToExRTButton = ZN.CreateGenericButton("SendToExRTButton", HomeSidebar, "BOTTOMLEFT", HomeSidebar, "BOTTOMLEFT", 240, 30, 0, 100,0,0, 12, ZN.Colors.ACTIVE, ZN.Colors.SBButtonBG, nil, "Send Note to ZND", "CENTER",true )
-  HomeSidebar.SendToExRTButton.label = ZN.CreateText(HomeSidebar, "BOTTOM", HomeSidebar.SendToExRTButton, "TOP", 240, 20, 0, 4, "Interface\\AddOns\\ZeroNotes\\Media\\Font\\ZNVers.ttf", 10, ZN.Colors.INACTIVE, "ExRT not found", "CENTER", "CENTER")
-
+  HomeSidebar.exrtCheckbox = ZN:createSquareCheckBox(HomeSidebar, "BOTTOMLEFT", HomeSidebar.SendToButton, "TOPLEFT", 0, 10, "ExRT", 12, ZN.Colors.INACTIVE, 50, false, true, "Please install Exorsus Raid Tools to use this function", ZN.Colors.ACTIVE)
 end
+-- ZND Checkbox 
+HomeSidebar.zndCheckbox = ZN:createSquareCheckBox(HomeSidebar, "BOTTOMRIGHT", HomeSidebar.SendToButton, "TOPRIGHT", -120, 10, "Zero Note Display", 12, ZN.Colors.ACTIVE, 120, false, true, "Send to Zero Note Display", ZN.Colors.ACTIVE)
+HomeSidebar.zndCheckbox:SetScript("OnClick",function(self)
+  self.toggleChecked()
+end)
+HomeSidebar.zndCheckbox.button:SetScript("OnMouseDown",function()
+  HomeSidebar.zndCheckbox.toggleChecked()
+end)
 
-HomeSidebar.ShowNoteInEditorButton = ZN.CreateGenericButton("ShowNoteInEditorButton", HomeSidebar, "TOPLEFT", HomeSidebar.SendToExRTButton, "BOTTOMLEFT", 240, 30, 0, -10,0,0, 12, ZN.Colors.ACTIVE, ZN.Colors.SBButtonBG, nil, "Show Note", "CENTER",true )
+HomeSidebar.ShowNoteInEditorButton = ZN.CreateGenericButton("ShowNoteInEditorButton", HomeSidebar, "TOPLEFT", HomeSidebar.SendToButton, "BOTTOMLEFT", 240, 30, 0, -10,0,0, 12, ZN.Colors.ACTIVE, ZN.Colors.SBButtonBG, nil, "Show Note", "CENTER",true )
 HomeSidebar.btnConfig = ZN.CreateIconButton(HomeSidebar, "BOTTOMLEFT", HomeSidebar, "BOTTOMLEFT", 24, 24, 0, 17, "Interface\\AddOns\\ZeroNotes\\Media\\Texture\\config", ZN.Colors.ACTIVE, ZN.Colors.INACTIVE, false, nil, true, "Open Config", ZN.Colors.ACTIVE)
 HomeSidebar.btnConfig:SetScript("OnClick", function(self) HomeContent.ConfigFrame:SetShown(not HomeContent.ConfigFrame:IsShown()); end)
 HomeSidebar.btnConfig:SetShown(false);
@@ -65,7 +81,7 @@ HomeSidebar.btnConfig:SetShown(false);
 HomeSidebar.TemplateSelectButton:SetScript("OnClick", function(self) ZN:CreateDropdown(self, ZN:getTableKeys(ZNotes.BossTemplates), ZN:getTableOrder(ZNotes.BossTemplates), 240, ZN.Colors.BG, "LEFT", 10, nil, "TOOLTIP") end)
 
 
-HomeSidebar.SendToExRTButton:SetScript("OnClick", function(self) 
+HomeSidebar.SendToButton:SetScript("OnClick", function(self) 
   if not IsInGroup() and (selectedGroupTemplate == "Use Current Group" or selectedGroupTemplate == nil) then 
     ZN:Print("You need to join a group or select a Grouptemplate")
     return
@@ -79,17 +95,17 @@ HomeSidebar.SendToExRTButton:SetScript("OnClick", function(self)
   if IsInGroup() and not IsInRaid() then
     group = "PARTY"
   end
-  if IsInRaid() or IsInGroup() then
+  if (IsInRaid() or IsInGroup()) and HomeSidebar.zndCheckbox.active then
     local parts = math.ceil(string.len(CreatedNote)/255)
     C_ChatInfo.SendAddonMessage( "ZERONOTE", "NewNote", group )
     for i=1,parts do
       C_ChatInfo.SendAddonMessage( "ZERONOTE", strsub(CreatedNote,1+(255*(i-1)),255+(255*(i-1))), group )
     end
     C_ChatInfo.SendAddonMessage( "ZERONOTE", "DoneNewNote", group )
-  else
-  ZN:Print("Note not sent to ZND because you are not in a group.")
+  elseif HomeSidebar.zndCheckbox.active and not (IsInRaid() or IsInGroup()) then
+    ZN:Print("Note not sent to ZND because you are not in a group.")
   end
-  if IsAddOnLoaded("ExRT") then
+  if IsAddOnLoaded("ExRT") and HomeSidebar.exrtCheckbox.active then
     VExRT.Note.Text1 = CreatedNote
     _G["GExRT"].A["Note"].frame:Save()
   end
@@ -113,7 +129,7 @@ HomeSidebar.ShowNoteInEditorButton:SetScript("OnClick", function(self)
   end
 end)
 
-HomeSidebar.IncludeMissingCheckBox = ZN:createCheckBox(HomeSidebar, "TOPLEFT", HomeSidebar.GroupTemplateSelectButton, "BOTTOMLEFT", 0, -20, "Include Missing Spells", 14, ZN.Colors.ACTIVE, 200, true)
+HomeSidebar.IncludeMissingCheckBox = ZN:createSquareCheckBox(HomeSidebar, "TOPLEFT", HomeSidebar.GroupTemplateSelectButton, "BOTTOMLEFT", 0, -20, "Include Missing Spells", 14, ZN.Colors.ACTIVE, 200, true)
 
 -- Missing Checkbox onclick
 HomeSidebar.IncludeMissingCheckBox:SetScript("OnClick",function(self)
