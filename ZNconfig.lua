@@ -49,7 +49,14 @@ function ZN:Config()
   end
 
   ZNDebugMode.btnRunStuff = ZN.CreateGenericButton("btnRunStuff", ConfigFrame, "TOPLEFT", ConfigFrame.DebugModeCheckBox, "BOTTOMLEFT", 240, 30, 0,-20,0,0, 12, ZN.Colors.ACTIVE, ZN.Colors.SBButtonBG, nil, "/run", "CENTER",true, ZN.Colors.HD )
-  ZNDebugMode.btnRunStuff:SetScript("OnClick", function() ZN:BuildRaidRosterGroupTemplate() end)
+  ZNDebugMode.btnRunStuff:SetScript("OnClick", function()
+    -- local wainstalled = "Nein"
+    -- if WeakAurasSaved.displays["0 ZND - Zero Note Display"] then
+    --   wainstalled = "Ja"
+    -- end
+    -- ZN:DebugPrint("WA Installed: "..wainstalled)
+    ZN:DebugPrint("bla")
+  end)
   
   if not ZNotes.DebugMode then
     ZNDebugMode.btnRunStuff:Hide()

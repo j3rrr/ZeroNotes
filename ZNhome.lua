@@ -65,13 +65,21 @@ else
   HomeSidebar.exrtCheckbox = ZN:createSquareCheckBox(HomeSidebar, "BOTTOMLEFT", HomeSidebar.SendToButton, "TOPLEFT", 0, 10, "ExRT", 12, ZN.Colors.INACTIVE, 50, false, true, "Please install Exorsus Raid Tools to use this function", ZN.Colors.ACTIVE)
 end
 -- ZND Checkbox 
-HomeSidebar.zndCheckbox = ZN:createSquareCheckBox(HomeSidebar, "BOTTOMRIGHT", HomeSidebar.SendToButton, "TOPRIGHT", -120, 10, "Zero Note Display", 12, ZN.Colors.ACTIVE, 120, false, true, "Send to Zero Note Display", ZN.Colors.ACTIVE)
-HomeSidebar.zndCheckbox:SetScript("OnClick",function(self)
-  self.toggleChecked()
-end)
-HomeSidebar.zndCheckbox.button:SetScript("OnMouseDown",function()
-  HomeSidebar.zndCheckbox.toggleChecked()
-end)
+if IsAddOnLoaded("WeakAuras") then
+  if WeakAurasSaved.displays["0 ZND - Zero Note Display"] then
+    HomeSidebar.zndCheckbox = ZN:createSquareCheckBox(HomeSidebar, "BOTTOMRIGHT", HomeSidebar.SendToButton, "TOPRIGHT", -120, 10, "Zero Note Display", 12, ZN.Colors.ACTIVE, 120, false, true, "Send to Zero Note Display", ZN.Colors.ACTIVE)
+    HomeSidebar.zndCheckbox:SetScript("OnClick",function(self)
+      self.toggleChecked()
+    end)
+    HomeSidebar.zndCheckbox.button:SetScript("OnMouseDown",function()
+      HomeSidebar.zndCheckbox.toggleChecked()
+    end)
+  elseif not WeakAurasSaved.displays["0 ZND - Zero Note Display"] then
+    HomeSidebar.zndCheckbox = ZN:createSquareCheckBox(HomeSidebar, "BOTTOMRIGHT", HomeSidebar.SendToButton, "TOPRIGHT", -120, 10, "Zero Note Display", 12, ZN.Colors.INACTIVE, 120, false, true, "Please install Zero Note Display WA to use this function", ZN.Colors.ACTIVE)
+  end
+else
+  HomeSidebar.zndCheckbox = ZN:createSquareCheckBox(HomeSidebar, "BOTTOMRIGHT", HomeSidebar.SendToButton, "TOPRIGHT", -120, 10, "Zero Note Display", 12, ZN.Colors.INACTIVE, 120, false, true, "Please install WeakAuras and ZND to use this function", ZN.Colors.ACTIVE)
+end
 
 HomeSidebar.ShowNoteInEditorButton = ZN.CreateGenericButton("ShowNoteInEditorButton", HomeSidebar, "TOPLEFT", HomeSidebar.SendToButton, "BOTTOMLEFT", 240, 30, 0, -10,0,0, 12, ZN.Colors.ACTIVE, ZN.Colors.SBButtonBG, nil, "Show Note", "CENTER",true )
 HomeSidebar.btnConfig = ZN.CreateIconButton(HomeSidebar, "BOTTOMLEFT", HomeSidebar, "BOTTOMLEFT", 24, 24, 0, 17, "Interface\\AddOns\\ZeroNotes\\Media\\Texture\\config", ZN.Colors.ACTIVE, ZN.Colors.INACTIVE, false, nil, true, "Open Config", ZN.Colors.ACTIVE)
@@ -108,6 +116,14 @@ HomeSidebar.SendToButton:SetScript("OnClick", function(self)
   if IsAddOnLoaded("ExRT") and HomeSidebar.exrtCheckbox.active then
     VExRT.Note.Text1 = CreatedNote
     _G["GExRT"].A["Note"].frame:Save()
+  end
+  if (IsAddOnLoaded("ExRT") and IsAddOnLoaded("WeakAuras") and WeakAurasSaved.displays["0 ZND - Zero Note Display"] and not HomeSidebar.zndCheckbox.active and not HomeSidebar.exrtCheckbox.active) 
+    or (IsAddOnLoaded("ExRT") and IsAddOnLoaded("WeakAuras") and not WeakAurasSaved.displays["0 ZND - Zero Note Display"] and not HomeSidebar.exrtCheckbox.active)
+    or (IsAddOnLoaded("ExRT") and not IsAddOnLoaded("WeakAuras") and not HomeSidebar.exrtCheckbox.active)
+    or (not IsAddOnLoaded("ExRT") and IsAddOnLoaded("WeakAuras") and not HomeSidebar.zndCheckbox.active) then
+    ZN:Print("Please choose at least one Display to send your note to.")
+  elseif not IsAddOnLoaded("ExRT") and (not IsAddOnLoaded("WeakAuras") or (IsAddOnLoaded("WeakAuras") and not WeakAurasSaved.displays["0 ZND - Zero Note Display"])) then
+    ZN:Print("No Display found. Please install ExRT or Weakauras and ZND")
   end
 end)
 
