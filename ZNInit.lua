@@ -113,6 +113,7 @@ ZN.encounter_list = ""
 ZN.zoneId_list = ""
 ZN.zoneGroupId_list = ""
 
+-- code largely adapted from WeakAuras https://www.curseforge.com/wow/addons/weakauras-2
 function ZN:getEncounterIDs()
   --print(string.len(ZN.encounter_list))
   if ZN.encounter_list ~= "" and string.len(ZN.encounter_list)>10 then
@@ -327,8 +328,15 @@ function ZN.initLastTemplates()
   ZNotes.lastTemplates = ZNotes.lastTemplates or {
     ["lastGroupTemplate"] = "sample group",
     ["lastBossTemplate"] = "sampleboss",
+    ["homeLastGroupTemplate"] = "sample group",
+    ["homeLastBossTemplate"] = "sampleboss",
+    ["homeIncludeMissing"] = true,
+    ["homeSendToExRT"] = true,
+    ["homeSendToZND"] = true,
   }
   ZN.selectedGroupTemplate = ZNotes.lastTemplates.lastGroupTemplate
+  ZN.homeSelectedBossTemplate = ZNotes.lastTemplates.homeLastBossTemplate
+  ZN.homeSelectedGroupTemplate = ZNotes.lastTemplates.homeLastGroupTemplate
 end
 
 ZN.DefaultPlayerSpells={

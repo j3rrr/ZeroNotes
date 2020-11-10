@@ -8,4 +8,5 @@
 MM/DD/2020 - v1.1.0
 * [UPD] Spells can now be assigned to phases. If you repeat a phase the spells assigned to this phase will also be repeated.
 * [UPD] "Send Note" split, to let the user choose which Display to use
+* [UPD] Added SavedVariables for Home Screen Selections
 ```

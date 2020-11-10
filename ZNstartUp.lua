@@ -17,6 +17,7 @@ local function onUILoad(text)
       ZN.initBossTemplates()
       ZN.initGroupTemplates()
       ZN.initLastTemplates()
+      ZN:initHome()
       ZN:createGroupTemplateFrames()
       ZN:Config()
       if ZNotes.DebugMode then
