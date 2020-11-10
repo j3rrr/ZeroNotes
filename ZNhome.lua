@@ -94,7 +94,11 @@ HomeSidebar.SendToButton:SetScript("OnClick", function(self)
     ZN:Print("You need to join a group or select a Grouptemplate")
     return
   end
-  local CreatedNote= ZN:PrintNote(selectedTemplate, HomeSidebar.IncludeMissingCheckBox.active, selectedGroupTemplate)
+  if selectedTemplate == nil or selectedTemplate == "Select Template.." then
+    ZN:Print("You need to select a Boss Template")
+    return
+  end
+  local CreatedNote, CreatedZNNote = ZN:PrintNote(selectedTemplate, HomeSidebar.IncludeMissingCheckBox.active, selectedGroupTemplate)
   if not CreatedNote then
     ZN:Print("No note was created. Please check templates and try again.")
     return
@@ -104,10 +108,10 @@ HomeSidebar.SendToButton:SetScript("OnClick", function(self)
     group = "PARTY"
   end
   if (IsInRaid() or IsInGroup()) and HomeSidebar.zndCheckbox.active then
-    local parts = math.ceil(string.len(CreatedNote)/255)
+    local parts = math.ceil(string.len(CreatedZNNote)/255)
     C_ChatInfo.SendAddonMessage( "ZERONOTE", "NewNote", group )
     for i=1,parts do
-      C_ChatInfo.SendAddonMessage( "ZERONOTE", strsub(CreatedNote,1+(255*(i-1)),255+(255*(i-1))), group )
+      C_ChatInfo.SendAddonMessage( "ZERONOTE", strsub(CreatedZNNote,1+(255*(i-1)),255+(255*(i-1))), group )
     end
     C_ChatInfo.SendAddonMessage( "ZERONOTE", "DoneNewNote", group )
   elseif HomeSidebar.zndCheckbox.active and not (IsInRaid() or IsInGroup()) then
