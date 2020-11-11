@@ -86,7 +86,7 @@ function ZN:initHome()
     Sidebar
   ############################################################################## --]]
   HomeSidebar = ZNSidebarFrame.Subframes.Home
-  HomeSidebar.TemplateSelectButton = ZN.CreateGenericButton("ZNBossTemplateSelectButton", HomeSidebar, "TOPLEFT", HomeSidebar, "TOPLEFT", 240, 25, 0, -60,10,0, 12, ZN.Colors.ACTIVE, ZN.Colors.SBButtonBG, "Select Boss Template", ZN.homeSelectedBossTemplate, "LEFT",true )
+  HomeSidebar.TemplateSelectButton = ZN.CreateGenericButton("ZNBossTemplateSelectButton", HomeSidebar, "TOPLEFT", HomeSidebar, "TOPLEFT", 240, 25, 0, -60,10,0, 12, ZN.Colors.ACTIVE, ZN.Colors.SBButtonBG, "Select Boss Template", ZN.homeSelectedBossTemplate and ZN.homeSelectedBossTemplate or "Select Template..", "LEFT",true )
   HomeSidebar.TemplateSelectButton.doOnUpdate = true
   HomeSidebar.TemplateSelectButton.OnUpdate = function(_,_,_,newValue)
     ZN.homeSelectedBossTemplate = newValue 
@@ -97,7 +97,7 @@ function ZN:initHome()
     ZN:CreateDropdown(self, ZN:getTableKeys(ZNotes.BossTemplates), ZN:getTableOrder(ZNotes.BossTemplates), 240, ZN.Colors.BG, "LEFT", 10, nil, "TOOLTIP")
   end)
 
-  HomeSidebar.GroupTemplateSelectButton = ZN.CreateGenericButton("ZNGroupTemplateSelectButton", HomeSidebar, "TOPLEFT", HomeSidebar.TemplateSelectButton, "BOTTOMLEFT", 240, 30, 0, -40,10,0, 12, ZN.Colors.ACTIVE, ZN.Colors.SBButtonBG, "Select Group Template", ZN.homeSelectedGroupTemplate, "LEFT",true )
+  HomeSidebar.GroupTemplateSelectButton = ZN.CreateGenericButton("ZNGroupTemplateSelectButton", HomeSidebar, "TOPLEFT", HomeSidebar.TemplateSelectButton, "BOTTOMLEFT", 240, 30, 0, -40,10,0, 12, ZN.Colors.ACTIVE, ZN.Colors.SBButtonBG, "Select Group Template", ZN.homeSelectedGroupTemplate and ZN.homeSelectedGroupTemplate or "Use Current Group", "LEFT",true )
   HomeSidebar.GroupTemplateSelectButton.doOnUpdate = true
   HomeSidebar.GroupTemplateSelectButton.OnUpdate = function(_,_,_,newValue) 
     ZN.homeSelectedGroupTemplate = newValue
