@@ -105,7 +105,7 @@ function ZN:initHome()
     ZN:DebugPrint("homeLastGroupTemplate: "..ZNotes.lastTemplates.homeLastGroupTemplate)
   end
   HomeSidebar.GroupTemplateSelectButton:SetScript("OnClick", function(self)
-    ZN:CreateDropdown(self, ZN:getTableKeys(ZNotes.SavedNotes), ZN:getTemplateTableOrder(ZNotes.SavedNotes), 240, ZN.Colors.BG, "LEFT", 10, nil, "TOOLTIP")
+    ZN:CreateDropdown(self, ZN:getTableKeys(ZNotes.GroupTemplates), ZN:getTemplateTableOrder(ZNotes.GroupTemplates), 240, ZN.Colors.BG, "LEFT", 10, nil, "TOOLTIP")
   end)
 
   HomeSidebar.SendToButton = ZN.CreateGenericButton("SendToButton", HomeSidebar, "BOTTOMLEFT", HomeSidebar, "BOTTOMLEFT", 240, 30, 0, 100,0,0, 12, ZN.Colors.ACTIVE, ZN.Colors.SBButtonBG, nil, "Send Note", "CENTER",true )
