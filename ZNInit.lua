@@ -2,7 +2,7 @@
 local _, ZN, L = ...
 
 ZN.Title="Zero Notes"
-ZN.Version="1.0"
+ZN.Version="1.0.1"
 
 function ZN:serializeTable(val, name, skipnewlines, depth)
   skipnewlines = skipnewlines or false
@@ -936,6 +936,9 @@ ZNotes.GroupTemplates = ZNotes.GroupTemplates or {
   }
 }
 end
+
+function ZN.initSavedNotes()
+ZNotes.SavedNotes = ZNotes.SavedNotes or {} end
 
 ZN.SpecNames = {
   -- Death Knight

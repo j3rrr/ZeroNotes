@@ -3,6 +3,7 @@ local _, ZN, L = ...
 --local selectedTemplate = nil
 --local selectedGroupTemplate = nil
 function ZN:initHome()
+  ZNSavedNotesRows = {}
   HomeContent = ZNBodyFrame.Subframes.Home
   --[[ ##############################################################################
     Home Body
@@ -27,15 +28,65 @@ function ZN:initHome()
     Raw Note Edit Box
   ############################################################################## --]]
   HomeContent.ShowNoteEditBox = ZN.createSubFrame("ShowNoteEditBox", HomeContent, 680, 530, ZN.Colors.BG, 1, "TOP","DIALOG", true, 0, 0)
-  HomeContent.ShowNoteEditBox.btnClose = ZN.CreateIconButton(HomeContent.ShowNoteEditBox, "TOPRIGHT", HomeContent.ShowNoteEditBox, "TOPRIGHT", 16, 16, -10, -10, "Interface\\AddOns\\ZeroNotes\\Media\\Texture\\x_big_active", ZN.Colors.ACTIVE, ZN.Colors.INACTIVE, false)
+  HomeContent.ShowNoteEditBox.btnClose = ZN.CreateIconButton(HomeContent.ShowNoteEditBox, "TOPRIGHT", HomeContent.ShowNoteEditBox, "TOPRIGHT", 16, 16, -10, -10, "Interface\\AddOns\\ZeroNotes\\Media\\Texture\\x_big_active", ZN.Colors.ACTIVE, ZN.Colors.INACTIVE, false)  
   HomeContent.ShowNoteEditBox.EditBox = ZN.MultiLineEditBox("ZBMImportEditBox", HomeContent.ShowNoteEditBox, "TOP", HomeContent.ShowNoteEditBox, "TOP", 660, 450, 0, -65, 0, 0 ,12, ZN.Colors.ACTIVE, ZN.Colors.HD, nil, "", "LEFT")
-
+  HomeContent.ShowNoteEditBox.btnSaveNote = ZN.CreateIconButton(HomeContent.ShowNoteEditBox, "BOTTOMLEFT", HomeContent.ShowNoteEditBox.EditBox, "TOPLEFT", 26, 26, 0, 16, "Interface\\AddOns\\ZeroNotes\\Media\\Texture\\save", ZN.Colors.ACTIVE, ZN.Colors.INACTIVE, false, ZN.Colors.ACTIVE, true, "Save Note", ZN.Colors.ACTIVE)
+  HomeContent.ShowNoteEditBox.btnLoadNote = ZN.CreateIconButton(HomeContent.ShowNoteEditBox, "BOTTOMLEFT", HomeContent.ShowNoteEditBox.btnSaveNote, "BOTTOMRIGHT", 26, 26, 16, 0, "Interface\\AddOns\\ZeroNotes\\Media\\Texture\\load", ZN.Colors.ACTIVE, ZN.Colors.INACTIVE, false, ZN.Colors.ACTIVE, true, "Load Note", ZN.Colors.ACTIVE)
+  
+  HomeContent.ShowNoteEditBox.btnLoadNote:SetScript("OnClick", function(self) 
+    if not ZNShowNote.SavedNotesContainer:IsShown() then
+      ZN:initSavedNotesList()
+    end
+    ZNShowNote.SavedNotesContainer:SetShown(not ZNShowNote.SavedNotesContainer:IsShown())
+  end)
+  HomeContent.ShowNoteEditBox.btnSaveNote:SetScript("OnClick", function(self) ZNsaveNoteFrame:SetShown(not ZNsaveNoteFrame:IsShown()) end)
   HomeContent.ShowNoteEditBox.btnClose:SetScript("OnClick", function(self) HomeContent.ShowNoteEditBox:Hide() end)
+  --[[ ##############################################################################
+    Saved Note List Overlay
+  ############################################################################## --]]
+  ZNShowNote = HomeContent.ShowNoteEditBox.EditBox
+  ZNShowNote.SavedNotesContainer = ZN.createSubFrame("SavedNotesContaier", ZNShowNote, 250, 450, ZN.Colors.HD, 1, "TOPLEFT", "DIALOG", true, 0, 0, ZNShowNote, "TOPLEFT", false)
+  ZNShowNote.SavedNotesContainer.btnClose = ZN.CreateIconButton(ZNShowNote.SavedNotesContainer, "TOPRIGHT", ZNShowNote.SavedNotesContainer, "TOPRIGHT", 12, 12, -8, -8, "Interface\\AddOns\\ZeroNotes\\Media\\Texture\\x_big_active", ZN.Colors.ACTIVE, ZN.Colors.INACTIVE, false)  
+  ZNShowNote.SavedNotesContainer.btnClose:SetScript("OnClick", function(self) ZNShowNote.SavedNotesContainer:Hide() end)
+  -- Scrollframe
+  ZNShowNote.SavedNotesContainer.SavedNotesListScroll = ZN.createScrollFrame("SavedNotesListScroll", ZNShowNote.SavedNotesContainer, 250, 450, ZN.Colors.BG, 1, "TOPLEFT", "DIALOG", false, true, ZN.Colors.INACTIVE)
+  ZNShowNote.SavedNotesContainer.SavedNotesListScroll:SetBackdrop({bgFile = "Interface/AddOns/ZeroNotes/Media/Texture/square", -- Interface/Tooltips/UI-Tooltip-Background Interface/AddOns/ZeroNotes/Media/Texture/square
+    edgeFile = [[Interface\Buttons\WHITE8x8]],
+    edgeSize = 1,
+  });
+  ZNShowNote.SavedNotesContainer.SavedNotesListScroll:SetBackdropColor(tonumber("0x"..ZN.Colors.BG:sub(1,2))/255, tonumber("0x"..ZN.Colors.BG:sub(3,4))/255, tonumber("0x"..ZN.Colors.BG:sub(5,6))/255, 1);
+  ZNShowNote.SavedNotesContainer.SavedNotesListScroll:SetBackdropBorderColor(tonumber("0x"..ZN.Colors.INACTIVE:sub(1,2))/255, tonumber("0x"..ZN.Colors.INACTIVE:sub(3,4))/255, tonumber("0x"..ZN.Colors.INACTIVE:sub(5,6))/255, 1);
+  ZNSavedNotesList = ZNShowNote.SavedNotesContainer.SavedNotesListScroll
+
+  function ZN:initSavedNotesList()
+    local anchor = ZNSavedNotesList.scrollChild
+    local anchorPoint = "TOP"
+    local yOffset = 28
+    local count = 0
+    for k,v in pairs(ZNotes.SavedNotes) do
+      count = count+1
+    end
+    
+    for i = 1, count do
+      if i > 1 then
+        anchor = ZNSavedNotesRows[i-1]
+        anchorPoint = "BOTTOM"
+        yOffset = 2
+      end
+      ZNSavedNotesRows[i] = ZN:createSavedNotesRow(i, anchor, anchorPoint, yOffset)
+      ZN:DebugPrint(i)
+    end
+  end
+
+  function ZN:createSavedNotesRow(i, AnchorFrame, anchorPoint, yOffset)
+    ZNSavedNotesList.row = ZN.createSubFrame("SavedNotesRow"..i, ZNSavedNotesList.scrollChild, 250, 30, ZN.Colors.ROWBG, 1, "TOP", "DIALOG", false, 0, -yOffset, AnchorFrame, anchorPoint, false)
+  end
+
   --[[ ##############################################################################
     Sidebar
   ############################################################################## --]]
   HomeSidebar = ZNSidebarFrame.Subframes.Home
-  HomeSidebar.TemplateSelectButton = ZN.CreateGenericButton("ZNBossTemplateSelectButton", HomeSidebar, "TOPLEFT", HomeSidebar, "TOPLEFT", 240, 30, 0, -60,10,0, 12, ZN.Colors.ACTIVE, ZN.Colors.SBButtonBG, "Select Boss Template", ZN.homeSelectedBossTemplate, "LEFT",true )
+  HomeSidebar.TemplateSelectButton = ZN.CreateGenericButton("ZNBossTemplateSelectButton", HomeSidebar, "TOPLEFT", HomeSidebar, "TOPLEFT", 240, 25, 0, -60,10,0, 12, ZN.Colors.ACTIVE, ZN.Colors.SBButtonBG, "Select Boss Template", ZN.homeSelectedBossTemplate, "LEFT",true )
   HomeSidebar.TemplateSelectButton.doOnUpdate = true
   HomeSidebar.TemplateSelectButton.OnUpdate = function(_,_,_,newValue)
     ZN.homeSelectedBossTemplate = newValue 
@@ -54,9 +105,8 @@ function ZN:initHome()
     ZN:DebugPrint("homeLastGroupTemplate: "..ZNotes.lastTemplates.homeLastGroupTemplate)
   end
   HomeSidebar.GroupTemplateSelectButton:SetScript("OnClick", function(self)
-    ZN:CreateDropdown(self, ZN:getTableKeys(ZNotes.GroupTemplates), ZN:getTemplateTableOrder(ZNotes.GroupTemplates), 240, ZN.Colors.BG, "LEFT", 10, nil, "TOOLTIP")
+    ZN:CreateDropdown(self, ZN:getTableKeys(ZNotes.SavedNotes), ZN:getTemplateTableOrder(ZNotes.SavedNotes), 240, ZN.Colors.BG, "LEFT", 10, nil, "TOOLTIP")
   end)
-
 
   HomeSidebar.SendToButton = ZN.CreateGenericButton("SendToButton", HomeSidebar, "BOTTOMLEFT", HomeSidebar, "BOTTOMLEFT", 240, 30, 0, 100,0,0, 12, ZN.Colors.ACTIVE, ZN.Colors.SBButtonBG, nil, "Send Note", "CENTER",true )
 
@@ -230,4 +280,74 @@ function ZN:initHome()
     end
     ZN:DebugPrint("homeSendToZND: "..debugMissing)
   end)
+  --[[ ##############################################################################
+    Save Note Popup
+  ############################################################################## --]]
+  ZNsaveNoteFrame = ZN.createSubFrame("ZNsaveNoteFrame",ZNFrame, 302, 202, ZN.Colors.HD, 1, 'CENTER', 'TOOLTIP', true)
+  ZNsaveNoteFrame:SetScript("OnMouseDown", function(self, button)end)
+  table.insert(ZN.DropDownsEdit, ZNsaveNoteFrame)
+  table.insert(ZN.GroupPopups, ZNsaveNoteFrame)
+  ZNsaveNoteFrame:SetScript("OnMouseDown", function(self, button)end)
+  ZNsaveNoteFrame:SetBackdrop({bgFile = "Interface/Tooltips/UI-Tooltip-Background", 
+    edgeFile = [[Interface\Buttons\WHITE8x8]],
+    edgeSize = 1,
+  });
+  ZNsaveNoteFrame:SetBackdropColor(tonumber("0x"..ZN.Colors.HD:sub(1,2))/255, tonumber("0x"..ZN.Colors.HD:sub(3,4))/255, tonumber("0x"..ZN.Colors.HD:sub(5,6))/255, 1);
+  ZNsaveNoteFrame:SetBackdropBorderColor(tonumber("0x"..ZN.Colors.INACTIVE:sub(1,2))/255, tonumber("0x"..ZN.Colors.INACTIVE:sub(3,4))/255, tonumber("0x"..ZN.Colors.INACTIVE:sub(5,6))/255, 1);
+  ZNsaveNoteFrame.btnClose = ZN.CreateIconButton(ZNsaveNoteFrame, "TOPRIGHT", ZNsaveNoteFrame, "TOPRIGHT", 16, 16, -11, -11, "Interface\\AddOns\\ZeroNotes\\Media\\Texture\\x_big_active", ZN.Colors.ACTIVE, ZN.Colors.INACTIVE, false)
+  
+  ZNsaveNoteFrame.Message = ZN.CreateText(ZNsaveNoteFrame, "TOP", ZNsaveNoteFrame, "TOP", 250, 30, 0, -41, "Interface\\AddOns\\ZeroNotes\\Media\\Font\\ZNReg.ttf", 12, ZN.Colors.ACTIVE, "Name", "LEFT")
+  ZNsaveNoteFrame.newNoteName = ZN.SingleLineEditBox("newNoteName", ZNsaveNoteFrame, "TOP", ZNsaveNoteFrame.Message, "BOTTOM", 250, 30, 0, -10, 20, 0 ,12, ZN.Colors.ACTIVE, ZN.Colors.SBButtonBG, nil, "", "LEFT")
+  ZNsaveNoteFrame.ErrorMessage = ZN.CreateText(ZNsaveNoteFrame, "TOP", ZNsaveNoteFrame.newNoteName, "BOTTOM", 250, 20, 0, 0, "Interface\\AddOns\\ZeroNotes\\Media\\Font\\ZNVers.ttf", 10, ZN.Colors.chatYell, "", "CENTER")
+  ZNsaveNoteFrame.ConfirmButton = ZN.CreateGenericButton("ZNnewNoteConfirmButton", ZNsaveNoteFrame, "BOTTOMLEFT", ZNsaveNoteFrame, "BOTTOMLEFT", 125, 30, 20, 20,0,0, 12, ZN.Colors.ACTIVE, ZN.Colors.SBButtonBG, nil, "Save", "CENTER",true, ZN.Colors.BG )
+  ZNsaveNoteFrame.CancelButton = ZN.CreateGenericButton("ZNnewNoteCancelButton", ZNsaveNoteFrame, "BOTTOMRIGHT", ZNsaveNoteFrame, "BOTTOMRIGHT", 125, 30, -20, 20,0,0, 12, ZN.Colors.ACTIVE, ZN.Colors.SBButtonBG, nil, "Cancel", "CENTER",true, ZN.Colors.BG )
+  ZNsaveNoteFrame.ErrorMessage:Hide()
+  -- Check if Name exists 
+  ZNsaveNoteFrame.newNoteName.doOnUpdate = true
+  ZNsaveNoteFrame.newNoteName.OnUpdate = function(_,_,_,newValue) 
+    -- Check if Name exists 
+    if ZNotes.SavedNotes[newValue:lower():match("^%s*(.-)%s*$")] then 
+      ZNsaveNoteFrame.ErrorMessage:SetText("Name already exists") 
+      ZNsaveNoteFrame.ErrorMessage:Show()
+      C_Timer.After(3, function() ZNsaveNoteFrame.ErrorMessage:Hide() end)
+      return
+    end
+    -- Check if Name is empty
+     if newValue == nil or newValue == "" then 
+      ZNsaveNoteFrame.ErrorMessage:SetText("Please enter a name for your Note") 
+      ZNsaveNoteFrame.ErrorMessage:Show()
+      C_Timer.After(3, function() ZNsaveNoteFrame.ErrorMessage:Hide() end)
+      return
+    end
+  end  
+  ZNsaveNoteFrame.newNoteName:SetScript("OnEditFocusLost", function(self)
+		self:ClearFocus()
+	end) 
+  ZNsaveNoteFrame.ConfirmButton:SetScript("OnClick", function(self)
+    local name = ZNsaveNoteFrame.newNoteName:GetText():lower():match("^%s*(.-)%s*$")
+     -- Check if Name exists 
+    if ZNotes.SavedNotes[name] then
+      ZNsaveNoteFrame.ErrorMessage:SetText("Name already exists") 
+      ZNsaveNoteFrame.ErrorMessage:Show()
+      C_Timer.After(3, function() ZNsaveNoteFrame.ErrorMessage:Hide() end)
+      return
+    end
+    -- Check if Name is empty
+    if name == nil or name == "" then
+      ZNsaveNoteFrame.ErrorMessage:SetText("Please enter a name for your Template")
+      ZNsaveNoteFrame.ErrorMessage:Show()
+      C_Timer.After(3, function() ZNsaveNoteFrame.ErrorMessage:Hide() end)
+    -- If Name does not exist, create new template
+    else      
+      ZNotes.SavedNotes[name] = {}
+      ZNotes.SavedNotes[name]["name"] = name
+      ZNotes.SavedNotes[name]["content"] = HomeContent.ShowNoteEditBox.EditBox.editbox:GetText()
+      -- Reset Button / SavedVariables / Rebuild Frames
+      ZN:DebugPrint("Note Name: "..name)
+      ZN:Print("Saved Note as: "..name) 
+      ZNsaveNoteFrame:Hide()
+    end
+  end)
+  ZNsaveNoteFrame.btnClose:SetScript("OnClick", function(self) ZNsaveNoteFrame:Hide() end)
+  ZNsaveNoteFrame.CancelButton:SetScript("OnClick", function(self) ZNsaveNoteFrame:Hide() end)
 end
