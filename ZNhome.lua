@@ -3,7 +3,8 @@ local _, ZN, L = ...
 --local selectedTemplate = nil
 --local selectedGroupTemplate = nil
 function ZN:initHome()
-  ZNSavedNotesRows = {}
+  ZN.SavedNotesRows = {}
+  ZN.LoadedNote = ""
   HomeContent = ZNBodyFrame.Subframes.Home
   --[[ ##############################################################################
     Home Body
@@ -32,7 +33,46 @@ function ZN:initHome()
   HomeContent.ShowNoteEditBox.EditBox = ZN.MultiLineEditBox("ZBMImportEditBox", HomeContent.ShowNoteEditBox, "TOP", HomeContent.ShowNoteEditBox, "TOP", 660, 450, 0, -65, 0, 0 ,12, ZN.Colors.ACTIVE, ZN.Colors.HD, nil, "", "LEFT")
   HomeContent.ShowNoteEditBox.btnSaveNote = ZN.CreateIconButton(HomeContent.ShowNoteEditBox, "BOTTOMLEFT", HomeContent.ShowNoteEditBox.EditBox, "TOPLEFT", 26, 26, 0, 16, "Interface\\AddOns\\ZeroNotes\\Media\\Texture\\save", ZN.Colors.ACTIVE, ZN.Colors.INACTIVE, false, ZN.Colors.ACTIVE, true, "Save Note", ZN.Colors.ACTIVE)
   HomeContent.ShowNoteEditBox.btnLoadNote = ZN.CreateIconButton(HomeContent.ShowNoteEditBox, "BOTTOMLEFT", HomeContent.ShowNoteEditBox.btnSaveNote, "BOTTOMRIGHT", 26, 26, 16, 0, "Interface\\AddOns\\ZeroNotes\\Media\\Texture\\load", ZN.Colors.ACTIVE, ZN.Colors.INACTIVE, false, ZN.Colors.ACTIVE, true, "Load Note", ZN.Colors.ACTIVE)
-  
+  HomeContent.ShowNoteEditBox.btnSendNote = ZN.CreateIconButton(HomeContent.ShowNoteEditBox, "BOTTOMLEFT", HomeContent.ShowNoteEditBox.btnLoadNote, "BOTTOMRIGHT", 26, 26, 32, 0, "Interface\\AddOns\\ZeroNotes\\Media\\Texture\\arrow_send", ZN.Colors.ACTIVE, ZN.Colors.INACTIVE, false, ZN.Colors.ACTIVE, true, "Send Note", ZN.Colors.ACTIVE)
+  --[[
+    TODO: contentznd änderungen aus editbox
+  --]]
+  HomeContent.ShowNoteEditBox.btnSendNote:SetScript("OnClick", function()
+    ZN:DebugPrint(ZNotes.SavedNotes[ZN.LoadedNote].contentznd)
+    local CreatedNote = ZNotes.SavedNotes[ZN.LoadedNote].contentrt
+    local CreatedZNNote = ZNotes.SavedNotes[ZN.LoadedNote].contentznd
+    if not CreatedNote then
+      ZN:Print("No note was created. Please check templates and try again.")
+      return
+    end
+    local group = "RAID"
+    if IsInGroup() and not IsInRaid() then
+      group = "PARTY"
+    end
+    if (IsInRaid() or IsInGroup()) and HomeSidebar.zndCheckbox.active then
+      local parts = math.ceil(string.len(CreatedZNNote)/255)
+      C_ChatInfo.SendAddonMessage( "ZERONOTE", "NewNote", group )
+      for i=1,parts do
+        C_ChatInfo.SendAddonMessage( "ZERONOTE", strsub(CreatedZNNote,1+(255*(i-1)),255+(255*(i-1))), group )
+      end
+      C_ChatInfo.SendAddonMessage( "ZERONOTE", "DoneNewNote", group )
+    elseif HomeSidebar.zndCheckbox.active and not (IsInRaid() or IsInGroup()) then
+      ZN:Print("Note not sent to ZND because you are not in a group.")
+    end
+    if IsAddOnLoaded("ExRT") and HomeSidebar.exrtCheckbox.active then
+      VExRT.Note.Text1 = CreatedNote
+      _G["GExRT"].A["Note"].frame:Save()
+    end
+    if (IsAddOnLoaded("ExRT") and IsAddOnLoaded("WeakAuras") and WeakAurasSaved.displays["0 ZND - Zero Note Display"] and not HomeSidebar.zndCheckbox.active and not HomeSidebar.exrtCheckbox.active) 
+      or (IsAddOnLoaded("ExRT") and IsAddOnLoaded("WeakAuras") and not WeakAurasSaved.displays["0 ZND - Zero Note Display"] and not HomeSidebar.exrtCheckbox.active)
+      or (IsAddOnLoaded("ExRT") and not IsAddOnLoaded("WeakAuras") and not HomeSidebar.exrtCheckbox.active)
+      or (not IsAddOnLoaded("ExRT") and IsAddOnLoaded("WeakAuras") and not HomeSidebar.zndCheckbox.active) then
+      ZN:Print("Please choose at least one Display to send your note to.")
+    elseif not IsAddOnLoaded("ExRT") and (not IsAddOnLoaded("WeakAuras") or (IsAddOnLoaded("WeakAuras") and not WeakAurasSaved.displays["0 ZND - Zero Note Display"])) then
+      ZN:Print("No Display found. Please install ExRT or Weakauras and ZND")
+    end
+  end)
+
   HomeContent.ShowNoteEditBox.btnLoadNote:SetScript("OnClick", function(self) 
     if not ZNShowNote.SavedNotesContainer:IsShown() then
       ZN:initSavedNotesList()
@@ -59,27 +99,53 @@ function ZN:initHome()
   ZNSavedNotesList = ZNShowNote.SavedNotesContainer.SavedNotesListScroll
 
   function ZN:initSavedNotesList()
-    local anchor = ZNSavedNotesList.scrollChild
-    local anchorPoint = "TOP"
-    local yOffset = 28
+    for i = 1, #ZN.SavedNotesRows do
+      ZN.SavedNotesRows[i]:Hide()
+    end
     local count = 0
+    ZN.SaveNotesLabel = {}
     for k,v in pairs(ZNotes.SavedNotes) do
       count = count+1
+      ZN.SaveNotesLabel[count] = v.name
     end
-    
-    for i = 1, count do
-      if i > 1 then
-        anchor = ZNSavedNotesRows[i-1]
-        anchorPoint = "BOTTOM"
-        yOffset = 2
+
+    for i = 1, #ZN.SaveNotesLabel do
+      if i > #ZN.SavedNotesRows then 
+        ZN.SavedNotesRows[i] = ZN:createSavedNotesRow(i, ZN.SavedNotesRows[i-1], "BOTTOM", 2)
+      else
+        ZN:updateSavedNotesRow(i, ZN.SavedNotesRows[i-1], ZN.SavedNotesRows[i])
       end
-      ZNSavedNotesRows[i] = ZN:createSavedNotesRow(i, anchor, anchorPoint, yOffset)
+      if i == 1 then
+        ZN.SavedNotesRows[i]:ClearAllPoints()
+        ZN.SavedNotesRows[i]:SetPoint("TOP", ZNShowNote.SavedNotesContainer.SavedNotesListScroll.scrollChild,"TOP", 0, -28)
+      end
+      ZN.SavedNotesRows[i]:Show()
+      ZN.SavedNotesRows[i].btnDelete.key = ZN.SaveNotesLabel[i]
       ZN:DebugPrint(i)
     end
   end
 
   function ZN:createSavedNotesRow(i, AnchorFrame, anchorPoint, yOffset)
-    ZNSavedNotesList.row = ZN.createSubFrame("SavedNotesRow"..i, ZNSavedNotesList.scrollChild, 250, 30, ZN.Colors.ROWBG, 1, "TOP", "DIALOG", false, 0, -yOffset, AnchorFrame, anchorPoint, false)
+    local ZNSavedNotesListRow = ZN.createSubFrame("SavedNotesRow"..i, ZNSavedNotesList.scrollChild, 248, 20, ZN.Colors.ROWBG, 1, "TOP", "DIALOG", false, 0, -yOffset, AnchorFrame, anchorPoint, false)
+    ZNSavedNotesListRow.btn = ZN.CreateGenericButton("NoteListItem"..i, ZNSavedNotesListRow, "LEFT", ZNSavedNotesListRow, "LEFT", 228, 20, 0, 0, 10, 0 , 10, ZN.Colors.INACTIVE, ZN.Colors.ROWBG, nil, ZN.SaveNotesLabel[i], "LEFT", true, ZN.Colors.SBButtonBG, false, nil, nil, nil)
+    ZNSavedNotesListRow.btn:SetScript("OnClick", function()
+      HomeContent.ShowNoteEditBox.EditBox.editbox:SetText(ZNotes.SavedNotes[ZN.SaveNotesLabel[i]].contentrt)
+      ZN.LoadedNote = ZN.SaveNotesLabel[i]
+      HomeContent.ShowNoteEditBox.EditBox.SavedNotesContainer:Hide()
+      ZN:DebugPrint("ZNLoadedNote2: "..ZN.LoadedNote)
+    end)
+    ZNSavedNotesListRow.btnDelete = ZN.CreateIconButton(ZNSavedNotesListRow, "LEFT", ZNSavedNotesListRow.btn, "RIGHT", 12, 12, 2, 0, "Interface\\AddOns\\ZeroNotes\\Media\\Texture\\delete2", ZN.Colors.ACTIVE, ZN.Colors.INACTIVE, false, ZN.Colors.ACTIVE, true, "Delete Note", ZN.Colors.ACTIVE)
+    ZNSavedNotesListRow.btnDelete.key = ZN.SaveNotesLabel[i]
+    ZNSavedNotesListRow.btnDelete:SetScript("OnClick", function(self) 
+      ZNotes.SavedNotes[self.key] = nil
+      ZN:initSavedNotesList()
+    end)
+    return ZNSavedNotesListRow
+  end
+
+  function ZN:updateSavedNotesRow(i, AnchorFrame, ContentRow)
+    ContentRow:SetPoint("TOP", AnchorFrame, "BOTTOM",0,-2)    
+    ContentRow.btn.ZNText:SetText(ZN.SaveNotesLabel[i]:upper())
   end
 
   --[[ ##############################################################################
@@ -240,12 +306,12 @@ function ZN:initHome()
       ZN:Print("You need to select a Boss Template")
       return
     end
+    local rtnote, zndnote = ZN:PrintNote(ZN.homeSelectedBossTemplate, HomeSidebar.IncludeMissingCheckBox.active, ZN.homeSelectedGroupTemplate)
     if not HomeContent.ShowNoteEditBox:IsShown() then
-      HomeContent.ShowNoteEditBox:Show()
-      HomeContent.ShowNoteEditBox.EditBox.editbox:SetText(ZN:PrintNote(ZN.homeSelectedBossTemplate, HomeSidebar.IncludeMissingCheckBox.active, ZN.homeSelectedGroupTemplate))    
-    else
-      HomeContent.ShowNoteEditBox.EditBox.editbox:SetText(ZN:PrintNote(ZN.homeSelectedBossTemplate, HomeSidebar.IncludeMissingCheckBox.active, ZN.homeSelectedGroupTemplate))    
+      HomeContent.ShowNoteEditBox:Show()   
     end
+    HomeContent.ShowNoteEditBox.EditBox.editbox:SetText(rtnote)    
+    HomeContent.ShowNoteEditBox.EditBox.editbox.znd = zndnote
   end)
 
   HomeSidebar.IncludeMissingCheckBox = ZN:createSquareCheckBox(HomeSidebar, "TOPLEFT", HomeSidebar.GroupTemplateSelectButton, "BOTTOMLEFT", 0, -20, "Include Missing Spells", 14, ZN.Colors.ACTIVE, 200, ZNotes.lastTemplates.homeIncludeMissing)
@@ -341,7 +407,8 @@ function ZN:initHome()
     else      
       ZNotes.SavedNotes[name] = {}
       ZNotes.SavedNotes[name]["name"] = name
-      ZNotes.SavedNotes[name]["content"] = HomeContent.ShowNoteEditBox.EditBox.editbox:GetText()
+      ZNotes.SavedNotes[name]["contentrt"] = HomeContent.ShowNoteEditBox.EditBox.editbox:GetText()
+      ZNotes.SavedNotes[name]["contentznd"] = HomeContent.ShowNoteEditBox.EditBox.editbox.znd
       -- Reset Button / SavedVariables / Rebuild Frames
       ZN:DebugPrint("Note Name: "..name)
       ZN:Print("Saved Note as: "..name) 
