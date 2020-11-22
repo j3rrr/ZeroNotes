@@ -38,9 +38,12 @@ function ZN:initHome()
     TODO: contentznd änderungen aus editbox
   --]]
   HomeContent.ShowNoteEditBox.btnSendNote:SetScript("OnClick", function()
-    ZN:DebugPrint(ZNotes.SavedNotes[ZN.LoadedNote].content)
-    local CreatedNote = ZNotes.SavedNotes[ZN.LoadedNote].content:gsub("{count:(%d+)}","")
-    local CreatedZNNote = ZNotes.SavedNotes[ZN.LoadedNote].content
+    --ZN:DebugPrint(ZNotes.SavedNotes[ZN.LoadedNote].content)
+    
+    local CreatedNote = HomeContent.ShowNoteEditBox.EditBox.editbox:GetText():gsub("{count:(%d+)}","")
+    local CreatedZNNote = HomeContent.ShowNoteEditBox.EditBox.editbox:GetText()
+    -- local CreatedNote = ZNotes.SavedNotes[ZN.LoadedNote].content:gsub("{count:(%d+)}","")
+    -- local CreatedZNNote = ZNotes.SavedNotes[ZN.LoadedNote].content
     if not CreatedNote then
       ZN:Print("No note was created. Please check templates and try again.")
       return
