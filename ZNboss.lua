@@ -438,7 +438,7 @@ ZNBodyFrame.Subframes.BossNote.EditBox.editbox:SetScript("OnEnterPressed", funct
     end
     self:ClearFocus()		
   else
-    self:SetText(self:GetText().."\n")
+    self:Insert("\n")
   end
 end)
 

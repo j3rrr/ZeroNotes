@@ -2,7 +2,7 @@
 local _, ZN, L = ...
 
 ZN.Title="Zero Notes"
-ZN.Version="1.0.1"
+ZN.Version="1.1.0"
 
 function ZN:serializeTable(val, name, skipnewlines, depth)
   skipnewlines = skipnewlines or false
@@ -1711,9 +1711,9 @@ ZN.ZeroGroupTemplate = {
     ["spec"] = "fury",
   }, -- [15]
   {
-    ["class"] = "warrior",
+    ["class"] = "priest",
     ["name"] = "Paddy",
-    ["spec"] = "arms",
+    ["spec"] = "shadow",
   }, -- [16]
   {
     ["class"] = "hunter",
