@@ -16,14 +16,15 @@ function ZN:initHome()
   "This addon is designed to automatically create notes, populated with heal / immunity / utility spells, depending on your current raidsetup."
   , "LEFT", "TOP",8)
   HomeContent.HowToTitle = ZN.CreateText(HomeContent, "TOP", HomeContent.MainIntro, "BOTTOM", 680, 30, 0, -20, "Interface\\AddOns\\ZeroNotes\\Media\\Font\\ZNReg.ttf", 18, ZN.Colors.ACTIVE, "How to use", "LEFT", "TOP")
-  HomeContent.Paragraph = ZN.CreateText(HomeContent, "TOP", HomeContent.HowToTitle, "BOTTOM", 680, 250, 0, 0, "Interface\\AddOns\\ZeroNotes\\Media\\Font\\ZNTitle.ttf", 14, ZN.Colors.ACTIVE, 
+  HomeContent.Paragraph = ZN.CreateText(HomeContent, "TOP", HomeContent.HowToTitle, "BOTTOM", 680, 300, 0, 0, "Interface\\AddOns\\ZeroNotes\\Media\\Font\\ZNTitle.ttf", 14, ZN.Colors.ACTIVE, 
   "* Use the editor to set ratings, types, etc for all playerspells, you want to assign during encounters\n"
   .."* Use the editor to create a template for each boss\n"
   .."* Create the note or send it directly to all raidmembers using Exorsus Raid Tools\n\n"
   .."Playerspells with the highest rating will be assigned to the highest priority spells in an encounter first to make sure that all important spells will be covered.\n"
   .."Spells will be blocked when they have been used until they are off cooldown.\n"
   .."If you don't have any more useable spells, there will be a notification in the note.\n"
-  .."Define how many healing cooldowns, utility spells or immunities you want to use each time.\nSee the default template to get an idea.\n"
+  .."Define how many healing cooldowns, utility spells or immunities you want to use each time.\nSee the default template to get an idea.\n\n"
+  .."For 'Count Mode' you still need to set approximate timings when creating a Boss Template, so Cooldowns can be assigned properly"
   , "LEFT", "TOP",8)
   --[[ ##############################################################################
     Raw Note Edit Box
