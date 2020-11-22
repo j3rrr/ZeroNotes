@@ -349,21 +349,62 @@ function ZN:createNoteTemplate(boss)
   if not template then
     ZN:Print("You need to choose a Boss / Raid")
   else
-    for _,spell in ipairs(template) do
-      if spell["trenner"] then
-        table.insert(noteTemplate["spells"], spell)
+    local tIndex, tSort =ZN:indexTrenner(template)
+    local maxPhase=0
+
+    for i=1, #tSort do
+      if template[tIndex[tSort[i-1]]] then
+        template[tIndex[tSort[i]]].time = template[tIndex[tSort[i-1]]].time + template[tIndex[tSort[i-1]]].duration
       else
+        template[tIndex[tSort[i]]].time = 0
+      end
+      table.insert(noteTemplate["spells"], template[tIndex[tSort[i]]])
+
+      if template[tIndex[tSort[i]]].phase ~=0 then
+        for _,spell in ipairs(template) do
+          if not spell["trenner"] and spell.phase == template[tIndex[tSort[i]]].phase then
+            tmp = {}
+            for k = 1, spell["repeatX"] do
+              tmp = table.copy(spell)
+              tmp["time"] = spell["time"]+(spell["repeatAfter"]*(k-1))+template[tIndex[tSort[i]]].time
+              tmp["repeatX"] = nil
+              tmp["repeatAfter"] = nil
+              tmp["counter"] = k
+              table.insert(noteTemplate["spells"], tmp)
+            end      
+          end
+        end
+      end
+    end
+
+    for _,spell in ipairs(template) do
+      if not spell["trenner"] and spell.phase == 0 then
         tmp = {}
         for i = 1, spell["repeatX"] do
           tmp = table.copy(spell)
-          --tmp["need"] = table.copy(spell["need"])
           tmp["time"] = spell["time"]+(spell["repeatAfter"]*(i-1))
           tmp["repeatX"] = nil
           tmp["repeatAfter"] = nil
+          tmp["counter"] = i
           table.insert(noteTemplate["spells"], tmp)
         end      
       end
     end
+    -- for _,spell in ipairs(template) do
+    --   if spell["trenner"] then
+    --     table.insert(noteTemplate["spells"], spell)
+    --   else
+    --     tmp = {}
+    --     for i = 1, spell["repeatX"] do
+    --       tmp = table.copy(spell)
+    --       --tmp["need"] = table.copy(spell["need"])
+    --       tmp["time"] = spell["time"]+(spell["repeatAfter"]*(i-1))
+    --       tmp["repeatX"] = nil
+    --       tmp["repeatAfter"] = nil
+    --       table.insert(noteTemplate["spells"], tmp)
+    --     end      
+    --   end
+    -- end
   end
   return noteTemplate
 end
@@ -400,10 +441,12 @@ function ZN:createRawNote(boss, group)
       if not prioNote["lines"][spell.time]["trenner"]["trenner"] then prioNote["lines"][spell.time]["trenner"]["trenner"] = {} end
       table.insert(prioNote["lines"][spell.time]["trenner"]["trenner"], spell)
     else
+      local playerSpellUsed = {}
       for _,needs in ipairs(spell["need"]) do
         ZN:ShiftSpellRatings(needs,sortedAvailableSpells)
         table.sort(availableSpells["spells"], function(a,b) return a.rating > b.rating or (a.rating == b.rating and a.PlayerName > b.PlayerName)end)
         local spellSet = false
+
         for _,playerSpell in ipairs(sortedAvailableSpells) do
           --for i = 1, table.getn(playerSpell["player"]) do
             if not spellSet then
@@ -416,6 +459,10 @@ function ZN:createRawNote(boss, group)
                   end
                 end
               end
+              if spellUseable and needs.type ~="imun" and not playerSpell.stackable and playerSpellUsed[playerSpell.id] then
+                spellUseable=false
+              end
+
               if spellUseable then
                 --local spellalias = playerSpell["id"].."_"..playerSpell["player"][i]["name"]
                 local spellalias = playerSpell["id"].."_"..playerSpell["PlayerName"]
@@ -423,6 +470,7 @@ function ZN:createRawNote(boss, group)
               end
               if spellUseable then
                 tmpLine.time = spell.time
+                playerSpellUsed[playerSpell.id]=true
                 --tmpLine.player = playerSpell.player[i].name
                 tmpLine.player = playerSpell.PlayerName
                 tmpLine.color = playerSpell.color              
@@ -430,6 +478,7 @@ function ZN:createRawNote(boss, group)
                 tmpLine.playerSpellId = playerSpell.id
                 tmpLine.bossSpellName = spell.name
                 tmpLine.bossSpellId = spell.id
+                tmpLine.counter=spell.counter
                 if not prioNote["lines"][tmpLine.time] then prioNote["lines"][tmpLine.time]={} end
                 if not prioNote["lines"][tmpLine.time][spell.id] then prioNote["lines"][tmpLine.time][spell.id] = {} end
                 if not prioNote["lines"][tmpLine.time][spell.id][playerSpell["type"]] then prioNote["lines"][tmpLine.time][spell.id][playerSpell["type"]] = {} end
@@ -467,12 +516,15 @@ function ZN:PrintNote(boss, inclMissing, group)
 
 
   local rtNote = ""
+  local znNote = ""
   if rawNoteData.bossid then
     rtNote = "{id:"..rawNoteData.bossid.."}"
+    znNote = "{id:"..rawNoteData.bossid.."}"
   end
   local missingNote = "Missing:"
   local linesTimes={}
   local missingTimes={}
+
 
   for k,v in pairs(rawNoteData["lines"]) do 
     table.insert(linesTimes,k)
@@ -485,12 +537,14 @@ function ZN:PrintNote(boss, inclMissing, group)
   table.sort(missingTimes, function(a,b) return a < b end)
   
   for k=1, #linesTimes do
+
     local currTime = rawNoteData["lines"][linesTimes[k]]
     for _,bossSpell in pairs(currTime) do
       if bossSpell.trenner then
         for _,trenner in ipairs(bossSpell.trenner) do
           local convertedTime = ZN:SecondsToClock(trenner["time"])
-          rtNote = rtNote.."\n\n{time:"..convertedTime.."} "..trenner["raidicon"].." ||cffff00ff"..trenner["text"].."||r "..trenner["raidicon"]
+          rtNote = rtNote.."\n \n{time:"..convertedTime.."} "..trenner["raidicon"].." ||cffff00ff"..trenner["text"].."||r "..trenner["raidicon"]
+          znNote = znNote.."\n \n{time:"..convertedTime.."} "..trenner["raidicon"].." ||cffff00ff"..trenner["text"].."||r "..trenner["raidicon"]
         end
       end
       local lineInit = false
@@ -499,9 +553,11 @@ function ZN:PrintNote(boss, inclMissing, group)
           if not lineInit then
             local convertedTime = ZN:SecondsToClock(spell["time"])
             rtNote = rtNote.."\n{time:"..convertedTime.."} {spell:"..spell["bossSpellId"].."} -"
+            znNote = znNote.."\n{time:"..convertedTime.."}{count:"..spell["counter"].."} {spell:"..spell["bossSpellId"].."} -"
             lineInit=true
           end
           rtNote = rtNote.." ||cff"..spell["color"]..spell["player"].."||r{spell:"..spell["playerSpellId"].."}"
+          znNote = znNote.." ||cff"..spell["color"]..spell["player"].."||r{spell:"..spell["playerSpellId"].."}"
         end
       end
       if bossSpell.util then
@@ -509,9 +565,11 @@ function ZN:PrintNote(boss, inclMissing, group)
           if not lineInit then
             local convertedTime = ZN:SecondsToClock(spell["time"])
             rtNote = rtNote.."\n{time:"..convertedTime.."} {spell:"..spell["bossSpellId"].."} -"
+            znNote = znNote.."\n{time:"..convertedTime.."}{count:"..spell["counter"].."} {spell:"..spell["bossSpellId"].."} -"
             lineInit=true
           end
           rtNote = rtNote.." ||cff"..spell["color"]..spell["player"].."||r{spell:"..spell["playerSpellId"].."}"
+          znNote = znNote.." ||cff"..spell["color"]..spell["player"].."||r{spell:"..spell["playerSpellId"].."}"
         end
       end
       if bossSpell.imun then
@@ -519,9 +577,11 @@ function ZN:PrintNote(boss, inclMissing, group)
           if not lineInit then
             local convertedTime = ZN:SecondsToClock(spell["time"])
             rtNote = rtNote.."\n{time:"..convertedTime.."} {spell:"..spell["bossSpellId"].."} -"
+            znNote = znNote.."\n{time:"..convertedTime.."}{count:"..spell["counter"].."} {spell:"..spell["bossSpellId"].."} -"
             lineInit=true
           end
           rtNote = rtNote.." ||cff"..spell["color"]..spell["player"].."||r{spell:"..spell["playerSpellId"].."}"
+          znNote = znNote.." ||cff"..spell["color"]..spell["player"].."||r{spell:"..spell["playerSpellId"].."}"
         end
       end
     end
@@ -558,35 +618,17 @@ function ZN:PrintNote(boss, inclMissing, group)
     end
   end
 
-  -- for k = 1, table.getn(rawNoteData["lines"]) do
-  --   if rawNoteData["lines"][k]["trenner"] then
-  --     local convertedTime = ZN:SecondsToClock(rawNoteData["lines"][k]["time"])
-  --     rtNote = rtNote.."\n\n{time:"..convertedTime.."} "..rawNoteData["lines"][k]["raidicon"].." ||cffff00ff"..rawNoteData["lines"][k]["text"].."||r "..rawNoteData["lines"][k]["raidicon"]
-  --   --goto continue
-  --   else
-  --     if rawNoteData["lines"][k]["missing"] then
-  --       local convertedTime = ZN:SecondsToClock(rawNoteData["lines"][k]["time"])
-  --       missingNote = missingNote.."\n{time:"..convertedTime.."} {spell:"..rawNoteData["lines"][k]["bossSpellId"].."} -"..rawNoteData["lines"][k]["missing"].." "
-  --     --goto continue
-  --     else
-  --       if (k == 1 or (k > 1 and rawNoteData["lines"][k-1]["missing"]) or ( k > 1 and (rawNoteData["lines"][k]["time"] ~= rawNoteData["lines"][k-1]["time"] or 
-  --       rawNoteData["lines"][k]["bossSpellId"] ~= rawNoteData["lines"][k-1]["bossSpellId"]))) then
-  --         local convertedTime = ZN:SecondsToClock(rawNoteData["lines"][k]["time"])
-  --         rtNote = rtNote.."\n{time:"..convertedTime.."} {spell:"..rawNoteData["lines"][k]["bossSpellId"].."} -"
-  --       end
-  --       rtNote = rtNote.." ||cff"..rawNoteData["lines"][k]["color"]..rawNoteData["lines"][k]["player"].."||r{spell:"..rawNoteData["lines"][k]["playerSpellId"].."}"
-  --       --::continue::
-  --     end
-  --   end
-  -- end  
 
   if ZNotes.BossTemplates[boss].NoteEnd then
-    rtNote = rtNote .. "\n\n" .. ZNotes.BossTemplates[boss].NoteEnd
+    rtNote = rtNote .. "\n \n" .. ZNotes.BossTemplates[boss].NoteEnd
+    znNote = znNote .. "\n \n" .. ZNotes.BossTemplates[boss].NoteEnd
   end
 
   if  inclMissing == true then
     if missingNote =="Missing:" then missingNote=missingNote.."\nNo unassigned spells!" end
-    rtNote = rtNote .. "\n\n\n" .. missingNote
+    rtNote = rtNote .. "\n \n \n" .. missingNote
+    znNote = znNote .. "\n \n \n" .. missingNote
   end
-  return rtNote
+  
+  return rtNote, znNote
 end

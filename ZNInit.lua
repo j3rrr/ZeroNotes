@@ -2,7 +2,7 @@
 local _, ZN, L = ...
 
 ZN.Title="Zero Notes"
-ZN.Version="1.0"
+ZN.Version="1.1.0"
 
 function ZN:serializeTable(val, name, skipnewlines, depth)
   skipnewlines = skipnewlines or false
@@ -113,6 +113,7 @@ ZN.encounter_list = ""
 ZN.zoneId_list = ""
 ZN.zoneGroupId_list = ""
 
+-- code largely adapted from WeakAuras https://www.curseforge.com/wow/addons/weakauras-2
 function ZN:getEncounterIDs()
   --print(string.len(ZN.encounter_list))
   if ZN.encounter_list ~= "" and string.len(ZN.encounter_list)>10 then
@@ -327,8 +328,15 @@ function ZN.initLastTemplates()
   ZNotes.lastTemplates = ZNotes.lastTemplates or {
     ["lastGroupTemplate"] = "sample group",
     ["lastBossTemplate"] = "sampleboss",
+    ["homeLastGroupTemplate"] = "sample group",
+    ["homeLastBossTemplate"] = "sampleboss",
+    ["homeIncludeMissing"] = true,
+    ["homeSendToExRT"] = true,
+    ["homeSendToZND"] = true,
   }
   ZN.selectedGroupTemplate = ZNotes.lastTemplates.lastGroupTemplate
+  ZN.homeSelectedBossTemplate = ZNotes.lastTemplates.homeLastBossTemplate
+  ZN.homeSelectedGroupTemplate = ZNotes.lastTemplates.homeLastGroupTemplate
 end
 
 ZN.DefaultPlayerSpells={
@@ -336,386 +344,402 @@ ZN.DefaultPlayerSpells={
     ["type"] = "heal",
     ["id"] = 81782,
     ["class"] = "diszi",
+    ["stackable"] = true,
     ["role"] = "heal",
-    ["cd"] = 180,
+    ["name"] = "barrier",
     ["color"] = "ffffff",
     ["aoe"] = true,
     ["rating"] = 490,
     ["station"] = true,
-    ["name"] = "barrier",
+    ["cd"] = 180,
   }, -- [1]
   {
     ["type"] = "heal",
     ["id"] = 47536,
     ["class"] = "diszi",
+    ["stackable"] = true,
     ["role"] = "heal",
-    ["cd"] = 90,
+    ["name"] = "rapture",
     ["color"] = "ffffff",
     ["aoe"] = true,
     ["rating"] = 430,
     ["station"] = false,
-    ["name"] = "rapture",
+    ["cd"] = 90,
   }, -- [2]
   {
     ["type"] = "heal",
     ["id"] = 246287,
     ["class"] = "diszi",
+    ["stackable"] = true,
     ["role"] = "heal",
-    ["cd"] = 90,
+    ["name"] = "evang",
     ["color"] = "ffffff",
     ["aoe"] = true,
     ["rating"] = 420,
     ["station"] = false,
-    ["name"] = "evang",
+    ["cd"] = 90,
   }, -- [3]
   {
     ["type"] = "util",
     ["id"] = 33206,
     ["class"] = "diszi",
     ["role"] = "heal",
-    ["cd"] = 180,
+    ["name"] = "painsup",
     ["color"] = "ffffff",
     ["aoe"] = false,
     ["rating"] = 370,
     ["station"] = false,
-    ["name"] = "painsup",
+    ["cd"] = 180,
   }, -- [4]
   {
     ["type"] = "heal",
     ["id"] = 740,
     ["class"] = "druid",
+    ["stackable"] = true,
     ["role"] = "heal",
-    ["cd"] = 180,
+    ["name"] = "tranq",
     ["color"] = "ff7d0a",
     ["aoe"] = true,
     ["rating"] = 460,
     ["station"] = true,
-    ["name"] = "tranq",
+    ["cd"] = 180,
   }, -- [5]
   {
     ["type"] = "heal",
     ["id"] = 33891,
     ["class"] = "druid",
+    ["stackable"] = true,
     ["role"] = "heal",
-    ["cd"] = 180,
+    ["name"] = "tree",
     ["color"] = "ff7d0a",
     ["aoe"] = true,
     ["rating"] = 400,
     ["station"] = false,
-    ["name"] = "tree",
+    ["cd"] = 180,
   }, -- [6]
   {
     ["type"] = "util",
     ["id"] = 102342,
     ["class"] = "druid",
     ["role"] = "heal",
-    ["cd"] = 60,
+    ["name"] = "ironbark",
     ["color"] = "ff7d0a",
     ["aoe"] = false,
     ["rating"] = 350,
     ["station"] = false,
-    ["name"] = "ironbark",
+    ["cd"] = 60,
   }, -- [7]
   {
     ["type"] = "heal",
     ["id"] = 98008,
     ["class"] = "shaman",
     ["role"] = "heal",
-    ["cd"] = 180,
+    ["name"] = "slink",
     ["color"] = "0070de",
     ["aoe"] = true,
     ["rating"] = 480,
     ["station"] = true,
-    ["name"] = "slink",
+    ["cd"] = 180,
   }, -- [8]
   {
     ["type"] = "heal",
     ["id"] = 198838,
     ["class"] = "shaman",
+    ["stackable"] = true,
     ["role"] = "heal",
-    ["cd"] = 60,
+    ["name"] = "wall",
     ["color"] = "0070de",
     ["aoe"] = true,
     ["rating"] = 380,
     ["station"] = true,
-    ["name"] = "wall",
+    ["cd"] = 60,
   }, -- [9]
   {
     ["type"] = "heal",
     ["id"] = 108280,
     ["class"] = "shaman",
+    ["stackable"] = true,
     ["role"] = "heal",
-    ["cd"] = 180,
+    ["name"] = "htide",
     ["color"] = "0070de",
     ["aoe"] = true,
     ["rating"] = 450,
     ["station"] = false,
-    ["name"] = "htide",
+    ["cd"] = 180,
   }, -- [10]
   {
     ["type"] = "heal",
     ["id"] = 115310,
     ["class"] = "monk",
+    ["stackable"] = true,
     ["role"] = "heal",
-    ["cd"] = 180,
+    ["name"] = "revival",
     ["color"] = "00ff96",
     ["aoe"] = true,
     ["rating"] = 390,
     ["station"] = false,
-    ["name"] = "revival",
+    ["cd"] = 180,
   }, -- [11]
   {
     ["type"] = "util",
     ["id"] = 116849,
     ["class"] = "monk",
     ["role"] = "heal",
-    ["cd"] = 120,
+    ["name"] = "cocoon",
     ["color"] = "00ff96",
     ["aoe"] = false,
     ["rating"] = 340,
     ["station"] = false,
-    ["name"] = "cocoon",
+    ["cd"] = 120,
   }, -- [12]
   {
     ["type"] = "heal",
     ["id"] = 64843,
     ["class"] = "priest",
+    ["stackable"] = true,
     ["role"] = "heal",
-    ["cd"] = 180,
+    ["name"] = "hymne",
     ["color"] = "ffffff",
     ["aoe"] = true,
     ["rating"] = 470,
     ["station"] = true,
-    ["name"] = "hymne",
+    ["cd"] = 180,
   }, -- [13]
   {
     ["type"] = "heal",
     ["id"] = 265202,
     ["class"] = "priest",
+    ["stackable"] = true,
     ["role"] = "heal",
-    ["cd"] = 720,
+    ["name"] = "salvation",
     ["color"] = "ffffff",
     ["aoe"] = true,
     ["rating"] = 440,
     ["station"] = false,
-    ["name"] = "salvation",
+    ["cd"] = 720,
   }, -- [14]
   {
     ["type"] = "util",
     ["id"] = 47788,
     ["class"] = "priest",
     ["role"] = "heal",
-    ["cd"] = 180,
+    ["name"] = "engel",
     ["color"] = "ffffff",
     ["aoe"] = false,
     ["rating"] = 360,
     ["station"] = false,
-    ["name"] = "engel",
+    ["cd"] = 180,
   }, -- [15]
   {
     ["type"] = "heal",
     ["id"] = 31821,
     ["class"] = "paladin",
+    ["stackable"] = true,
     ["role"] = "heal",
-    ["cd"] = 180,
+    ["name"] = "mastery",
     ["color"] = "f58cba",
     ["aoe"] = true,
     ["rating"] = 500,
     ["station"] = false,
-    ["name"] = "mastery",
+    ["cd"] = 180,
   }, -- [16]
   {
     ["type"] = "heal",
     ["id"] = 31884,
     ["class"] = "paladin",
+    ["stackable"] = true,
     ["role"] = "heal",
-    ["cd"] = 180,
+    ["name"] = "wings",
     ["color"] = "f58cba",
     ["aoe"] = true,
     ["rating"] = 410,
     ["station"] = false,
-    ["name"] = "wings",
+    ["cd"] = 180,
   }, -- [17]
   {
     ["type"] = "util",
     ["id"] = 6940,
     ["class"] = "paladin",
     ["role"] = "heal",
-    ["cd"] = 300,
+    ["name"] = "sacrifice",
     ["color"] = "f58cba",
     ["aoe"] = false,
     ["rating"] = 300,
     ["station"] = false,
-    ["name"] = "sacrifice",
+    ["cd"] = 300,
   }, -- [18]
   {
     ["type"] = "imun",
     ["id"] = 642,
     ["class"] = "paladin",
     ["role"] = "heal",
-    ["cd"] = 300,
+    ["name"] = "bubble",
     ["color"] = "f58cba",
     ["aoe"] = false,
     ["rating"] = 270,
     ["station"] = false,
-    ["name"] = "bubble",
+    ["cd"] = 300,
   }, -- [19]
   {
     ["type"] = "util",
     ["id"] = 97462,
     ["class"] = "warrior",
     ["role"] = "melee",
-    ["cd"] = 180,
+    ["name"] = "rally",
     ["color"] = "c79c6e",
     ["aoe"] = true,
     ["rating"] = 330,
     ["station"] = false,
-    ["name"] = "rally",
+    ["cd"] = 180,
   }, -- [20]
   {
     ["type"] = "imun",
     ["id"] = 642,
     ["class"] = "paladin",
     ["role"] = "melee",
-    ["cd"] = 300,
+    ["name"] = "bubble",
     ["color"] = "c79c6e",
     ["aoe"] = false,
     ["rating"] = 270,
     ["station"] = false,
-    ["name"] = "bubble",
+    ["cd"] = 300,
   }, -- [21]
   {
     ["type"] = "util",
     ["id"] = 196718,
     ["class"] = "dh",
+    ["stackable"] = true,
     ["role"] = "melee",
-    ["cd"] = 180,
+    ["name"] = "darkness",
     ["color"] = "a330c9",
     ["aoe"] = true,
     ["rating"] = 310,
     ["station"] = true,
-    ["name"] = "darkness",
+    ["cd"] = 180,
   }, -- [22]
   {
     ["type"] = "imun",
     ["id"] = 31224,
     ["class"] = "rogue",
     ["role"] = "melee",
-    ["cd"] = 120,
+    ["name"] = "cloak",
     ["color"] = "fff569",
     ["aoe"] = false,
     ["rating"] = 260,
     ["station"] = false,
-    ["name"] = "cloak",
+    ["cd"] = 120,
   }, -- [23]
   {
     ["type"] = "util",
     ["id"] = 51052,
     ["class"] = "dk",
+    ["stackable"] = true,
     ["role"] = "melee",
-    ["cd"] = 120,
+    ["name"] = "amz",
     ["color"] = "c41f3b",
     ["aoe"] = true,
     ["rating"] = 320,
     ["station"] = true,
-    ["name"] = "amz",
+    ["cd"] = 120,
   }, -- [24]
   {
     ["type"] = "util",
     ["id"] = 15286,
     ["class"] = "shadow",
+    ["stackable"] = true,
     ["role"] = "range",
-    ["cd"] = 180,
+    ["name"] = "vamp",
     ["color"] = "ffffff",
     ["aoe"] = true,
     ["rating"] = 290,
     ["station"] = false,
-    ["name"] = "vamp",
-  }, -- [27]
+    ["cd"] = 180,
+  }, -- [25]
   {
     ["type"] = "imun",
     ["id"] = 186265,
     ["class"] = "hunter",
     ["role"] = "range",
-    ["cd"] = 180,
+    ["name"] = "turtle",
     ["color"] = "abd473",
     ["aoe"] = false,
     ["rating"] = 280,
     ["station"] = false,
-    ["name"] = "turtle",
-  }, -- [28]
+    ["cd"] = 180,
+  }, -- [26]
   {
     ["type"] = "imun",
     ["id"] = 45438,
     ["class"] = "mage",
     ["role"] = "range",
-    ["cd"] = 240,
+    ["name"] = "iceblock",
     ["color"] = "f58cba",
     ["aoe"] = false,
     ["rating"] = 250,
     ["station"] = true,
-    ["name"] = "iceblock",
-  }, -- [29]
+    ["cd"] = 240,
+  }, -- [27]
   {
     ["type"] = "util",
     ["id"] = 97462,
     ["class"] = "warrior",
     ["role"] = "tank",
-    ["cd"] = 180,
+    ["name"] = "rally",
     ["color"] = "c79c6e",
     ["aoe"] = true,
     ["rating"] = 330,
     ["station"] = false,
-    ["name"] = "rally",
-  }, -- [30]
+    ["cd"] = 180,
+  }, -- [28]
   {
     ["type"] = "util",
     ["id"] = 6940,
     ["class"] = "paladin",
     ["role"] = "tank",
-    ["cd"] = 300,
+    ["name"] = "sacrifice",
     ["color"] = "c79c6e",
     ["aoe"] = false,
     ["rating"] = 300,
     ["station"] = false,
-    ["name"] = "sacrifice",
-  },
+    ["cd"] = 300,
+  }, -- [29]
   {
     ["type"] = "util",
     ["id"] = 6940,
     ["class"] = "paladin",
     ["role"] = "melee",
-    ["cd"] = 300,
+    ["name"] = "sacrifice",
     ["color"] = "c79c6e",
     ["aoe"] = false,
     ["rating"] = 300,
     ["station"] = false,
-    ["name"] = "sacrifice",
-  },
+    ["cd"] = 300,
+  }, -- [30]
   {
     ["type"] = "imun",
     ["id"] = 642,
     ["class"] = "paladin",
     ["role"] = "tank",
-    ["cd"] = 300,
+    ["name"] = "bubble",
     ["color"] = "c79c6e",
     ["aoe"] = false,
     ["rating"] = 270,
     ["station"] = false,
-    ["name"] = "bubble",
-  }, -- [32]
+    ["cd"] = 300,
+  }, -- [31]
   {
     ["type"] = "util",
     ["id"] = 51052,
     ["class"] = "dk",
+    ["stackable"] = true,
     ["role"] = "tank",
-    ["cd"] = 120,
+    ["name"] = "amz",
     ["color"] = "c41f3b",
     ["aoe"] = true,
     ["rating"] = 320,
     ["station"] = true,
-    ["name"] = "amz",
-  }, -- [33]
+    ["cd"] = 120,
+  }, -- [32]
 }
 
 function ZN.initPlayerSpells()
@@ -726,94 +750,163 @@ function ZN.initPlayerSpells()
       ZNotes.PlayerSpells[i][k]=v
     end
   end
-
+  ZNotes.PlayerSpellsMigrated = true
 end
 
 function ZN.initBossTemplates()
-ZNotes.BossTemplates = ZNotes.BossTemplates or {
-  ["sampleboss"] = {
-    ["bossid"] = "1234",
-    {
-      ["name"]= "Charge",
-      ["id"]= "100",
-      ["time"]= 20,
-      ["prio"]= 1,    
-      ["station"]= false,
-      ["need"]= {
-        {
-          ["type"]= "heal",
-          ["ratingOverwrite"] = {
-            ["monk"] = 9000
-          }
-        },
-        {
-          ["type"]= "imun",
-          ["ratingOverwrite"] = {
-            ["tankpaladin"] = 9000
-          }
-        },
-        {
-          ["type"]= "util",
-          ["ratingOverwrite"] = {
-            ["range"] = 9000
-          }
-        }
-      },
-      ["aoe"]= false,
-      ["repeatX"]= 4,
-      ["repeatAfter"]= 40
-    },
-    {
-      ["name"]= "Execute",
-      ["id"]= "163201",
-      ["time"]= 35,
-      ["prio"]= 2,    
-      ["station"]= true,
-      ["need"]= {
-        {
-          ["type"]= "heal"
-        },
-        {
-          ["type"]= "util"
-        }
-      },
-      ["aoe"]= true,
-      ["repeatX"]= 2,
-      ["repeatAfter"]= 60
-    },
-    {
-      ["name"]= "Heroic Leap",
-      ["id"]= "6544",
-      ["time"]= 125,
-      ["prio"]= 3,    
-      ["station"]= true,
-      ["need"]= {
-        {
-          ["type"]= "imun"
-        },
-        {
-          ["type"]= "imun"
-        }
-      },
-      ["aoe"]= true,
-      ["repeatX"]= 2,
-      ["repeatAfter"]= 30
-    },
-    {
-      ["text"]= "Phase 1",
-      ["time"]= 0,
-      ["prio"]= 9000,
-      ["trenner"]= true,
-      ["raidicon"]= "{rt1}"
-    },
-      {
-      ["text"]= "Phase 2",
-      ["time"]= 110,
-      ["prio"]= 9000,
-      ["trenner"]= true,
-      ["raidicon"]= "{rt8}"
-    },
-  }
+  if ZNotes.BossTemplates and not ZNotes.BossTemplatesMigrated then
+    for k,v in pairs(ZNotes.BossTemplates) do
+      local BossTrennerIndex={}
+      local spellI=1
+      for i=1, #v do
+          if v[i].trenner then
+              BossTrennerIndex[spellI]=i
+              spellI = spellI + 1
+          end
+      end
+
+      local BossTrennerSortArray={}
+      for i=1, #BossTrennerIndex do
+        BossTrennerSortArray[i]=i
+      end
+
+      for k=1,#BossTrennerIndex do
+        for i=1,#BossTrennerIndex do
+          local pivot = v[BossTrennerIndex[BossTrennerSortArray[i]]]["time"]
+          for j=i+1,#BossTrennerIndex do
+            local comp = v[BossTrennerIndex[BossTrennerSortArray[j]]]["time"]
+            if  type(comp)=="number"  and comp<pivot then
+              local saveUnit = BossTrennerSortArray[i]
+              BossTrennerSortArray[i] = BossTrennerSortArray[j]
+              BossTrennerSortArray[j] = saveUnit
+            end
+          end 
+        end 
+      end 
+
+      for i=1, #BossTrennerSortArray do
+        v[BossTrennerIndex[BossTrennerSortArray[i]]].phase=i
+        v[BossTrennerIndex[BossTrennerSortArray[i]]].no=i
+        if v[BossTrennerIndex[BossTrennerSortArray[i+1]]] then
+          v[BossTrennerIndex[BossTrennerSortArray[i]]].duration = v[BossTrennerIndex[BossTrennerSortArray[i+1]]].time - v[BossTrennerIndex[BossTrennerSortArray[i]]].time
+        else
+          v[BossTrennerIndex[BossTrennerSortArray[i]]].duration = 0
+        end
+        v[BossTrennerIndex[BossTrennerSortArray[i]]].time=0
+      end
+
+      for i=1, #v do
+        if not v[i].trenner then
+          v[i].phase=0
+        end
+      end
+    end
+
+    ZNotes.BossTemplatesMigrated = true
+  end
+  ZNotes.BossTemplates = ZNotes.BossTemplates or {
+    ["sampleboss"] = {
+			{
+				["repeatAfter"] = 20,
+				["id"] = "100",
+				["need"] = {
+					{
+						["ratingOverwrite"] = {
+							["monk"] = 9000,
+						},
+						["type"] = "heal",
+					}, -- [1]
+					{
+						["ratingOverwrite"] = {
+							["tankpaladin"] = 9000,
+						},
+						["type"] = "imun",
+					}, -- [2]
+					{
+						["ratingOverwrite"] = {
+							["range"] = 9000,
+						},
+						["type"] = "util",
+					}, -- [3]
+				},
+				["repeatX"] = 3,
+				["prio"] = 1,
+				["name"] = "Charge",
+				["aoe"] = false,
+				["phase"] = 1,
+				["station"] = false,
+				["time"] = 20,
+			}, -- [1]
+			{
+				["repeatAfter"] = 0,
+				["id"] = "163201",
+				["need"] = {
+					{
+						["type"] = "heal",
+					}, -- [1]
+					{
+						["type"] = "util",
+					}, -- [2]
+				},
+				["repeatX"] = 1,
+				["prio"] = 2,
+				["name"] = "Execute",
+				["aoe"] = true,
+				["phase"] = 2,
+				["station"] = true,
+				["time"] = 5,
+			}, -- [2]
+			{
+				["repeatAfter"] = 0,
+				["id"] = "6544",
+				["need"] = {
+					{
+						["type"] = "imun",
+					}, -- [1]
+					{
+						["type"] = "imun",
+					}, -- [2]
+				},
+				["repeatX"] = 1,
+				["prio"] = 3,
+				["name"] = "Heroic Leap",
+				["aoe"] = true,
+				["phase"] = 2,
+				["station"] = true,
+				["time"] = 20,
+			}, -- [3]
+			{
+				["trenner"] = true,
+				["prio"] = 9000,
+				["time"] = 0,
+				["no"] = 1,
+				["phase"] = 1,
+				["text"] = "Phase 1",
+				["duration"] = 70,
+				["raidicon"] = "{rt1}",
+			}, -- [4]
+			{
+				["trenner"] = true,
+				["prio"] = 9000,
+				["time"] = 70,
+				["no"] = 2,
+				["phase"] = 2,
+				["text"] = "Phase 2",
+				["duration"] = 30,
+				["raidicon"] = "{rt8}",
+			}, -- [5]
+			{
+				["trenner"] = true,
+				["prio"] = 9000,
+				["time"] = 100,
+				["phase"] = 1,
+				["no"] = 3,
+				["text"] = "Phase 1",
+				["duration"] = 0,
+				["raidicon"] = "{rt1}",
+			}, -- [6]
+			["bossid"] = "1234",
+		}
 }
 end
 
@@ -859,6 +952,9 @@ ZNotes.GroupTemplates = ZNotes.GroupTemplates or {
   }
 }
 end
+
+function ZN.initSavedNotes()
+ZNotes.SavedNotes = ZNotes.SavedNotes or {} end
 
 ZN.SpecNames = {
   -- Death Knight
@@ -1241,8 +1337,9 @@ ZN.PlayerTableColumns = {
   ["role"] = 100,
   ["class"] = 40,
   ["spellid"] = 110,
-  ["spellname"] = 300,
+  ["spellname"] = 230,
   ["spelltype"] = 130,
+  ["stackable"] = 70,
   ["aoe"] = 50,
   ["station"] = 50,
   ["spellcd"] = 50,
@@ -1256,6 +1353,7 @@ ZN.PlayerTableColumnHeaders = {
   "spellid",
   "spellname",
   "spelltype",
+  "stackable",
   "aoe",
   "station",
   "spellcd",
@@ -1266,6 +1364,10 @@ ZN.HeadersToolTips = {
   ["playeraoe"] = {
     ["tooltip"] = true,
     ["text"] = "Utility only\n\nSet to |cff"..ZN.Colors.chatGuild.."true|r if your spell is AoE\ne.g. Rallying Cry\n\nSet to |cff"..ZN.Colors.chatYell.."false|r if your spell is single target\ne.g. Pain Suppression"
+  },
+  ["playerstackable"] = {
+    ["tooltip"] = true,
+    ["text"] = "Set to |cff"..ZN.Colors.chatGuild.."true|r if different players can use the same spell at the same time.\n\nSet to |cff"..ZN.Colors.chatYell.."false|r if only one player should use this CD\ne.g. Rallying Cry"
   },
   ["playerstation"] = {
     ["tooltip"] = true,
@@ -1315,6 +1417,14 @@ ZN.HeadersToolTips = {
     ["tooltip"] = true,
     ["text"] = "|cff"..ZN.Colors.itemHeirloom.."Advanced|r\nOverwrite settings to force specific cooldowns"
   },
+  ["trennerno"] = {
+    ["tooltip"] = true,
+    ["text"] = "Phase order in which phases will occur"
+  },
+  ["trennerphase"] = {
+    ["tooltip"] = true,
+    ["text"] = "ID of the phase. Spells with the same phase assigned will automatically appear as member of this phase"
+  },
 }
 
 ZN.PlayerTableColumnHeaderNames = {
@@ -1323,6 +1433,7 @@ ZN.PlayerTableColumnHeaderNames = {
   ["spellid"] = "ID",
   ["spellname"] = "Spellname",
   ["spelltype"] = "Type",
+  ["stackable"] = "Stackable",
   ["aoe"] = "AOE",
   ["station"] = "Station",
   ["spellcd"] = "CD",
@@ -1336,27 +1447,29 @@ ZN.PlayerAttributeMapping = {
   ["spellid"] = "id",
   ["spellname"] = "name",
   ["spelltype"] = "type",
+  ["stackable"] = "stackable",
   ["aoe"] = "aoe",
   ["station"] = "station",
   ["spellcd"] = "cd",
   ["spellrating"] = "rating",
 }
 
-ZN.PlayerTableColumnButtonTypes = {
-  ["role"] = "GenericButton",
-  ["class"] = "GenericButton",
-  ["spellid"] = "SingleLineEditBox",
-  ["spellname"] = "SingleLineEditBox",
-  ["spelltype"] = "GenericButton",
-  ["aoe"] = "IconButton",
-  ["station"] = "IconButton",
-  ["spellcd"] = "SingleLineEditBox",
-  ["spellrating"] = "SingleLineEditBox",
-  ["delete"] = "IconButton",
-}
+-- ZN.PlayerTableColumnButtonTypes = {
+--   ["role"] = "GenericButton",
+--   ["class"] = "GenericButton",
+--   ["spellid"] = "SingleLineEditBox",
+--   ["spellname"] = "SingleLineEditBox",
+--   ["spelltype"] = "GenericButton",
+--   ["aoe"] = "IconButton",
+--   ["station"] = "IconButton",
+--   ["spellcd"] = "SingleLineEditBox",
+--   ["spellrating"] = "SingleLineEditBox",
+--   ["delete"] = "IconButton",
+-- }
 
 ZN.PlayerTableIconButton = {
-  ["aoe"]= {["size"]= 16, ["xOffset"]=17, ["type"]="checkBox"},
+  ["stackable"]= {["size"]= 16, ["xOffset"]=27, ["type"]="checkBox"},
+  ["aoe"]= {["size"]= 16, ["xOffset"]=44, ["type"]="checkBox"},
   ["station"]= {["size"]= 16, ["xOffset"]=34, ["type"]="checkBox"},
   ["delete"]= {["size"]= 16, ["xOffset"]=17, ["type"]="delete", ["texture"]="Interface\\AddOns\\ZeroNotes\\Media\\Texture\\delete2"},
   ["square"]= {["size"]= 40, ["xOffset"]=0, ["type"]="square", ["texture"]="Interface\\AddOns\\ZeroNotes\\Media\\Texture\\square"}
@@ -1367,6 +1480,13 @@ ZN.CheckBoxTextures = {
   ["checkedColor"] = ZN.Colors.hunter,
   ["unchecked"] = "Interface\\AddOns\\ZeroNotes\\Media\\Texture\\x_big_active",
   ["uncheckedColor"] = ZN.Colors.dk,
+}
+
+ZN.SquareCheckBoxTextures = {
+  ["checked"] = "Interface\\AddOns\\ZeroNotes\\Media\\Texture\\check_true",
+  ["checkedColor"] = ZN.Colors.ACTIVE,
+  ["unchecked"] = "Interface\\AddOns\\ZeroNotes\\Media\\Texture\\check_false",
+  ["uncheckedColor"] = ZN.Colors.INACTIVE,
 }
 
 ZN.PlayerTableRows = {
@@ -1607,9 +1727,9 @@ ZN.ZeroGroupTemplate = {
     ["spec"] = "fury",
   }, -- [15]
   {
-    ["class"] = "warrior",
+    ["class"] = "priest",
     ["name"] = "Paddy",
-    ["spec"] = "arms",
+    ["spec"] = "shadow",
   }, -- [16]
   {
     ["class"] = "hunter",

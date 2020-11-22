@@ -514,3 +514,34 @@ function ZN:CreateIconDropdown(parentObj, list, order, width, dropDownBgColor, b
 
 	parentObj.dropdown:SetShown(not wasShown);
 end
+
+function ZN:indexTrenner(template)
+	local BossTrennerIndex={}
+    local spellI=1
+    for i=1, #template do
+        if template[i].trenner then
+            BossTrennerIndex[spellI]=i
+            spellI = spellI + 1
+        end
+    end
+
+    local BossTrennerSortArray={}
+    for i=1, #BossTrennerIndex do
+      BossTrennerSortArray[i]=i
+    end
+
+    for k=1,#BossTrennerIndex do
+      for i=1,#BossTrennerIndex do
+        local pivot = template[BossTrennerIndex[BossTrennerSortArray[i]]]["no"]
+        for j=i+1,#BossTrennerIndex do
+          local comp = template[BossTrennerIndex[BossTrennerSortArray[j]]]["no"]
+          if  type(comp)=="number"  and comp<pivot then
+            local saveUnit = BossTrennerSortArray[i]
+            BossTrennerSortArray[i] = BossTrennerSortArray[j]
+            BossTrennerSortArray[j] = saveUnit
+          end
+        end 
+      end 
+	end 
+	return BossTrennerIndex, BossTrennerSortArray
+end

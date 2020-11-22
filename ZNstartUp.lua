@@ -7,7 +7,7 @@ local function onUILoad(text)
     if ZNLoaded then
       ZNotes = ZNotes or {}
       ZN.initMinimapButton()
-      if not ZNotes.PlayerSpells then
+      if not ZNotes.PlayerSpells or not ZNotes.PlayerSpellsMigrated then
         ZN.initPlayerSpells()
       end
       if not ZNotes.DebugMode then
@@ -17,6 +17,8 @@ local function onUILoad(text)
       ZN.initBossTemplates()
       ZN.initGroupTemplates()
       ZN.initLastTemplates()
+      ZN.initSavedNotes()
+      ZN:initHome()
       ZN:createGroupTemplateFrames()
       ZN:Config()
       if ZNotes.DebugMode then

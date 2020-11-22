@@ -45,14 +45,38 @@ function ZN:createPreviewTemplateTable(arr)
   if not template then
     UIErrorsFrame:AddMessage("You need to choose a Template", 0.8, 0.07, 0.2, 5.0)
   else
-    for _,spell in ipairs(template) do
-      if spell["trenner"] then
-        table.insert(noteTemplate["spells"], spell)
+
+    local tIndex, tSort =ZN:indexTrenner(template)
+    local maxPhase=0
+
+    for i=1, #tSort do
+      if template[tIndex[tSort[i-1]]] then
+        template[tIndex[tSort[i]]].time = template[tIndex[tSort[i-1]]].time + template[tIndex[tSort[i-1]]].duration
       else
+        template[tIndex[tSort[i]]].time = 0
+      end
+      table.insert(noteTemplate["spells"], template[tIndex[tSort[i]]])
+      if template[tIndex[tSort[i]]].phase ~=0 then
+        for _,spell in ipairs(template) do
+          if not spell["trenner"] and spell.phase == template[tIndex[tSort[i]]].phase then
+            tmp = {}
+            for k = 1, spell["repeatX"] do
+              tmp = table.copy(spell)
+              tmp["time"] = spell["time"]+(spell["repeatAfter"]*(k-1))+template[tIndex[tSort[i]]].time
+              tmp["repeatX"] = nil
+              tmp["repeatAfter"] = nil
+              table.insert(noteTemplate["spells"], tmp)
+            end      
+          end
+        end
+      end
+    end
+
+    for _,spell in ipairs(template) do
+      if not spell["trenner"] and spell.phase == 0 then
         tmp = {}
         for i = 1, spell["repeatX"] do
           tmp = table.copy(spell)
-          --tmp["need"] = table.copy(spell["need"])
           tmp["time"] = spell["time"]+(spell["repeatAfter"]*(i-1))
           tmp["repeatX"] = nil
           tmp["repeatAfter"] = nil
@@ -60,8 +84,24 @@ function ZN:createPreviewTemplateTable(arr)
         end      
       end
     end
+
+
+    -- for _,spell in ipairs(template) do
+    --   if spell["trenner"] then
+    --     --table.insert(noteTemplate["spells"], spell)
+    --   else
+    --     tmp = {}
+    --     for i = 1, spell["repeatX"] do
+    --       tmp = table.copy(spell)
+    --       tmp["time"] = spell["time"]+(spell["repeatAfter"]*(i-1))
+    --       tmp["repeatX"] = nil
+    --       tmp["repeatAfter"] = nil
+    --       table.insert(noteTemplate["spells"], tmp)
+    --     end      
+    --   end
+    -- end
   end
-  prioNote = {
+  local prioNote = {
     ["lines"] = {}
   }
 
