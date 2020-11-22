@@ -287,6 +287,11 @@ function ZN:initHome()
       group = "PARTY"
     end
     if (IsInRaid() or IsInGroup()) and HomeSidebar.zndCheckbox.active then
+      if HomeSidebar.SendCountCheckBox.active then
+        C_ChatInfo.SendAddonMessage( "ZERONOTE_TYPE", "count", group )
+      else
+        C_ChatInfo.SendAddonMessage( "ZERONOTE_TYPE", "time", group )
+      end
       local parts = math.ceil(string.len(CreatedZNNote)/255)
       C_ChatInfo.SendAddonMessage( "ZERONOTE", "NewNote", group )
       for i=1,parts do
@@ -329,6 +334,8 @@ function ZN:initHome()
   end)
 
   HomeSidebar.IncludeMissingCheckBox = ZN:createSquareCheckBox(HomeSidebar, "TOPLEFT", HomeSidebar.GroupTemplateSelectButton, "BOTTOMLEFT", 0, -20, "Include Missing Spells", 14, ZN.Colors.ACTIVE, 200, ZNotes.lastTemplates.homeIncludeMissing)
+  HomeSidebar.SendCountCheckBox = ZN:createSquareCheckBox(HomeSidebar, "TOPLEFT", HomeSidebar.IncludeMissingCheckBox, "BOTTOMLEFT", 0, -10, "Toggle Count Mode", 14, ZN.Colors.ACTIVE, 200, ZNotes.lastTemplates.homeSendCount,true, "Send Note with count of spellcasts instead of fixed times. This will disable ZBM for this note.", ZN.Colors.ACTIVE)
+
 
   -- Missing Checkbox onclick
   HomeSidebar.IncludeMissingCheckBox:SetScript("OnClick",function(self)
@@ -346,6 +353,16 @@ function ZN:initHome()
     ZN:DebugPrint("homeSendToZND: "..debugMissing)
   end)
 
+  HomeSidebar.SendCountCheckBox:SetScript("OnClick",function(self)
+    self.toggleChecked()
+    -- Toggle SavedVariable
+    if ZNotes.lastTemplates.homeSendCount then
+      ZNotes.lastTemplates.homeSendCount = false
+    else
+      ZNotes.lastTemplates.homeSendCount = true
+    end
+  end)
+
   HomeSidebar.IncludeMissingCheckBox.button:SetScript("OnMouseDown",function()
     HomeSidebar.IncludeMissingCheckBox.toggleChecked()
     -- Toggle SavedVariable
@@ -359,6 +376,16 @@ function ZN:initHome()
       debugMissing = "true" 
     end
     ZN:DebugPrint("homeSendToZND: "..debugMissing)
+  end)
+
+  HomeSidebar.SendCountCheckBox.button:SetScript("OnMouseDown",function()
+    HomeSidebar.SendCountCheckBox.toggleChecked()
+    -- Toggle SavedVariable
+    if ZNotes.lastTemplates.homeSendCount then
+      ZNotes.lastTemplates.homeSendCount = false
+    else
+      ZNotes.lastTemplates.homeSendCount = true
+    end
   end)
   --[[ ##############################################################################
     Save Note Popup
