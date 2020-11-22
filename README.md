@@ -11,7 +11,10 @@ MM/DD/2020 - v1.1.0
 * [UPD] Added SavedVariables for Home Screen Selections
 * [UPD] ZBM - Classcolor Bars with "Show all"
 * [UPD] ZBM - Removed Bars for Boss Spells (only Player Bars will be shown)
+* [UPD] ZND - Note can be toggled using "/run ZND.toggle()"
 * [FIX] EditBox New Line
+
+* [UPD] New Weakaura import strings. Also updated on Wago.
 
 11/7/2020 - v1.0.1
 * [FIX] Show Note when not in party

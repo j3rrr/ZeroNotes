@@ -518,6 +518,7 @@ function ZN:addNewPlayerSpell()
     ["cd"] = 0,
     ["aoe"] = true,
     ["rating"] = 0,
+    ["stackable"] = "true",
     ["station"] = true,
     ["name"] = "",
   })

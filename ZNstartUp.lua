@@ -7,7 +7,7 @@ local function onUILoad(text)
     if ZNLoaded then
       ZNotes = ZNotes or {}
       ZN.initMinimapButton()
-      if not ZNotes.PlayerSpells then
+      if not ZNotes.PlayerSpells or not ZNotes.PlayerSpellsMigrated then
         ZN.initPlayerSpells()
       end
       if not ZNotes.DebugMode then
