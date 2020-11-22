@@ -14,7 +14,7 @@ MM/DD/2020 - v1.1.0
 * [UPD] ZND - Note can be toggled using "/run ZND.toggle()"
 * [FIX] EditBox New Line
 
-* [UPD] New Weakaura import strings. Also updated on Wago.
+* [UPD] Weakaura Strings ZBM / ZND
 
 11/7/2020 - v1.0.1
 * [FIX] Show Note when not in party
