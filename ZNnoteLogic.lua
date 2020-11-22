@@ -441,10 +441,12 @@ function ZN:createRawNote(boss, group)
       if not prioNote["lines"][spell.time]["trenner"]["trenner"] then prioNote["lines"][spell.time]["trenner"]["trenner"] = {} end
       table.insert(prioNote["lines"][spell.time]["trenner"]["trenner"], spell)
     else
+      local playerSpellUsed = {}
       for _,needs in ipairs(spell["need"]) do
         ZN:ShiftSpellRatings(needs,sortedAvailableSpells)
         table.sort(availableSpells["spells"], function(a,b) return a.rating > b.rating or (a.rating == b.rating and a.PlayerName > b.PlayerName)end)
         local spellSet = false
+
         for _,playerSpell in ipairs(sortedAvailableSpells) do
           --for i = 1, table.getn(playerSpell["player"]) do
             if not spellSet then
@@ -457,6 +459,10 @@ function ZN:createRawNote(boss, group)
                   end
                 end
               end
+              if spellUseable and needs.type ~="imun" and not playerSpell.stackable and playerSpellUsed[playerSpell.id] then
+                spellUseable=false
+              end
+
               if spellUseable then
                 --local spellalias = playerSpell["id"].."_"..playerSpell["player"][i]["name"]
                 local spellalias = playerSpell["id"].."_"..playerSpell["PlayerName"]
@@ -464,6 +470,7 @@ function ZN:createRawNote(boss, group)
               end
               if spellUseable then
                 tmpLine.time = spell.time
+                playerSpellUsed[playerSpell.id]=true
                 --tmpLine.player = playerSpell.player[i].name
                 tmpLine.player = playerSpell.PlayerName
                 tmpLine.color = playerSpell.color              

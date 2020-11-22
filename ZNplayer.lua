@@ -206,12 +206,19 @@ local function CreateContentRow(PlayerSpellID, PlayerSpell, AnchorFrame)
   if class and (class=="diszi" or class=="shadow") then class="priest" end
   if class =="all" then class="zzz" end
 
+  local stackable = true
+
+  if PlayerSpell.type~="imun" then
+    stackable=PlayerSpell.stackable and PlayerSpell.stackable or false
+  end
+
   ContentRow.Role = CreateGenericButton ("Role"..PlayerSpellID, ContentRow, "LEFT", ContentRow, "LEFT", "role", ZN.ColoredRoles[PlayerSpell.role],PlayerSpellID)
   ContentRow.Class = CreateGenericButton ("Class"..PlayerSpellID, ContentRow, "LEFT", ContentRow.Role, "RIGHT", "class", ZN.ClassIconsList[class],PlayerSpellID,0,-8)
   ContentRow.SpellId = CreateSingleLineEditBox("Spellid"..PlayerSpellID, ContentRow, "LEFT", ContentRow.Class, "RIGHT", "spellid", PlayerSpell.id,0,PlayerSpellID)
   ContentRow.SpellName = CreateText(ContentRow, "LEFT", ContentRow.SpellId, "RIGHT", "spellname", (GetSpellInfo(PlayerSpell.id) and GetSpellInfo(PlayerSpell.id) or "|cffff3f40Invalid Spell ID|r"):upper())
   ContentRow.SpellType = CreateGenericButton ("Type"..PlayerSpellID, ContentRow, "LEFT", ContentRow.SpellName, "RIGHT", "spelltype", ZN.Types[PlayerSpell.type],PlayerSpellID)
-  ContentRow.Aoe = CreateCheckBox(ContentRow, "LEFT", ContentRow.SpellType, "RIGHT", "aoe", PlayerSpellID, PlayerSpell.aoe)
+  ContentRow.Stackable = CreateCheckBox(ContentRow, "LEFT", ContentRow.SpellType, "RIGHT", "stackable", PlayerSpellID, stackable)
+  ContentRow.Aoe = CreateCheckBox(ContentRow, "LEFT", ContentRow.Stackable, "RIGHT", "aoe", PlayerSpellID, PlayerSpell.aoe)
   ContentRow.Station = CreateCheckBox(ContentRow, "LEFT", ContentRow.Aoe, "RIGHT", "station", PlayerSpellID, PlayerSpell.station)
   ContentRow.SpellCd = CreateSingleLineEditBox("Spellcd"..PlayerSpellID, ContentRow, "LEFT", ContentRow.Station, "RIGHT", "spellcd", PlayerSpell.cd, 17, PlayerSpellID)
   ContentRow.SpellRating = CreateSingleLineEditBox("Spellrating"..PlayerSpellID, ContentRow, "LEFT", ContentRow.SpellCd, "RIGHT", "spellrating", PlayerSpell.rating,0, PlayerSpellID)
@@ -220,6 +227,7 @@ local function CreateContentRow(PlayerSpellID, PlayerSpell, AnchorFrame)
 
   ContentRow.SpellId.refersTo=ContentRow.SpellName
   ContentRow.SpellType.AoeBtn = ContentRow.Aoe
+  ContentRow.SpellType.StackableBtn = ContentRow.Stackable
 
   ContentRow.Class.OnUpdate=function(_, row, column, newvalue,self)
     ZNotes.PlayerSpells[row][column]=newvalue
@@ -261,6 +269,29 @@ local function CreateContentRow(PlayerSpellID, PlayerSpell, AnchorFrame)
         ZNotes.PlayerSpells[self.Row][self.Column] = self.active
       end)
     end
+    if newvalue == "imun" then
+      self.StackableBtn.active=true
+      ZNotes.PlayerSpells[row]["stackable"]=true
+      self.StackableBtn:SetNormalTexture(ZN.CheckBoxTextures.checked)
+
+      StackableBtn:SetScript("OnClick",function(self) end)
+      StackableBtn.activeColor=ZN.Colors.INACTIVE
+      StackableBtn.inactiveColor=ZN.Colors.INACTIVE
+      StackableBtn.highlightColor=ZN.Colors.INACTIVE
+      StackableBtn:GetNormalTexture():SetVertexColor(tonumber("0x"..ZN.Colors.INACTIVE:sub(1,2))/255, tonumber("0x"..ZN.Colors.INACTIVE:sub(3,4))/255, tonumber("0x"..ZN.Colors.INACTIVE:sub(5,6))/255, 1)
+    else
+      self.StackableBtn.active=false
+      ZNotes.PlayerSpells[row]["aoe"]=false
+      self.StackableBtn:SetNormalTexture(ZN.CheckBoxTextures.unchecked)
+
+      StackableBtn:SetScript("OnClick",function(self)
+        self.toggleChecked()
+        ZNotes.PlayerSpells[self.Row][self.Column] = self.active
+      end)
+      StackableBtn.activeColor=ZN.CheckBoxTextures.checkedColor
+      StackableBtn.inactiveColor=ZN.CheckBoxTextures.uncheckedColor
+      StackableBtn.highlightColor=ZN.Colors.ACTIVE
+    end
   end
 
 
@@ -280,7 +311,28 @@ local function CreateContentRow(PlayerSpellID, PlayerSpell, AnchorFrame)
     ContentRow.Aoe.highlightColor=ZN.Colors.ACTIVE
   end
 
+  if PlayerSpell.type == "imun" then
+    ContentRow.Stackable:SetScript("OnClick",function(self) end)
+    ContentRow.Stackable.activeColor=ZN.Colors.INACTIVE
+    ContentRow.Stackable.inactiveColor=ZN.Colors.INACTIVE
+    ContentRow.Stackable.highlightColor=ZN.Colors.INACTIVE
+    ContentRow.Stackable:GetNormalTexture():SetVertexColor(tonumber("0x"..ZN.Colors.INACTIVE:sub(1,2))/255, tonumber("0x"..ZN.Colors.INACTIVE:sub(3,4))/255, tonumber("0x"..ZN.Colors.INACTIVE:sub(5,6))/255, 1)
+  else
+     ContentRow.Stackable:SetScript("OnClick",function(self)
+      self.toggleChecked()
+      ZNotes.PlayerSpells[self.Row][self.Column] = self.active
+    end)
+    ContentRow.Stackable.activeColor=ZN.CheckBoxTextures.checkedColor
+    ContentRow.Stackable.inactiveColor=ZN.CheckBoxTextures.uncheckedColor
+    ContentRow.Stackable.highlightColor=ZN.Colors.ACTIVE
+  end
+
   ContentRow.Station:SetScript("OnClick",function(self)
+    self.toggleChecked()
+    ZNotes.PlayerSpells[self.Row][self.Column] = self.active
+  end)
+
+  ContentRow.Stackable:SetScript("OnClick",function(self)
     self.toggleChecked()
     ZNotes.PlayerSpells[self.Row][self.Column] = self.active
   end)
@@ -299,6 +351,12 @@ local function UpdateContentRow(PlayerSpellID, PlayerSpell, AnchorFrame,ContentR
   local class = PlayerSpell.class
   if class and (class=="diszi" or class=="shadow") then class="priest" end
   if class =="all" then class="zzz" end
+
+  local stackable = true
+
+  if PlayerSpell.type~="imun" then
+    stackable=PlayerSpell.stackable and PlayerSpell.stackable or false
+  end
   
   ContentRow.Role.Row = PlayerSpellID
   ContentRow.Role.ZNText:SetText(ZN.ColoredRoles[PlayerSpell.role]:upper())
@@ -309,6 +367,8 @@ local function UpdateContentRow(PlayerSpellID, PlayerSpell, AnchorFrame,ContentR
   ContentRow.SpellName:SetText((GetSpellInfo(PlayerSpell.id) and GetSpellInfo(PlayerSpell.id) or "|cffff3f40Invalid Spell ID|r"):upper())
   ContentRow.SpellType.Row = PlayerSpellID
   ContentRow.SpellType.ZNText:SetText(ZN.Types[PlayerSpell.type]:upper())
+  ContentRow.Stackable.Row=PlayerSpellID
+  if ContentRow.Stackable.active ~= stackable then ContentRow.Stackable.toggleChecked() end
   ContentRow.Aoe.Row=PlayerSpellID
   if ContentRow.Aoe.active ~= PlayerSpell.aoe then ContentRow.Aoe.toggleChecked() end
   ContentRow.Station.Row=PlayerSpellID

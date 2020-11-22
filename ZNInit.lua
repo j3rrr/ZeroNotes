@@ -1321,8 +1321,9 @@ ZN.PlayerTableColumns = {
   ["role"] = 100,
   ["class"] = 40,
   ["spellid"] = 110,
-  ["spellname"] = 300,
+  ["spellname"] = 230,
   ["spelltype"] = 130,
+  ["stackable"] = 70,
   ["aoe"] = 50,
   ["station"] = 50,
   ["spellcd"] = 50,
@@ -1336,6 +1337,7 @@ ZN.PlayerTableColumnHeaders = {
   "spellid",
   "spellname",
   "spelltype",
+  "stackable",
   "aoe",
   "station",
   "spellcd",
@@ -1346,6 +1348,10 @@ ZN.HeadersToolTips = {
   ["playeraoe"] = {
     ["tooltip"] = true,
     ["text"] = "Utility only\n\nSet to |cff"..ZN.Colors.chatGuild.."true|r if your spell is AoE\ne.g. Rallying Cry\n\nSet to |cff"..ZN.Colors.chatYell.."false|r if your spell is single target\ne.g. Pain Suppression"
+  },
+  ["playerstackable"] = {
+    ["tooltip"] = true,
+    ["text"] = "Set to |cff"..ZN.Colors.chatGuild.."true|r if different players can use the same spell at the same time.\n\nSet to |cff"..ZN.Colors.chatYell.."false|r if only one player should use this CD\ne.g. Rallying Cry"
   },
   ["playerstation"] = {
     ["tooltip"] = true,
@@ -1411,6 +1417,7 @@ ZN.PlayerTableColumnHeaderNames = {
   ["spellid"] = "ID",
   ["spellname"] = "Spellname",
   ["spelltype"] = "Type",
+  ["stackable"] = "Stackable",
   ["aoe"] = "AOE",
   ["station"] = "Station",
   ["spellcd"] = "CD",
@@ -1424,27 +1431,29 @@ ZN.PlayerAttributeMapping = {
   ["spellid"] = "id",
   ["spellname"] = "name",
   ["spelltype"] = "type",
+  ["stackable"] = "stackable",
   ["aoe"] = "aoe",
   ["station"] = "station",
   ["spellcd"] = "cd",
   ["spellrating"] = "rating",
 }
 
-ZN.PlayerTableColumnButtonTypes = {
-  ["role"] = "GenericButton",
-  ["class"] = "GenericButton",
-  ["spellid"] = "SingleLineEditBox",
-  ["spellname"] = "SingleLineEditBox",
-  ["spelltype"] = "GenericButton",
-  ["aoe"] = "IconButton",
-  ["station"] = "IconButton",
-  ["spellcd"] = "SingleLineEditBox",
-  ["spellrating"] = "SingleLineEditBox",
-  ["delete"] = "IconButton",
-}
+-- ZN.PlayerTableColumnButtonTypes = {
+--   ["role"] = "GenericButton",
+--   ["class"] = "GenericButton",
+--   ["spellid"] = "SingleLineEditBox",
+--   ["spellname"] = "SingleLineEditBox",
+--   ["spelltype"] = "GenericButton",
+--   ["aoe"] = "IconButton",
+--   ["station"] = "IconButton",
+--   ["spellcd"] = "SingleLineEditBox",
+--   ["spellrating"] = "SingleLineEditBox",
+--   ["delete"] = "IconButton",
+-- }
 
 ZN.PlayerTableIconButton = {
-  ["aoe"]= {["size"]= 16, ["xOffset"]=17, ["type"]="checkBox"},
+  ["stackable"]= {["size"]= 16, ["xOffset"]=27, ["type"]="checkBox"},
+  ["aoe"]= {["size"]= 16, ["xOffset"]=44, ["type"]="checkBox"},
   ["station"]= {["size"]= 16, ["xOffset"]=34, ["type"]="checkBox"},
   ["delete"]= {["size"]= 16, ["xOffset"]=17, ["type"]="delete", ["texture"]="Interface\\AddOns\\ZeroNotes\\Media\\Texture\\delete2"},
   ["square"]= {["size"]= 40, ["xOffset"]=0, ["type"]="square", ["texture"]="Interface\\AddOns\\ZeroNotes\\Media\\Texture\\square"}

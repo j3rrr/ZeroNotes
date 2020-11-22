@@ -11,4 +11,6 @@ MM/DD/2020 - v1.1.0
 * [UPD] Added SavedVariables for Home Screen Selections
 * [UPD] ZBM - Classcolor Bars with "Show all"
 * [UPD] ZBM - Removed Bars for Boss Spells (only Player Bars will be shown)
+* [UPD] Notes can now be send with the count of the spell occurance instead of a fixed time. This will currently work with the ZND WA. ZBM will get disabled for this type and ExRT Note will only display the number of the spell. But not mark the spell as completed.
+* [UPD] ZND - Display spell counts instead of times (based on selected setting). Rows will get marked as completed once the displayed count is reached.
 ```
