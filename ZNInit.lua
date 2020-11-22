@@ -1702,9 +1702,9 @@ ZN.ZeroGroupTemplate = {
     ["spec"] = "fury",
   }, -- [15]
   {
-    ["class"] = "warrior",
+    ["class"] = "priest",
     ["name"] = "Paddy",
-    ["spec"] = "arms",
+    ["spec"] = "shadow",
   }, -- [16]
   {
     ["class"] = "hunter",

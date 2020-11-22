@@ -34,9 +34,20 @@ function ZN:initHome()
   HomeContent.ShowNoteEditBox.btnSaveNote = ZN.CreateIconButton(HomeContent.ShowNoteEditBox, "BOTTOMLEFT", HomeContent.ShowNoteEditBox.EditBox, "TOPLEFT", 26, 26, 0, 16, "Interface\\AddOns\\ZeroNotes\\Media\\Texture\\save", ZN.Colors.ACTIVE, ZN.Colors.INACTIVE, false, ZN.Colors.ACTIVE, true, "Save Note", ZN.Colors.ACTIVE)
   HomeContent.ShowNoteEditBox.btnLoadNote = ZN.CreateIconButton(HomeContent.ShowNoteEditBox, "BOTTOMLEFT", HomeContent.ShowNoteEditBox.btnSaveNote, "BOTTOMRIGHT", 26, 26, 16, 0, "Interface\\AddOns\\ZeroNotes\\Media\\Texture\\load", ZN.Colors.ACTIVE, ZN.Colors.INACTIVE, false, ZN.Colors.ACTIVE, true, "Load Note", ZN.Colors.ACTIVE)
   HomeContent.ShowNoteEditBox.btnSendNote = ZN.CreateIconButton(HomeContent.ShowNoteEditBox, "BOTTOMLEFT", HomeContent.ShowNoteEditBox.btnLoadNote, "BOTTOMRIGHT", 26, 26, 32, 0, "Interface\\AddOns\\ZeroNotes\\Media\\Texture\\arrow_send", ZN.Colors.ACTIVE, ZN.Colors.INACTIVE, false, ZN.Colors.ACTIVE, true, "Send Note", ZN.Colors.ACTIVE)
-  --[[
-    TODO: contentznd änderungen aus editbox
-  --]]
+
+  HomeContent.ShowNoteEditBox.EditBox.editbox.hintText = ZN.CreateText(HomeContent.ShowNoteEditBox.EditBox, "BOTTOMRIGHT", HomeContent.ShowNoteEditBox.EditBox, "BOTTOMRIGHT", 225, 10, 0, 3, "Interface\\AddOns\\ZeroNotes\\Media\\Font\\ZNReg.ttf", 10, ZN.Colors.INACTIVE, "Press Enter to save, Shift+Enter for new line", "LEFT", "CENTER")
+  HomeContent.ShowNoteEditBox.EditBox.editbox:SetScript("OnEnterPressed", function(self)
+    if not IsShiftKeyDown() then
+      self.oldText = self:GetText()
+      if self.doOnUpdate then
+        self.OnUpdate(self.tableType,self.Row,self.Column, self:GetText(),self)
+      end
+      self:ClearFocus()		
+    else
+      self:Insert("\n")
+    end
+  end)
+  
   HomeContent.ShowNoteEditBox.btnSendNote:SetScript("OnClick", function()
     --ZN:DebugPrint(ZNotes.SavedNotes[ZN.LoadedNote].content)
     
