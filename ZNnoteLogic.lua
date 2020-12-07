@@ -441,65 +441,73 @@ function ZN:createRawNote(boss, group)
       if not prioNote["lines"][spell.time]["trenner"]["trenner"] then prioNote["lines"][spell.time]["trenner"]["trenner"] = {} end
       table.insert(prioNote["lines"][spell.time]["trenner"]["trenner"], spell)
     else
-      local playerSpellUsed = {}
-      for _,needs in ipairs(spell["need"]) do
-        ZN:ShiftSpellRatings(needs,sortedAvailableSpells)
-        table.sort(availableSpells["spells"], function(a,b) return a.rating > b.rating or (a.rating == b.rating and a.PlayerName > b.PlayerName)end)
-        local spellSet = false
+      if not spell["need"] or #spell["need"]==0 then
+        if not prioNote["lines"][spell.time] then prioNote["lines"][spell.time]={} end
+        if not prioNote["lines"][spell.time]["trenner"] then prioNote["lines"][spell.time]["trenner"] = {} end
+        if not prioNote["lines"][spell.time]["trenner"]["trenner"] then prioNote["lines"][spell.time]["trenner"]["trenner"] = {} end
+        spell.text=spell.name
+        table.insert(prioNote["lines"][spell.time]["trenner"]["trenner"], spell)
+      else
+        local playerSpellUsed = {}
+        for _,needs in ipairs(spell["need"]) do
+          ZN:ShiftSpellRatings(needs,sortedAvailableSpells)
+          table.sort(availableSpells["spells"], function(a,b) return a.rating > b.rating or (a.rating == b.rating and a.PlayerName > b.PlayerName)end)
+          local spellSet = false
 
-        for _,playerSpell in ipairs(sortedAvailableSpells) do
-          --for i = 1, table.getn(playerSpell["player"]) do
-            if not spellSet then
-              local tmpLine = {}
-              local spellUseable = false
-              if (spell["station"] == false and playerSpell["station"] == false) or spell["station"] == true then
-                if needs["type"] == playerSpell["type"] then
-                  if needs["type"] ~= "util" or spell["aoe"] == playerSpell["aoe"] then
-                    spellUseable = true
+          for _,playerSpell in ipairs(sortedAvailableSpells) do
+            --for i = 1, table.getn(playerSpell["player"]) do
+              if not spellSet then
+                local tmpLine = {}
+                local spellUseable = false
+                if (spell["station"] == false and playerSpell["station"] == false) or spell["station"] == true then
+                  if needs["type"] == playerSpell["type"] then
+                    if needs["type"] ~= "util" or spell["aoe"] == playerSpell["aoe"] then
+                      spellUseable = true
+                    end
                   end
                 end
-              end
-              if spellUseable and needs.type ~="imun" and not playerSpell.stackable and playerSpellUsed[playerSpell.id] then
-                spellUseable=false
-              end
+                if spellUseable and needs.type ~="imun" and not playerSpell.stackable and playerSpellUsed[playerSpell.id] then
+                  spellUseable=false
+                end
 
-              if spellUseable then
-                --local spellalias = playerSpell["id"].."_"..playerSpell["player"][i]["name"]
-                local spellalias = playerSpell["id"].."_"..playerSpell["PlayerName"]
-                spellUseable = ZN:isSpellAvailable(spellsUsed, spellalias, playerSpell["cd"], spell["time"])
+                if spellUseable then
+                  --local spellalias = playerSpell["id"].."_"..playerSpell["player"][i]["name"]
+                  local spellalias = playerSpell["id"].."_"..playerSpell["PlayerName"]
+                  spellUseable = ZN:isSpellAvailable(spellsUsed, spellalias, playerSpell["cd"], spell["time"])
+                end
+                if spellUseable then
+                  tmpLine.time = spell.time
+                  playerSpellUsed[playerSpell.id]=true
+                  --tmpLine.player = playerSpell.player[i].name
+                  tmpLine.player = playerSpell.PlayerName
+                  tmpLine.color = playerSpell.color              
+                  tmpLine.playerSpellName = playerSpell.name
+                  tmpLine.playerSpellId = playerSpell.id
+                  tmpLine.bossSpellName = spell.name
+                  tmpLine.bossSpellId = spell.id
+                  tmpLine.counter=spell.counter
+                  if not prioNote["lines"][tmpLine.time] then prioNote["lines"][tmpLine.time]={} end
+                  if not prioNote["lines"][tmpLine.time][spell.id] then prioNote["lines"][tmpLine.time][spell.id] = {} end
+                  if not prioNote["lines"][tmpLine.time][spell.id][playerSpell["type"]] then prioNote["lines"][tmpLine.time][spell.id][playerSpell["type"]] = {} end
+                  table.insert(prioNote["lines"][tmpLine.time][spell.id][playerSpell["type"]], tmpLine)
+                  spellSet = true
+                end
               end
-              if spellUseable then
-                tmpLine.time = spell.time
-                playerSpellUsed[playerSpell.id]=true
-                --tmpLine.player = playerSpell.player[i].name
-                tmpLine.player = playerSpell.PlayerName
-                tmpLine.color = playerSpell.color              
-                tmpLine.playerSpellName = playerSpell.name
-                tmpLine.playerSpellId = playerSpell.id
-                tmpLine.bossSpellName = spell.name
-                tmpLine.bossSpellId = spell.id
-                tmpLine.counter=spell.counter
-                if not prioNote["lines"][tmpLine.time] then prioNote["lines"][tmpLine.time]={} end
-                if not prioNote["lines"][tmpLine.time][spell.id] then prioNote["lines"][tmpLine.time][spell.id] = {} end
-                if not prioNote["lines"][tmpLine.time][spell.id][playerSpell["type"]] then prioNote["lines"][tmpLine.time][spell.id][playerSpell["type"]] = {} end
-                table.insert(prioNote["lines"][tmpLine.time][spell.id][playerSpell["type"]], tmpLine)
-                spellSet = true
-              end
-            end
-          --end          
+            --end          
+          end   
+          if not spellSet then
+            local tmp = {}
+            tmp.time = spell.time
+            tmp.bossSpellName = spell.name
+            tmp.bossSpellId = spell.id
+            tmp.missing = 'Missing: '..needs.type
+            if not prioNote["missing"][tmp.time] then prioNote["missing"][tmp.time]={} end
+            if not prioNote["missing"][tmp.time][spell.id] then prioNote["missing"][tmp.time][spell.id] = {} end
+            if not prioNote["missing"][tmp.time][spell.id][needs.type] then prioNote["missing"][tmp.time][spell.id][needs.type] = {} end
+            table.insert(prioNote["missing"][tmp.time][spell.id][needs.type], tmp)
+          end
         end   
-        if not spellSet then
-          local tmp = {}
-          tmp.time = spell.time
-          tmp.bossSpellName = spell.name
-          tmp.bossSpellId = spell.id
-          tmp.missing = 'Missing: '..needs.type
-          if not prioNote["missing"][tmp.time] then prioNote["missing"][tmp.time]={} end
-          if not prioNote["missing"][tmp.time][spell.id] then prioNote["missing"][tmp.time][spell.id] = {} end
-          if not prioNote["missing"][tmp.time][spell.id][needs.type] then prioNote["missing"][tmp.time][spell.id][needs.type] = {} end
-          table.insert(prioNote["missing"][tmp.time][spell.id][needs.type], tmp)
-        end
-      end      
+      end   
     end
   end
   
@@ -543,8 +551,13 @@ function ZN:PrintNote(boss, inclMissing, group)
       if bossSpell.trenner then
         for _,trenner in ipairs(bossSpell.trenner) do
           local convertedTime = ZN:SecondsToClock(trenner["time"])
-          rtNote = rtNote.."\n \n{time:"..convertedTime.."} "..trenner["raidicon"].." ||cffff00ff"..trenner["text"].."||r "..trenner["raidicon"]
-          znNote = znNote.."\n \n{time:"..convertedTime.."} "..trenner["raidicon"].." ||cffff00ff"..trenner["text"].."||r "..trenner["raidicon"]
+          if trenner["raidicon"] then
+            rtNote = rtNote.."\n \n{time:"..convertedTime.."} "..trenner["raidicon"].." ||cffff00ff"..trenner["text"].."||r "..trenner["raidicon"]
+            znNote = znNote.."\n \n{time:"..convertedTime.."} "..trenner["raidicon"].." ||cffff00ff"..trenner["text"].."||r "..trenner["raidicon"]
+          else
+            rtNote = rtNote.."\n \n{time:"..convertedTime.."} ".." ||cffff00ff"..trenner["text"].."||r "
+            znNote = znNote.."\n \n{time:"..convertedTime.."} ".." ||cffff00ff"..trenner["text"].."||r "
+          end
         end
       end
       local lineInit = false
