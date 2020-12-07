@@ -554,9 +554,10 @@ function ZN:PrintNote(boss, inclMissing, group)
           if trenner["raidicon"] then
             rtNote = rtNote.."\n \n{time:"..convertedTime.."} "..trenner["raidicon"].." ||cffff00ff"..trenner["text"].."||r "..trenner["raidicon"]
             znNote = znNote.."\n \n{time:"..convertedTime.."} "..trenner["raidicon"].." ||cffff00ff"..trenner["text"].."||r "..trenner["raidicon"]
-          else
-            rtNote = rtNote.."\n \n{time:"..convertedTime.."} ".." ||cffff00ff"..trenner["text"].."||r "
-            znNote = znNote.."\n \n{time:"..convertedTime.."} ".." ||cffff00ff"..trenner["text"].."||r "
+          elseif trenner["id"] then
+            rtNote = rtNote.."\n \n{time:"..convertedTime.."} {spell:"..trenner["id"].."}".." ||cffff00ff"..trenner["text"].."||r "
+            znNote = znNote.."\n \n{time:"..convertedTime.."} {spell:"..trenner["id"].."}".." ||cffff00ff"..trenner["text"].."||r "
+
           end
         end
       end
