@@ -1,5 +1,5 @@
 ## Title: |cff00ffffZero|rNotes
-## Version: 1.1.0
+## Version: 1.1.1
 ## Author: Serafno#2492, Bambule#21598
 ## Interface: 90002
 ## SavedVariables: ZNotes

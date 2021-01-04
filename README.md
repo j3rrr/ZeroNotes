@@ -1,6 +1,9 @@
 #### Changelog
 
 ```
+01/04/2021 - v1.1.1
+* [FIX] Station and AoE flags in Boss spells not being saved correctly
+
 11/22/2020 - v1.1.0
 * [NEW] Possibility to save Notes
 * [NEW] Notes can now be send with the count of the spell occurance instead of a fixed time. This will currently work with the ZND WA. ZBM will get disabled for this type and ExRT Note will only display the number of the spell. But not mark the spell as completed
