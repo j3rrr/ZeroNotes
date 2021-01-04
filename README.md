@@ -3,6 +3,7 @@
 ```
 01/04/2021 - v1.1.1
 * [FIX] Station and AoE flags in Boss spells not being saved correctly
+* [NEW] Spells can be created without needs (heal, util, immun) to add it to the note without colldowns being assigned
 
 11/22/2020 - v1.1.0
 * [NEW] Possibility to save Notes
