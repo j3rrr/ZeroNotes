@@ -666,6 +666,9 @@ local function CreateBossSpellRow(BossSpellID, BossSpell, AnchorFrame, boss)
 
     ContentRow.Aoe:SetScript("OnClick",function(self)
       self.toggleChecked()
+      ZN:DebugPrint("boss: "..self.boss)
+      ZN:DebugPrint("Row: "..self.Row)
+      ZN:DebugPrint("Column: "..self.Column)
       ZNotes.BossTemplates[self.boss][self.Row][self.Column] = self.active
       ZN:showPreview(ZN:printPreviewNote(selectedTemplate), ZNBodyFrame.Subframes.PreviewTemplateContent.ScrollNote.scrollChild,selectedTemplate)
     end)
@@ -904,8 +907,10 @@ local function UpdateBossSpellRow(BossSpellID, BossSpell, AnchorFrame,ContentRow
   ContentRow.Prio.boss=boss
   ContentRow.Aoe.Row=BossSpellID
   if ContentRow.Aoe.active ~= BossSpell.aoe then ContentRow.Aoe.toggleChecked() end
+  ContentRow.Aoe.boss=boss
   ContentRow.Station.Row=BossSpellID
   if ContentRow.Station.active ~= BossSpell.station then ContentRow.Station.toggleChecked() end
+  ContentRow.Station.boss=boss
   ContentRow.repeatX.Row = BossSpellID
   ContentRow.repeatX:SetText(BossSpell.repeatX)
   ContentRow.repeatX.boss=boss
